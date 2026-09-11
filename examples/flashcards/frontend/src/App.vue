@@ -10,6 +10,7 @@ import { ElConfigProvider } from 'element-plus'
         <nav>
           <router-link to="/">首页</router-link>
           <router-link to="/cards">卡片</router-link>
+          <router-link to="/study">学习</router-link>
         </nav>
       </header>
       <main class="app-main">

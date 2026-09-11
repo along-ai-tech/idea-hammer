@@ -29,6 +29,7 @@ onMounted(async () => {
     </p>
     <el-divider />
     <h3>下一步</h3>
-    <el-link type="primary" href="/cards">→ 进入卡片管理</el-link>
+    <el-link type="primary" href="/cards">→ 进入卡片管理</el-link><br />
+    <el-link type="primary" href="/study">→ 进入学习模式（SM-2 间隔重复）</el-link>
   </el-card>
 </template>
