@@ -6,7 +6,15 @@
 ## [未发布]
 
 ### 计划中
-- examples/flashcards：本地闪卡应用，技术栈 Python(FastAPI + SQLAlchemy + SQLite) + Vue3 + Element Plus，作为 IdeaHammer 端到端流水线的演示证据
+- examples/flashcards 跑通：FastAPI + SQLite + Vue3 + Element Plus 骨架 + 最小可演示版本
+
+## [0.1.2] - 2026-09-11
+
+### 变更
+- 主仓库迁移至 GitHub：https://github.com/wuzhilong0811/idea-hammer
+- Gitee 作为镜像仓库保留：https://gitee.com/zhilong811/idea-hammer
+- README 同步：git clone URL 指向 GitHub，新增 GitHub / Gitee 双 badge
+- README 新增"快速预览"段：8 步流水线 ASCII 图 + 目录树速览
 
 ## [0.1.1] - 2026-09-08
 

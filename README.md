@@ -5,7 +5,46 @@
 一个 AI 主导的产研全流程协同框架，把产品经理的纪律（反模糊、Spec 驱动）和研发的工程化（TDD、review、release）合成一条端到端流水线。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1.2-blue.svg)](CHANGELOG.md)
+[![Main Repo](https://img.shields.io/badge/GitHub-wuzhilong0811-181717?logo=github)](https://github.com/wuzhilong0811/idea-hammer)
+[![Mirror](https://img.shields.io/badge/Gitee-zhilong811-C71D23?logo=gitee)](https://gitee.com/zhilong811/idea-hammer)
+
+---
+
+## 快速预览
+
+```
+模糊想法 → 需求澄清（product-spec-builder）
+         ↓
+   Product-Spec.md  ← 单一真相源
+         ↓
+设计桥接（design-brief-builder + design-maker）  [可选]
+         ↓
+开发计划（dev-planner → DEV-PLAN.md）
+         ↓
+按 Phase 开发（dev-builder）── RED → GREEN → REFACTOR
+         ↓
+两阶段审查（code-review → code-reviewer）── 失败回派
+         ↓
+Bug 修复（bug-fixer）── 先写复现测试
+         ↓
+构建发布（release-builder）
+         ↓
+可发布产品 ✅
+```
+
+**目录树速览**：
+
+```
+idea-hammer/
+├── AGENTS.md               # 主控：编排规则 + Skill 调用 + Sub-Agent 调度
+├── README.md               # 本文件
+├── LICENSE                 # MIT
+├── CHANGELOG.md            # 变更日志
+├── agents/skills/          # 8 个 skill 模块（每个含 SKILL.md + references/ + templates/）
+├── codex/                  # hooks + agents + evolution
+└── examples/flashcards/    # 端到端演示项目（Python + Vue3 + Element Plus）
+```
 
 ---
 
@@ -83,8 +122,10 @@ flowchart LR
 
 ```bash
 # 1. 把仓库克隆到你的项目根目录（或本仓库直接作为脚手架使用）
-git clone https://gitee.com/zhilong811/idea-hammer.git
+git clone https://github.com/wuzhilong0811/idea-hammer.git
 cd idea-hammer
+
+# 镜像仓库（Gitee）：https://gitee.com/zhilong811/idea-hammer
 
 # 2. 把 agents/ 重命名为 .agents/（前面加一个点）
 mv agents .agents
