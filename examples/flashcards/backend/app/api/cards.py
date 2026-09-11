@@ -1,7 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -21,12 +21,11 @@ class CardUpdate(BaseModel):
 
 
 class CardOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     front: str
     back: str
-
-    class Config:
-        from_attributes = True
 
 
 @router.post("/cards", response_model=CardOut, status_code=status.HTTP_201_CREATED)
