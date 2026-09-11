@@ -43,3 +43,8 @@ yarn-debug.log*
 
 # IDE-specific
 .codex/.needs-review
+
+# IdeaHammer example 本地数据库
+flashcards.db
+*.sqlite
+*.sqlite3
