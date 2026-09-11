@@ -1,4 +1,5 @@
-from typing import List
+from datetime import datetime
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict
@@ -26,6 +27,11 @@ class CardOut(BaseModel):
     id: int
     front: str
     back: str
+    repetitions: int = 0
+    interval: int = 0
+    easiness_factor: float = 2.5
+    due_at: Optional[datetime] = None
+    last_reviewed_at: Optional[datetime] = None
 
 
 @router.post("/cards", response_model=CardOut, status_code=status.HTTP_201_CREATED)
