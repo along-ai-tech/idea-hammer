@@ -11,7 +11,39 @@
 
 ## [0.4.0-dev]
 
-最新开发分支。包含 v0.3.0 全部内容 + 知识归档 4 件套（CHANGELOG / DECISIONS / TODO / STATUS）。
+最新开发分支。P0 全部完成。
+
+### 新增（TODO-003 全部完成 + TODO-004 + TODO-005，2026-09-16）
+
+**TODO-003 拆 Skill 模板**（commit `3f253a0` + `c8c6ec5` + `af79049` + `1198c9f` + `915f0fa` + `d0500ec` + `745558d` + `fffa333` + `8f29866`）：
+- `_template/` 三层结构模板 + `check_skill_structure.py` 校验脚本
+- dev-builder 样板（135 → 33 行 + 15 文件）
+- 5 skill 重构（goal-creator / dev-planner / code-review / design-brief-builder / product-spec-builder）
+- 补 5 skill 三层结构（design-maker / bug-fixer / release-builder / evolution-engine / skill-builder）
+- 修 dev-planner 空目录 + check_skill_structure.py BUG
+- 11 skill 全部三层结构 + 错误 0
+
+**TODO-004 Session State 持久化**（commit `ffe1d9f`）：
+- `schemas/session.schema.json` — JSON Schema
+- `.idea-hammer/session.json` — 框架级 session（D-001~D-008）
+- `examples/flashcards/.idea-hammer/session.json` — 项目级示例
+- `scripts/session.py` — read/write/update/validate/context 工具
+- AGENTS.md 加 SESSION-LOAD 段：启动读精简版 session.json
+- **token 节省 93.1%**（域文件 12649B → session 869B；验收 ≥ 30%）
+
+**TODO-005 Skill 契约测试**（commit `087c46f`）：
+- `tests/contract/conftest.py` — 共享 fixtures
+- `tests/contract/test_structure.py` — 通用结构契约（SKILL.md ≤ 50 / principles/ / workflows/ / contracts JSON / schema）
+- `tests/contract/test_<skill>.py` × 11 — 每个 skill 关键概念 + 工作流关键词
+- `pyproject.toml` + `uv.lock` — Python 测试项目
+- `.github/workflows/ci.yml` — contract-tests + example-tests 双 job
+- **132 契约测试全绿 + CI 卡门禁**
+
+### 阶段 3.6 修复
+
+- `dev-planner` 之前 commit 时 principles/ workflows/ 内容为空（python 脚本 typo），但 check_skill_structure.py 只检查目录存在导致误报 [PWC]
+- 修：补 3 原则 + 3 工作流 + input schema + 修 check_skill_structure.py（目录存在 + 至少一个文件才标 PWC）
+
 
 ### 新增（TODO-003 阶段 1，2026-09-16）
 

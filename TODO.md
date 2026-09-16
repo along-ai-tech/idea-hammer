@@ -13,8 +13,8 @@
 **详细任务**：
 1. ✅ 阶段 1（commit `3f253a0`）：写 `agents/skills/_template/` 模板 + `scripts/check_skill_structure.py` 校验脚本（实际 .py 而非 .sh，bash 3.2 处理 UTF-8 字节有 bug）
 2. ✅ 阶段 2（commit `c8c6ec5`）：dev-builder 拆三层结构样板（135 → 33 行 + 15 文件）
-3. 阶段 3：平行重构其余 7 个 skill（10 天）
-4. 阶段 4：收尾验收 + commit（2-3 天）
+3. ✅ 阶段 3（commit `af79049`+`1198c9f`+`915f0fa`+`d0500ec`+`745558d`+`fffa333`+`8f29866`）：11 skill 全部三层结构
+4. ✅ 阶段 4：收尾（132 契约测试全绿）
 
 **三层结构**：
 ```
@@ -34,13 +34,14 @@ skill-name/
 
 **依赖**：P0-3（AGENTS.md 拆分）✅ 已完成
 
-**工时**：2-3 周
+**完成时间**：实际 1 个 session 内全部完成
+**验收**：11 skill 全部 [PWC] + 132 契约测试全绿
 
 **详见**：之前的"改进 #2 拆 Skill 模板"规划文档。
 
 ---
 
-### TODO-004：Session State 持久化
+### ✅ TODO-004：Session State 持久化（commit `ffe1d9f`）
 
 **目标**：解决"启动慢 + 跨 session 不记忆"两个硬伤。
 
@@ -74,7 +75,7 @@ skill-name/
 
 ---
 
-### TODO-005：Skill 契约测试
+### ✅ TODO-005：Skill 契约测试（commit `087c46f`）
 
 **目标**：让 IdeaHammer 自己的 skill 行为可被 TDD 验证，解决"框架说 TDD 但不测"的自相矛盾。
 
@@ -90,7 +91,8 @@ skill-name/
 
 **依赖**：TODO-003（拆 Skill 模板，contracts/ 目录存在后才能写契约）
 
-**工时**：2-3 周
+**完成时间**：实际 1 个 session 内全部完成
+**验收**：11 skill 全部 [PWC] + 132 契约测试全绿
 
 **详见**：改进 #9 Skill 契约测试。
 
@@ -187,7 +189,7 @@ skill-name/
 
 ## 状态统计
 
-- **P0 待办**：3 项（TODO-003 / 004 / 005），总工时 6-8 周
+- **P0 完成**：3 项（TODO-003 / 004 / 005）全部 ✅
 - **P1 待办**：4 项，总工时 11-14 周
 - **P2 待办**：3 项，总工时 5-6 周
 - **已完成 P0**：2 项（TODO-001 拆 AGENTS.md ✅ / TODO-002 README 30 秒扫视 ✅）
