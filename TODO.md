@@ -55,7 +55,7 @@ skill-name/
 {
   "current_phase": "Phase X / Y",
   "current_task": "T-N 描述",
-  "key_decisions": ["D-001 品牌确立", "..."],
+  "key_decisions": ["D-001 IdeaHammer 命名", "..."],
   "open_questions": ["..."],
   "user_preferences": {"tech_stack": "Python+Vue3"}
 }
