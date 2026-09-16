@@ -39,3 +39,17 @@
 ## Spec 漂移
 
 - 代码里有 Spec 没写的页面 / API / 表 / 组件 → 标"可能 scope creep"
+
+## 代码简洁性（必查，对照 [simplification/ 10 条原则](../../_engineering-constraints/simplification/)）
+
+- [ ] 文件 ≤ 300 行、函数 ≤ 50 行、圈复杂度 ≤ 10、嵌套 ≤ 3 层、参数 ≤ 4 个
+- [ ] 无 YAGNI 失守（"以后用" / "预留" 接口 / 配置 / 字段）
+- [ ] 抽象时机正确（Rule of Three，第 3 次重复才抽象）
+- [ ] 单一职责（函数名有"and"通常是反模式）
+- [ ] 命名即文档（无 a / tmp / foo / bar / data1 这类无意义名）
+- [ ] 注释解释 why 不解释 what（注释掉的代码 = dead code）
+- [ ] 依赖最小化（不引入 stdlib 能解决的包）
+- [ ] 副作用隔离（纯函数优先，副作用集中到边界）
+- [ ] 幂等性（脚本 / hook 反复执行安全，同操作不重复追加）
+
+自动校验：`python3 scripts/check_simplicity.py path/to/file.py`
