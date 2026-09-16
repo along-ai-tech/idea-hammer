@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DevBuilderInput",
+  "description": "dev-builder 启动参数。启动时校验这些字段。",
+  "type": "object",
+  "required": [
+    "mode"
+  ],
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": [
+        "init",
+        "continue"
+      ],
+      "description": "启动模式：init（无代码搭骨架）/ continue（已有代码按 Phase 开发）"
+    },
+    "product_spec_path": {
+      "type": "string",
+      "description": "Product-Spec.md 路径（必填，相对项目根目录）",
+      "pattern": "^[\\w\\-./]+\\.md$"
+    },
+    "dev_plan_path": {
+      "type": "string",
+      "description": "DEV-PLAN.md 路径（必填，相对项目根目录）",
+      "pattern": "^[\\w\\-./]+\\.md$"
+    },
+    "design_brief_path": {
+      "type": "string",
+      "description": "Design-Brief.md 路径（可选，缺了标降级模式）"
+    },
+    "tech_stack": {
+      "type": "object",
+      "description": "技术栈配置（init 模式用）",
+      "properties": {
+        "language": {
+          "type": "string",
+          "enum": [
+            "python",
+            "typescript",
+            "javascript",
+            "go",
+            "rust"
+          ]
+        },
+        "framework": {
+          "type": "string"
+        },
+        "package_manager": {
+          "type": "string",
+          "enum": [
+            "uv",
+            "pnpm",
+            "npm",
+            "yarn",
+            "cargo"
+          ]
+        }
+      },
+      "required": [
+        "language",
+        "package_manager"
+      ]
+    },
+    "current_phase": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "当前 Phase 编号（continue 模式用，从 DEV-PLAN.md 读）"
+    },
+    "current_task": {
+      "type": "string",
+      "description": "当前 Task 标识（continue 模式用）"
+    },
+    "self_drive": {
+      "type": "boolean",
+      "default": false,
+      "description": "是否 /goal 自驱模式（参考 workflow-self-drive.md）"
+    }
+  },
+  "additionalProperties": false
+}

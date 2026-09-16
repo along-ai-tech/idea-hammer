@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DevBuilderOutput",
+  "description": "dev-builder 产出物摘要。每个 Phase 完成时记录一次。",
+  "type": "object",
+  "required": [
+    "phase",
+    "tasks",
+    "verification"
+  ],
+  "properties": {
+    "phase": {
+      "type": "integer",
+      "description": "完成的 Phase 编号"
+    },
+    "tasks": {
+      "type": "array",
+      "description": "Phase 内完成的 Task 列表",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "summary",
+          "commits"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Task 标识（来自 DEV-PLAN）"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Task 完成描述"
+          },
+          "commits": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "该 Task 的 commit hash 列表"
+          },
+          "tests_added": {
+            "type": "integer",
+            "description": "新增测试数"
+          },
+          "tests_total_after": {
+            "type": "integer",
+            "description": "完成后总测试数"
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "description": "四步走验证结果",
+      "required": [
+        "code_review",
+        "tdd_compliance",
+        "compile",
+        "functional"
+      ],
+      "properties": {
+        "code_review": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL"
+          ],
+          "description": "code-reviewer 两阶段结果"
+        },
+        "tdd_compliance": {
+          "type": "boolean",
+          "description": "TDD 合规检查"
+        },
+        "compile": {
+          "type": "boolean",
+          "description": "tsc --noEmit 零错误"
+        },
+        "functional": {
+          "type": "boolean",
+          "description": "dev server 起来 + 新功能可用"
+        }
+      }
+    },
+    "deviations": {
+      "type": "array",
+      "description": "与 DEV-PLAN 偏差（如果有）",
+      "items": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
