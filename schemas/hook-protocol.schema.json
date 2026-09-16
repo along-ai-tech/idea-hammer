@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HookProtocol",
+  "description": "IdeaHammer Hook 协议 v2 — 支持 advisory / transform / retry 三模式",
+  "type": "object",
+  "required": [
+    "$version"
+  ],
+  "properties": {
+    "$version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "协议版本号（v1 = advisory-only / v2 = 3 模式）"
+    },
+    "$comment": {
+      "type": "string",
+      "description": "注释（运行时忽略）"
+    },
+    "events": {
+      "type": "object",
+      "description": "事件 → hook 列表映射",
+      "properties": {
+        "UserPromptSubmit": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/event"
+          }
+        },
+        "SessionStart": {
+          "$ref": "#/definitions/eventArray"
+        },
+        "PreToolUse": {
+          "$ref": "#/definitions/eventArray"
+        },
+        "PostToolUse": {
+          "$ref": "#/definitions/eventArray"
+        },
+        "Stop": {
+          "$ref": "#/definitions/eventArray"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "definitions": {
+    "eventArray": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/event"
+      }
+    },
+    "event": {
+      "type": "object",
+      "required": [
+        "hooks"
+      ],
+      "properties": {
+        "matcher": {
+          "type": "string",
+          "description": "regex 匹配（PreToolUse / PostToolUse 用 tool name）"
+        },
+        "hooks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hook"
+          }
+        }
+      }
+    },
+    "hook": {
+      "type": "object",
+      "required": [
+        "type",
+        "command"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "command"
+          ]
+        },
+        "command": {
+          "type": "string",
+          "description": "shell 命令（经 /bin/sh -lc 调）"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "advisory",
+            "transform",
+            "retry"
+          ],
+          "default": "advisory",
+          "description": "hook 模式"
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 10,
+          "description": "超时（秒）"
+        },
+        "max_retries": {
+          "type": "integer",
+          "default": 3,
+          "description": "retry 模式最大重试次数"
+        }
+      }
+    }
+  }
+}
