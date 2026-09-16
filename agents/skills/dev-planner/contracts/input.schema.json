@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DevPlannerInput",
+  "type": "object",
+  "required": ["mode", "product_spec_path"],
+  "properties": {
+    "mode": {"type": "string", "enum": ["generate", "iterate"]},
+    "product_spec_path": {"type": "string"},
+    "design_brief_path": {"type": "string"},
+    "dev_plan_path": {"type": "string"},
+    "tech_stack": {"type": "object"}
+  },
+  "additionalProperties": false
+}
