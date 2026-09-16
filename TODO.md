@@ -100,7 +100,7 @@ skill-name/
 
 ## 🟡 P1（应该做，1-3 个月内）
 
-### TODO-101：流水线改图状
+### ✅ TODO-101（commit `7220fdc + 后续`）：流水线改图状
 
 **目标**：8 步强顺序流水线改为路由图，支持 spike / refine / 并发。
 
@@ -119,7 +119,7 @@ skill-name/
 
 ---
 
-### TODO-102：Skill 触发升级为意图分类
+### ✅ TODO-102（commit `2288fe4`）：Skill 触发升级为意图分类
 
 **目标**：用意图分类器替代 description 关键词匹配。
 
@@ -129,7 +129,7 @@ skill-name/
 
 ---
 
-### TODO-103：Hook 协议升级
+### ✅ TODO-103（commit `9f0590b`）：Hook 协议升级
 
 **目标**：advisory / transform / retry 三种模式。
 
@@ -139,7 +139,7 @@ skill-name/
 
 ---
 
-### TODO-104：Evolution 三层捕获
+### ✅ TODO-104（commit `e2ab23f`）：Evolution 三层捕获
 
 **目标**：从被动入队升级为三层捕获（显式 / 隐式 / 效果）。
 
@@ -190,7 +190,7 @@ skill-name/
 ## 状态统计
 
 - **P0 完成**：3 项（TODO-003 / 004 / 005）全部 ✅
-- **P1 待办**：4 项，总工时 11-14 周
+- **P1 完成**：4 项（TODO-101/102/103/104）全部 ✅
 - **P2 待办**：3 项，总工时 5-6 周
 - **已完成 P0**：2 项（TODO-001 拆 AGENTS.md ✅ / TODO-002 README 30 秒扫视 ✅）
 - **P0 阶段完成**：TODO-003 阶段 1 ✅（commit `3f253a0`）
