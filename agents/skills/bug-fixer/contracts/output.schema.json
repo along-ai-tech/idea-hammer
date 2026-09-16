@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BugFixOutput",
+  "description": "bug-fixer 修复报告",
+  "type": "object",
+  "required": ["root_cause", "reproduction_test", "fix_changes", "verification"],
+  "properties": {
+    "root_cause": {
+      "type": "object",
+      "required": ["description", "evidence"],
+      "properties": {
+        "description": {"type": "string"},
+        "evidence": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "reproduction_test": {
+      "type": "object",
+      "properties": {
+        "file_path": {"type": "string"},
+        "test_name": {"type": "string"},
+        "fails_for": {"type": "string", "description": "失败原因（如：功能缺失 / 不是笔误）"}
+      }
+    },
+    "fix_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {"type": "string"},
+          "line": {"type": "integer"},
+          "change": {"type": "string"}
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "compile_pass": {"type": "boolean"},
+        "reproduction_test_pass": {"type": "boolean"},
+        "full_tests_pass": {"type": "boolean"},
+        "regression_check": {"type": "string"}
+      }
+    },
+    "commit_message": {"type": "string", "pattern": "^fix:.+"}
+  },
+  "additionalProperties": false
+}

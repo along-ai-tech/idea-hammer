@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SkillBuilderOutput",
+  "description": "skill-builder 创建新 Skill 的输出",
+  "type": "object",
+  "required": ["skill_name", "interactive_pattern", "sections"],
+  "properties": {
+    "skill_name": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+    "interactive_pattern": {
+      "type": "string",
+      "enum": ["dialog_collection", "autonomous_analysis", "execution", "diagnostic_repair"]
+    },
+    "sections": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "包含的 Section 清单"
+    },
+    "references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "参照的现有 Skill"
+    },
+    "file_path": {"type": "string"},
+    "agents_md_updated": {"type": "boolean"}
+  },
+  "additionalProperties": false
+}

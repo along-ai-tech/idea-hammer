@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReleaseOutput",
+  "description": "release-builder 发布报告",
+  "type": "object",
+  "required": ["release_type", "artifact", "privacy_audit", "smoke_test"],
+  "properties": {
+    "release_type": {"type": "string", "enum": ["web", "desktop", "cli"]},
+    "artifact": {
+      "type": "object",
+      "properties": {
+        "path": {"type": "string"},
+        "size_bytes": {"type": "integer"},
+        "checksum": {"type": "string"}
+      }
+    },
+    "privacy_audit": {
+      "type": "object",
+      "properties": {
+        "developer_paths_found": {"type": "array", "items": {"type": "string"}},
+        "data_files_found": {"type": "array", "items": {"type": "string"}},
+        "credentials_found": {"type": "array", "items": {"type": "string"}},
+        "passed": {"type": "boolean"}
+      }
+    },
+    "install_test": {
+      "type": "object",
+      "properties": {
+        "passed": {"type": "boolean"},
+        "method": {"type": "string"},
+        "evidence": {"type": "string"}
+      }
+    },
+    "smoke_test": {
+      "type": "object",
+      "properties": {
+        "passed": {"type": "boolean"},
+        "scenarios": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "rollback_plan": {"type": "string"}
+  },
+  "additionalProperties": false
+}

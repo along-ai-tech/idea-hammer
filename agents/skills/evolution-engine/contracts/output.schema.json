@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EvolutionProposal",
+  "description": "evolution-engine 生成的改动建议",
+  "type": "object",
+  "required": ["proposals", "consumed_signals"],
+  "properties": {
+    "proposals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "evidence", "target_file", "change_summary"],
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": ["add_rule", "retire_rule", "modify_skill", "create_skill"]
+          },
+          "evidence": {"type": "string"},
+          "target_file": {"type": "string"},
+          "change_summary": {"type": "string"}
+        }
+      }
+    },
+    "consumed_signals": {
+      "type": "array",
+      "description": "本次消化的 signal ID",
+      "items": {"type": "string"}
+    },
+    "git_patterns": {
+      "type": "array",
+      "description": "从 git 历史挖到的重复修复模式",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": false
+}
