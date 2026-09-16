@@ -21,6 +21,31 @@ Skill 三层结构模板与校验脚本（commit `3f253a0`）：
 - `scripts/check_skill_structure.py`：校验脚本（默认 + `--strict` 两档）
 - 第一次跑：11 skill（5 OK / 6 FAIL 均因 SKILL.md > 50 行）
 
+### 新增（v0.4.0 工程级约束体系，2026-09-16，commit `eb18d34`）
+
+13 主题 / 70 文件 / 6436 行的 `_engineering-constraints/`：
+
+- **coding-style/** (6 文件)：Java 阿里手册 / Python PEP8 / TypeScript Airbnb / Go Effective / SQL 规范 / Rust API Guidelines
+- **ecosystem-matrix/** (5 文件)：Java/Python/前端库选择矩阵（含 Redisson/Hutool/Jackson）
+- **anti-reinvent/** (11 文件)：10 条造轮子红线（连接池/日期/集合/HTTP/JSON/线程池/分布式锁/ID/缓存/配置中心）
+- **performance/** (4)：N+1 / 慢查询 / 缓存策略 / benchmark-first
+- **security/** (7)：OWASP Top 10 / JWT / 密码哈希 / 密钥管理 / 漏洞扫描 / License 白名单
+- **concurrency/** (4)：线程池命名 / 分布式锁 / 幂等 / 超时配置
+- **api-design/** (6)：REST 命名 / HTTP 状态码 / 分页 / 错误响应 / OpenAPI 强制
+- **observability/** (5)：结构化日志 / 指标 / OpenTelemetry / 健康检查
+- **ci-cd/** (4)：必备检查 / migration 安全 / 回滚策略
+- **error-handling/** (4)：异常 vs 返回码 / 异常处理实践 / 错误信息
+- **database/** (4)：索引策略 / 事务边界 / 连接池
+- **dependency-mgmt/** (4)：lockfile / 升级策略 / 重复依赖
+- **i18n-a11y/** (4)：国际化 / 时区 / WCAG AA
+
+接入主 skill：
+- `dev-builder/principles/engineering-constraints.md`：强制读 + 主题清单
+- `dev-builder/SKILL.md [引用]` 段：加必读
+- `code-review/SKILL.md [代码质量]` 检查项：加工程级约束必查
+
+架构：以 `_` 开头被 `check_skill_structure.py` 排除（不是 skill，是跨 skill 共享约束数据库）
+
 ### 重构（TODO-003 阶段 2，2026-09-16）
 
 dev-builder 样板重构（commit `c8c6ec5`，135 → 33 行 SKILL.md）：

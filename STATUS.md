@@ -91,12 +91,41 @@
 dev-builder 样板重构（135 → 33 行 SKILL.md + 15 个新文件）：
 
 - **SKILL.md 33 行**（frontmatter + 任务 + 依赖检测 + 使用方式 + 文件结构 + 引用）
-- **principles/ 8 个**：tdd-discipline / scope-and-modification / verification-evidence / reuse-and-design / code-style / external-and-real / doc-sync / quality-and-security
+- **principles/ 9 个**（+ engineering-constraints 指向 _engineering-constraints/）
 - **workflows/ 5 个**：init-or-continue / init / task-loop / phase-verify / self-drive
 - **contracts/ 2 个**：input.schema.json / output.schema.json
 - 验收：check_skill_structure 默认 + strict 都过 / 47/50 关键短语保留（3 表述差异非丢失）/ 56 测试全绿
 
-### 🚧 下一步（阶段 3：平行重构其余 7 个 skill，10 天）
+### ✅ v0.4.0 工程级约束体系（commit `eb18d34`，未在原 TODO）
+
+用户洞察："skill 体系缺工程级约束，AI 老造轮子"。新增：
+
+**`_engineering-constraints/` 13 主题 / 70 文件 / 6436 行**：
+- **核心 3 块**（用户痛点）：
+  - `coding-style/` (6 文件)：阿里 Java 手册 / PEP8 / Airbnb TS / Effective Go / SQL 规范 / Rust API Guidelines
+  - `ecosystem-matrix/` (5 文件)：Java/Python/前端库矩阵 + Redisson/Hutool/Jackson 选型决策
+  - `anti-reinvent/` (11 文件)：10 条造轮子红线（连接池/日期/集合/HTTP/JSON/线程池/分布式锁/ID/缓存/配置中心）
+- **其他 10 主题**：performance / security / concurrency / api-design / observability / ci-cd / error-handling / database / dependency-mgmt / i18n-a11y
+
+**接入主 skill**：
+- `dev-builder/principles/engineering-constraints.md`：强制读 + 主题清单
+- `dev-builder/SKILL.md [引用]`：加必读
+- `code-review/SKILL.md [代码质量]`：加工程级约束必查（造轮子/库选择/安全/性能/错误处理）
+
+**架构**：`_engineering-constraints/` 以 `_` 开头，被 `check_skill_structure.py` 排除（不是 skill，是跨 skill 共享约束数据库）。
+
+**验收**：56 测试全绿 / check_skill_structure.py 默认 + strict 都过 / 用户核心痛点（造轮子）有 10 条具体红线约束
+
+### 🚧 下一步（v0.4.0 P0 计划内 + 计划外）
+
+**计划内（TODO-003 阶段 3）**：平行重构其余 5 个 FAIL skill
+- code-review (67 行) — 拆三层
+- dev-planner (57 行) — 拆三层
+- goal-creator (52 行) — 拆三层
+- design-brief-builder (86 行) — 拆三层
+- product-spec-builder (109 行) — 拆三层
+
+**计划外（已落地但需补 TODO 文档）**：`_engineering-constraints/` 已建，需在 TODO.md 加新 TODO 跟踪后续维护（按主题追加、按项目经验补充反模式）
 
 按 dev-builder 样板模式重构：
 1. code-review (61 行) — TDD/Stage2 强相关
