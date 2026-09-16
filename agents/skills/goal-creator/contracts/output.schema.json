@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GoalCreatorOutput",
+  "description": "/goal 指令的输出契约。evaluator 解析此 schema 验证 Goal 指令完整性。",
+  "type": "object",
+  "required": ["goal_text", "char_count", "completion_criteria"],
+  "properties": {
+    "goal_text": {
+      "type": "string",
+      "description": "完整 /goal 指令文本（含 ``` 代码块包裹）",
+      "maxLength": 4500,
+      "minLength": 10
+    },
+    "char_count": {
+      "type": "integer",
+      "description": "goal_text 字符数（必须 ≤ 4000 硬限）",
+      "minimum": 1,
+      "maximum": 4000
+    },
+    "completion_criteria": {
+      "type": "array",
+      "description": "完成条件列表（evaluator 验证用）",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["criterion", "verification"],
+        "properties": {
+          "criterion": {"type": "string", "minLength": 5},
+          "verification": {"type": "string", "minLength": 5}
+        }
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "description": "硬约束列表（不可逆操作等）",
+      "items": {"type": "string"}
+    },
+    "execution_strategy": {
+      "type": "string",
+      "description": "执行策略（默认一字不改）"
+    },
+    "irreversible_warnings": {
+      "type": "array",
+      "description": "不可逆操作警告（commit/push/部署/删除等）",
+      "items": {"type": "string"}
+    }
+  },
+  "additionalProperties": false
+}
