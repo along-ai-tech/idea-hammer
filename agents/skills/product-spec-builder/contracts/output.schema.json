@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProductSpecOutput",
+  "description": "Product-Spec.md 结构化输出",
+  "type": "object",
+  "required": ["phases_complete", "features", "non_goals", "ai_capabilities"],
+  "properties": {
+    "phases_complete": {
+      "type": "array",
+      "description": "完成的 Phase 列表（1-7）",
+      "items": {"type": "integer", "minimum": 1, "maximum": 7}
+    },
+    "target_user": {"type": "string"},
+    "job_to_be_done": {"type": "string"},
+    "success_metrics": {"type": "array", "items": {"type": "string"}},
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "user_value", "delete_path"],
+        "properties": {
+          "id": {"type": "string"},
+          "name": {"type": "string"},
+          "user_value": {"type": "string", "description": "用户价值"},
+          "delete_path": {"type": "string", "description": "删除/移除路径（可建必可删）"},
+          "ai_capability": {"type": "string", "description": "用到的 AI 能力"},
+          "phase": {"type": "integer"}
+        }
+      }
+    },
+    "non_goals": {"type": "array", "items": {"type": "string"}},
+    "ai_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {"type": "string"},
+          "model": {"type": "string"},
+          "quality_bar": {"type": "string"},
+          "trigger": {"type": "string"},
+          "fallback": {"type": "string"},
+          "latency_cost": {"type": "string"}
+        }
+      }
+    },
+    "ui_states": {"type": "array", "items": {"type": "string"}},
+    "verification": {"type": "string"}
+  },
+  "additionalProperties": false
+}

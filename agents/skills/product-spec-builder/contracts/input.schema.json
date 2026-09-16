@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProductSpecBuilderInput",
+  "description": "product-spec-builder 启动参数",
+  "type": "object",
+  "required": ["mode"],
+  "properties": {
+    "mode": {"type": "string", "enum": ["0-1", "iterate"]},
+    "product_spec_path": {"type": "string", "description": "Product-Spec.md 路径（iterate 模式必填）"},
+    "changelog_path": {"type": "string", "description": "Product-Spec-CHANGELOG.md 路径"},
+    "candidate_specs": {
+      "type": "array",
+      "description": "迭代模式：扫到的候选文档路径",
+      "items": {"type": "string"}
+    },
+    "user_change_intent": {"type": "string", "description": "用户改需求描述"}
+  },
+  "additionalProperties": false
+}
