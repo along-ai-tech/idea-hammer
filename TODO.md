@@ -11,7 +11,7 @@
 **目标**：8 个 skill 从 markdown 大文件改为"行为契约"，使规则单点定义、行为可断言。
 
 **详细任务**：
-1. 阶段 1：写 `agents/skills/_template/` 模板 + `scripts/check_skill_structure.sh` 校验脚本（1-2 天）
+1. ✅ 阶段 1（commit `3f253a0`）：写 `agents/skills/_template/` 模板 + `scripts/check_skill_structure.py` 校验脚本（实际 .py 而非 .sh，bash 3.2 处理 UTF-8 字节有 bug）
 2. 阶段 2：选 dev-builder 做样板重构（3-4 天）
 3. 阶段 3：平行重构其余 7 个 skill（10 天）
 4. 阶段 4：收尾验收 + commit（2-3 天）
@@ -190,7 +190,8 @@ skill-name/
 - **P0 待办**：3 项（TODO-003 / 004 / 005），总工时 6-8 周
 - **P1 待办**：4 项，总工时 11-14 周
 - **P2 待办**：3 项，总工时 5-6 周
-- **已完成 P0**：1 项（TODO-001 拆 AGENTS.md ✅ / TODO-002 README 30 秒扫视 ✅）
+- **已完成 P0**：2 项（TODO-001 拆 AGENTS.md ✅ / TODO-002 README 30 秒扫视 ✅）
+- **P0 阶段完成**：TODO-003 阶段 1 ✅（commit `3f253a0`）
 
 ---
 

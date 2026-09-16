@@ -80,10 +80,15 @@
 - [x] STATUS.md / DECISIONS.md / CHANGELOG.md 同步到 v0.3.1
 - [x] tag v0.3.1 推送双 remote ✅
 
-### 🚧 本周内（v0.4.0 P0-1 阶段 1）
+### ✅ v0.4.0 P0-1 阶段 1 完成（commit `3f253a0`）
 
-1. **TODO-003 阶段 1**（1-2 天）：写 `agents/skills/_template/` 三层结构模板 + `scripts/check_skill_structure.sh`
-2. 验证阶段 1 → 阶段 2 用 dev-builder 做样板（3-4 天）
+- [x] `agents/skills/_template/` 三层结构模板（10 文件：README + SKILL + 4 README + 2 example + 1 schema + assets）
+- [x] `scripts/check_skill_structure.py` 校验脚本（默认 + `--strict` 两档）
+- [x] 跑校验：11 skill（5 OK / 6 FAIL 均因 SKILL.md >50 行）
+
+### 🚧 下一步（阶段 2：dev-builder 样板重构，3-4 天）
+
+用 dev-builder（最大 135 行）做样板重构，把它的"第一性原则"抽到 principles/，"执行步骤"抽到 workflows/，"输入输出约定"抽到 contracts/，SKILL.md 瘦身到 ≤ 50 行。验证三层结构可行 + 知识保留率 ≥ 95%（diff 校验）。
 
 ### 📅 后续阶段
 

@@ -13,6 +13,29 @@
 
 最新开发分支。包含 v0.3.0 全部内容 + 知识归档 4 件套（CHANGELOG / DECISIONS / TODO / STATUS）。
 
+### 新增（TODO-003 阶段 1，2026-09-16）
+
+Skill 三层结构模板与校验脚本：
+
+- `agents/skills/_template/`（10 文件）：
+  - `README.md` — 三层结构总说明
+  - `SKILL.md`（31 行模板）— 仅 frontmatter + 引用列表
+  - `principles/README.md` + `_example.md` — 原则写法规范
+  - `workflows/README.md` + `_example.md` — 流程写法规范
+  - `contracts/README.md` + `_example.schema.json` — JSON Schema 写法
+  - `assets/README.md` — 可选静态资源目录
+- `scripts/check_skill_structure.py` — 校验脚本：
+  - 必备：SKILL.md 存在 + ≤ 50 行 + YAML frontmatter 合法
+  - 触发：contracts/*.json 是合法 JSON
+  - `--strict`：三层目录必须都存在
+  - 第一次跑：11 skill（5 OK / 6 FAIL 均因 SKILL.md > 50 行）
+
+### 计划
+- TODO-003 阶段 2：用 dev-builder 做样板重构（3-4 天）
+- TODO-003 阶段 3：平行重构其余 7 个 skill（10 天）
+- TODO-004 Session State 持久化（2 周）
+- TODO-005 Skill 契约测试（2-3 周，依赖 #3）
+
 ## [0.3.1] - 2026-09-16
 
 ### 新增
