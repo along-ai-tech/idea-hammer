@@ -1,0 +1,14 @@
+[project]
+name = "idea-hammer-contracts"
+version = "0.1.0"
+description = "IdeaHammer skill 契约测试"
+requires-python = ">=3.10"
+dependencies = [
+    "pytest>=8.0",
+    "jsonschema>=4.20",
+    "pyyaml>=6.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"

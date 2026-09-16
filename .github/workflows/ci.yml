@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  contract-tests:
+    name: Skill 契约测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: 安装 uv
+        uses: astral-sh/setup-uv@v3
+      
+      - name: 装依赖
+        run: uv sync
+      
+      - name: 跑契约测试
+        run: uv run pytest tests/contract/ -v
+      
+      - name: 校验 skill 结构
+        run: python3 scripts/check_skill_structure.py --strict
+      
+      - name: 校验 session.json
+        run: |
+          python3 scripts/session.py validate
+          python3 scripts/session.py context > /dev/null
+  
+  example-tests:
+    name: Example 后端 + 前端测试
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: 后端测试
+        working-directory: examples/flashcards/backend
+        run: |
+          pip install uv
+          uv sync --extra dev
+          uv run pytest -v
+      
+      - name: 前端测试
+        working-directory: examples/flashcards/frontend
+        run: |
+          npm ci || npm install
+          npx vitest run
