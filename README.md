@@ -10,7 +10,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.2-blue.svg)](CHANGELOG.md)
-[![Main Repo](https://img.shields.io/badge/GitHub-wuzhilong0811-181717?logo=github)](https://github.com/wuzhilong0811/idea-hammer)
+[![Main Repo](https://img.shields.io/badge/GitHub-along-ai-tech-181717?logo=github)](https://github.com/along-ai-tech/idea-hammer)
 [![Mirror](https://img.shields.io/badge/Gitee-zhilong811-C71D23?logo=gitee)](https://gitee.com/zhilong811/idea-hammer)
 
 ---
@@ -72,7 +72,7 @@ IdeaHammer 把这些纪律**内化到 AI Agent 的执行流程里**——不靠�
 ## 快速开始
 
 ```bash
-git clone https://github.com/wuzhilong0811/idea-hammer.git
+git clone https://github.com/along-ai-tech/idea-hammer.git
 cd idea-hammer
 mv agents .agents && mv codex .codex   # 装为隐藏目录
 codex

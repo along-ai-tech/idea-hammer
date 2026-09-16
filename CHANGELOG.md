@@ -64,7 +64,7 @@
 ## [0.1.2] - 2026-09-11
 
 ### 变更
-- 主仓库迁移至 GitHub：https://github.com/wuzhilong0811/idea-hammer
+- 主仓库迁移至 GitHub：https://github.com/along-ai-tech/idea-hammer
 - Gitee 作为镜像仓库保留
 - README 同步：git clone URL 指向 GitHub，新增 GitHub/Gitee 双 badge
 - README 新增"快速预览"段：8 步流水线 ASCII 图 + 目录树速览

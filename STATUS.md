@@ -49,7 +49,7 @@
 
 ## 仓库
 
-- **主仓库**：https://github.com/wuzhilong0811/idea-hammer
+- **主仓库**：https://github.com/along-ai-tech/idea-hammer
 - **镜像**：https://gitee.com/zhilong811/idea-hammer
 - **License**：MIT
 - **作者署名**：wuzhilong
