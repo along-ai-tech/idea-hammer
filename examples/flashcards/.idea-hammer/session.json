@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "last_updated": "2026-09-11T11:17:00+08:00",
+  "current_project": "flashcards",
+  "current_phase": "Phase 5 / 5 完成（前端学习模式 UI）",
+  "current_task": null,
+  "key_decisions": [
+    {
+      "id": "F-001",
+      "summary": "本地闪卡应用（学习模式 SM-2 算法）",
+      "date": "2026-09-08"
+    },
+    {
+      "id": "F-002",
+      "summary": "FastAPI + SQLAlchemy 2.0 + Vue 3.5 + Element Plus",
+      "date": "2026-09-08"
+    },
+    {
+      "id": "F-003",
+      "summary": "前端 Vitest + 后端 pytest，56 测试全绿",
+      "date": "2026-09-11"
+    }
+  ],
+  "open_questions": [],
+  "user_preferences": {
+    "language": "zh-CN",
+    "tech_stack": "Python 3.11 + FastAPI + Vue 3.5 + Element Plus 2.8",
+    "testing": "pytest + Vitest"
+  },
+  "recent_projects": [],
+  "evolution_stats": null
+}

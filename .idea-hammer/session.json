@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "last_updated": "2026-09-16T19:39:34.152914+08:00",
+  "current_project": "idea-hammer",
+  "current_phase": "v0.4.0 P0-1 / 3",
+  "current_task": "测试 session.py 工具",
+  "key_decisions": [
+    {
+      "id": "D-001",
+      "summary": "IdeaHammer 品牌命名（Idea + Hammer = 锻造感）",
+      "date": "2026-09-08",
+      "tag": "naming"
+    },
+    {
+      "id": "D-002",
+      "summary": "项目正式名 IdeaHammer",
+      "date": "2026-09-08",
+      "tag": "naming"
+    },
+    {
+      "id": "D-003",
+      "summary": "example 技术栈：Python + Vue3 + Element Plus",
+      "date": "2026-09-08",
+      "tag": "tech-stack"
+    },
+    {
+      "id": "D-004",
+      "summary": "P0 改进优先级排序（拆 Skill / Session State / Skill 契约）",
+      "date": "2026-09-15",
+      "tag": "workflow"
+    },
+    {
+      "id": "D-005",
+      "summary": "8 步流水线 bug-fixer 算回路不算独立步",
+      "date": "2026-09-15",
+      "tag": "workflow"
+    },
+    {
+      "id": "D-006",
+      "summary": "README 30 秒扫视重写",
+      "date": "2026-09-16",
+      "tag": "doc"
+    },
+    {
+      "id": "D-007",
+      "summary": "AGENTS.md 按域拆分 6 个文件",
+      "date": "2026-09-16",
+      "tag": "doc"
+    },
+    {
+      "id": "D-008",
+      "summary": "hook 路径修复：codex/ → .codex/（4 个月盲区）",
+      "date": "2026-09-16",
+      "tag": "tooling"
+    }
+  ],
+  "open_questions": [],
+  "user_preferences": {
+    "language": "zh-CN",
+    "communication_style": "直白、不奉承、主动给方案",
+    "tech_stack": "Python + Vue3 + TypeScript",
+    "commit_style": "conventional (feat/fix/refactor/docs/test/chore)"
+  },
+  "recent_projects": [
+    {
+      "name": "idea-hammer",
+      "last_touched": "2026-09-16",
+      "current_phase": "v0.4.0 P0-1 / 3",
+      "last_decision_id": "D-008"
+    },
+    {
+      "name": "flashcards",
+      "last_touched": "2026-09-11",
+      "current_phase": "Phase 5 完成",
+      "last_decision_id": "D-003"
+    }
+  ],
+  "evolution_stats": {
+    "signals_drained_total": 0,
+    "last_evolution_run": "2026-09-16T17:00:00+08:00",
+    "proposals_pending": 0
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SessionState",
+  "description": "IdeaHammer Session State — 跨 session 持久化上下文，减少启动 token + 保留决策历史",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "last_updated"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "schema 版本号"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "上次更新时间（ISO 8601）"
+    },
+    "current_project": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "当前操作的项目名（如 flashcards）"
+    },
+    "current_phase": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "当前 Phase（如 Phase 3 / 5）"
+    },
+    "current_task": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "当前 Task 标识"
+    },
+    "key_decisions": {
+      "type": "array",
+      "description": "关键决策摘要（跨 session 保留）",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "summary"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "决策编号 D-NNN"
+          },
+          "summary": {
+            "type": "string",
+            "description": "一句话决策摘要"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "tag": {
+            "type": "string",
+            "description": "标签（如 naming / tooling / workflow）"
+          }
+        }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "description": "未决问题",
+      "items": {
+        "type": "string"
+      }
+    },
+    "user_preferences": {
+      "type": "object",
+      "description": "用户偏好",
+      "properties": {
+        "language": {
+          "type": "string",
+          "description": "交流语言"
+        },
+        "communication_style": {
+          "type": "string",
+          "description": "沟通风格"
+        },
+        "tech_stack": {
+          "type": "string",
+          "description": "技术栈偏好"
+        },
+        "commit_style": {
+          "type": "string",
+          "description": "commit message 风格"
+        }
+      }
+    },
+    "recent_projects": {
+      "type": "array",
+      "description": "最近操作过的项目",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "last_touched": {
+            "type": "string",
+            "format": "date"
+          },
+          "current_phase": {
+            "type": "string"
+          },
+          "last_decision_id": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "evolution_stats": {
+      "type": "object",
+      "description": "evolution-engine 状态",
+      "properties": {
+        "signals_drained_total": {
+          "type": "integer"
+        },
+        "last_evolution_run": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "proposals_pending": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -13,7 +13,7 @@
 - [TESTING.md](./TESTING.md) — TDD 铁律 + 四步走验证
 - [.codex/EVOLUTION.md](./.codex/EVOLUTION.md) — 自进化机制
 
-主 Agent 启动顺序：IDENTITY → WORKFLOW → SKILLS → SUBAGENTS → STATE-ROUTING → TESTING。EVOLUTION 由 SessionStart hook 触发。
+主 Agent 启动顺序：Session State → IDENTITY → WORKFLOW → SKILLS → SUBAGENTS → STATE-ROUTING → TESTING。EVOLUTION 由 SessionStart hook 触发。
 
 ---
 
@@ -24,6 +24,21 @@
     💡 输入 /skills 查看可用技能。想把目标交给自驱执行，用 goal-creator。
     现在，说说你想做什么？"
 
-    执行 [STATE-ROUTING.md]。SessionStart 的 check-evolution 提示有信号或建议时，把扫 signals、同步 spawn evolution-runner 消化、逐条问用户当作 session 启动第一件事先做掉，消化轻量尽快还给用户，别被首个请求带跑忘了；处理完再进用户的请求
+    执行 [SESSION-LOAD] → [STATE-ROUTING.md]。SessionStart 的 check-evolution 提示有信号或建议时，把扫 signals、同步 spawn evolution-runner 消化、逐条问用户当作 session 启动第一件事先做掉，消化轻量尽快还给用户，别被首个请求带跑忘了；处理完再进用户的请求
+
+[SESSION-LOAD]
+    启动第一步：读 `.idea-hammer/session.json` 精简版（用 `python3 scripts/session.py context`）。
+    - 存在 → 读精简版（约 1KB），保留"当前 Phase / Task / 最近 3 个决策 / 用户偏好"，按需再读 IDENTITY / WORKFLOW 等域文件
+    - 不存在 → 全量读域文件（按 IDENTITY → WORKFLOW → ... → TESTING 顺序）
+    - session.json 包含 key_decisions 数组 → 跨 session 决策摘要保留，不用每次从头推导
+    - session.json 包含 user_preferences → 用户偏好生效（语言 / 风格 / 技术栈 / commit 风格）
+
+    主 Agent 在以下关键节点后更新 session.json（用 `python3 scripts/session.py update`）：
+    - 关键决策后：追加到 key_decisions 数组
+    - Phase 推进时：更新 current_phase / current_task
+    - 关键约束发现时：追加到 open_questions 或清除
+    - evolution-engine 消化后：更新 evolution_stats
+
+    验收：相比全量读域文件，启动 token 节省 ≥ 30%（session.json 精简版 ≈ 1KB vs 域文件 ≈ 6-8KB）
 
 <!-- owner: product -->
