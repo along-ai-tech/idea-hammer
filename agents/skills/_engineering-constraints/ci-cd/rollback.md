@@ -2,7 +2,7 @@
 
 ## 三种发布模式
 
-### 1. Blue / Green（蓝绿）
+### 1. Blue / Green（蓝绿，blue/green deployment）
 
 ```yaml
 # 蓝 = 当前版本（流量 100%）
@@ -21,7 +21,7 @@ kubectl patch service my-app -p '{"spec":{"selector":{"version":"green"}}}'
 - 2 倍资源
 - DB migration 兼容
 
-### 2. Canary（金丝雀）
+### 2. Canary（金丝雀，canary deployment）
 
 ```yaml
 # 阶段 1：新版本 5% 流量

@@ -28,6 +28,10 @@
 ```yaml
 - name: Build
   run: mvn -B verify --fail-at-end
+
+# 前端必须 `tsc --noEmit` 零错误（TypeScript 严格类型检查）
+- name: TypeScript check
+  run: npx tsc --noEmit
 ```
 
 ### 5. 安全扫描
