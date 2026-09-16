@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EvolutionEffectStats",
+  "description": "proposal 落地后的效果追踪",
+  "type": "object",
+  "required": [
+    "metrics"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "proposal_acceptance_rate": {
+          "type": "number",
+          "description": "proposal 接受率（accepted / total）",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "signal_throughput": {
+          "type": "object",
+          "properties": {
+            "explicit_count": {
+              "type": "integer"
+            },
+            "implicit_count": {
+              "type": "integer"
+            },
+            "effect_count": {
+              "type": "integer"
+            }
+          }
+        },
+        "rule_churn": {
+          "type": "object",
+          "description": "规则增删统计",
+          "properties": {
+            "added": {
+              "type": "integer"
+            },
+            "retired": {
+              "type": "integer"
+            },
+            "net": {
+              "type": "integer"
+            }
+          }
+        },
+        "impact_metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "metric_name": {
+                "type": "string"
+              },
+              "before": {
+                "type": "number"
+              },
+              "after": {
+                "type": "number"
+              },
+              "improvement_pct": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

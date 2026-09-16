@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EvolutionSignal",
+  "description": "IdeaHammer Evolution 三层捕获信号 schema",
+  "type": "object",
+  "required": [
+    "id",
+    "type",
+    "layer",
+    "created_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "唯一 ID（UUID v4）"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "correction",
+        "bug_pattern",
+        "review_finding",
+        "effect_metric"
+      ],
+      "description": "信号类型"
+    },
+    "layer": {
+      "type": "string",
+      "enum": [
+        "explicit",
+        "implicit",
+        "effect"
+      ],
+      "description": "捕获层"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "prompt": {
+      "type": "string",
+      "description": "用户原话（explicit 层必填）"
+    },
+    "pattern": {
+      "type": "object",
+      "description": "重复模式（implicit 层）",
+      "properties": {
+        "occurrences": {
+          "type": "integer"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "first_seen": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "last_seen": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "metric": {
+      "type": "object",
+      "description": "效果指标（effect 层）",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value_before": {
+          "type": "number"
+        },
+        "value_after": {
+          "type": "number"
+        },
+        "improvement_pct": {
+          "type": "number"
+        }
+      }
+    },
+    "context": {
+      "type": "string",
+      "description": "上下文 / 出处"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

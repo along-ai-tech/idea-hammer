@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "metrics": {
+    "rule_churn": {
+      "added": 1,
+      "retired": 0,
+      "net": 1
+    },
+    "signal_throughput": {
+      "explicit_count": 1,
+      "implicit_count": 0,
+      "effect_count": 0
+    },
+    "impact_metrics": [
+      {
+        "metric_name": "契约测试通过率",
+        "before": 0.95,
+        "after": 1.0,
+        "improvement_pct": 5.26,
+        "recorded_at": "2026-09-16T21:53:45.621397+08:00"
+      }
+    ]
+  },
+  "last_updated": "2026-09-16T21:53:45.621422+08:00"
+}
