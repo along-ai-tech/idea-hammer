@@ -6,7 +6,7 @@
 
 ## 一句话状态
 
-**v0.3.0 路线图 3/4 已完成**。AGENTS.md 拆分 + README 优化 + 8 步流水线修正已落地；剩**知识归档 4 件套**进行中。下一步开 P0-1（拆 Skill 模板）。
+**v0.3.1 已发布**。知识归档 4 件套 + hook 路径 bug 修复全部完成。下一步进 v0.4.0 P0-1（拆 Skill 模板）。
 
 ---
 
@@ -14,10 +14,10 @@
 
 | 项 | 值 |
 |----|-----|
-| 当前 commit | `43b4f39` |
-| 已发布版本 | v0.3.0（README + AGENTS.md 拆分） |
-| 进行中 | v0.3.1（知识归档 4 件套） |
-| 下一步 | v0.4.0（P0 改进：拆 Skill / Session State / Skill 契约） |
+| 当前 commit | 待 commit 后填 |
+| 已发布版本 | v0.3.0（README + AGENTS.md 拆分）/ v0.3.1（知识归档 + hook 路径修复） |
+| 进行中 | v0.4.0 P0-1（拆 Skill 模板，阶段 1） |
+| 下一步 | 阶段 2：dev-builder 样板重构 |
 | 最近一次 push | 2026-09-16（双 remote 一致） |
 
 ---
@@ -28,8 +28,8 @@
 |------|------|------|
 | **v0.1 骨架** | ✅ 完成 | AGENTS.md + 8 skill + Hook + EVOLUTION + LICENSE |
 | **v0.2 example 跑通** | ✅ 完成 | flashcards Phase 1-5，56 测试全绿 |
-| **v0.3 框架升级** | 🚧 进行中 | README ✅ / AGENTS.md 拆分 ✅ / 知识归档（当前） |
-| **v0.4 P0 改进** | ⏳ 计划 | 拆 Skill / Session State / Skill 契约 |
+| **v0.3 框架升级** | ✅ 完成 | README 30 秒扫视 + AGENTS.md 拆分 + 知识归档 4 件套 + hook 路径修复 |
+| **v0.4 P0 改进** | 🚧 进行中 | TODO-003 拆 Skill 模板（阶段 1 即将开始） |
 | **v0.5 CI + 英文** | ⏳ 远期 | CI 自动化 + 英文 README |
 | **v1.0 稳定 API** | ⏳ 远期 | 锁定 skill API，向后兼容 |
 
@@ -67,27 +67,29 @@
 | D-005 | 8 步流水线 bug-fixer 算回路 | 2026-09-15 |
 | D-006 | README 30 秒扫视重写 | 2026-09-16 |
 | D-007 | AGENTS.md 按域拆分 | 2026-09-16 |
+| D-008 | hook 路径修复（codex/ → .codex/） | 2026-09-16 |
 
 ---
 
 ## 接下来做什么（按优先级）
 
-### 本周内（v0.3.1 收尾）
+### ✅ v0.3.1 已完成（tag v0.3.1 待打）
 
-- [x] 4 份归档（CHANGELOG / DECISIONS / TODO / STATUS）✅ 当前
-- [ ] commit + push 双 remote
-- [ ] 验证新人按本文件 + README + AGENTS.md 能否完整接手
+- [x] 4 份归档（CHANGELOG / DECISIONS / TODO / STATUS）✅
+- [x] 修复 hook 路径 bug（D-008，commit `8687f1c`）
+- [x] STATUS.md / DECISIONS.md / CHANGELOG.md 同步到 v0.3.1
+- [ ] tag v0.3.1 + push tag
 
-### 下周起（v0.4.0 开 P0-1）
+### 🚧 本周内（v0.4.0 P0-1 阶段 1）
 
-1. **TODO-003 拆 Skill 模板**（2-3 周）
-   - 先做 `_template/` + `check_skill_structure.sh` 脚手架
-   - 再用 dev-builder 做样板
-   - 最后推广其余 7 个
+1. **TODO-003 阶段 1**（1-2 天）：写 `agents/skills/_template/` 三层结构模板 + `scripts/check_skill_structure.sh`
+2. 验证阶段 1 → 阶段 2 用 dev-builder 做样板（3-4 天）
 
-2. **TODO-004 Session State 持久化**（2 周，可与 TODO-003 并行）
+### 📅 后续阶段
 
-3. **TODO-005 Skill 契约测试**（2-3 周，依赖 TODO-003）
+- **TODO-003 阶段 3**：平行重构其余 7 个 skill（10 天）
+- **TODO-004**：Session State 持久化（2 周，可与 #3 并行）
+- **TODO-005**：Skill 契约测试（2-3 周，依赖 #3 完成）
 
 ---
 

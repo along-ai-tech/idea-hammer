@@ -23,6 +23,10 @@
   - `STATUS.md` — 当前状态快照
 - 8 步流水线修正：拆 design-brief-builder 和 design-maker 为两个独立步骤（之前 README 误合并）
 
+
+### 修复
+- **修复 hook 路径失效（git mv `codex/` → `.codex/`）**：所有 hook command（`hooks.json` 6 处）和脚本内部引用（`hooks/*.sh` 4 处）从 v0.1.1 起都按 `.codex/` 写，但实际目录是 `codex/`（建目录时少打点号）。导致 5 类 hook 事件全部失效、`signals.jsonl` 永远不会被写入、自进化机制空转。`git mv codex/ → .codex/`，24 处引用全部对齐。验证：`bash .codex/hooks/detect-feedback-signal.sh` 能正常写入信号（commit `8687f1c`）。
+
 ## [0.3.0] - 2026-09-16
 
 ### 重构

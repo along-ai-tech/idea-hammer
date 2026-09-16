@@ -6,6 +6,27 @@
 
 ## 2026-09-16
 
+### D-008：hook 路径 bug 修复（`codex/` → `.codex/`）
+
+**背景**：v0.3.1 收尾时发现 v0.1.1 起 hook 路径就错了 —— `hooks.json` 里 6 处 command + `hooks/*.sh` 里 4 处引用都写 `.codex/`，但实际目录是 `codex/`（创建时少打点号）。导致 5 类 hook 事件全部失效、`signals.jsonl` 永远空、自进化机制一直空转。
+
+**候选**：
+- A. `git mv codex/ → .codex/`（改目录名）
+- B. 改 24 处文档/脚本引用为 `codex/`
+- C. 加 symlink 兼容两边
+
+**决定**：A 方案
+
+**理由**：
+- 24 处引用全部按 `.codex/` 写，文档也是 `.codex/`，改目录名零改动
+- `.codex/` 是 Codex app 约定（`CODEX_HOME`），符合惯例
+- C 方案会留下双路径歧义
+- 自进化机制从 v0.1.1 起从未工作过，4 个月盲区，是这次 v0.3.1 收尾关键发现
+
+**影响**：hook 体系首次真正生效；evolution signals 队列从空 → 真实采集。
+
+---
+
 ### D-007：AGENTS.md 按域拆分为 6 个域文件
 
 **背景**：原 AGENTS.md 162 行 12 章节单文件，维护性硬伤。
