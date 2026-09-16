@@ -86,9 +86,27 @@
 - [x] `scripts/check_skill_structure.py` 校验脚本（默认 + `--strict` 两档）
 - [x] 跑校验：11 skill（5 OK / 6 FAIL 均因 SKILL.md >50 行）
 
-### 🚧 下一步（阶段 2：dev-builder 样板重构，3-4 天）
+### ✅ v0.4.0 P0-1 阶段 2 完成（commit `c8c6ec5`）
 
-用 dev-builder（最大 135 行）做样板重构，把它的"第一性原则"抽到 principles/，"执行步骤"抽到 workflows/，"输入输出约定"抽到 contracts/，SKILL.md 瘦身到 ≤ 50 行。验证三层结构可行 + 知识保留率 ≥ 95%（diff 校验）。
+dev-builder 样板重构（135 → 33 行 SKILL.md + 15 个新文件）：
+
+- **SKILL.md 33 行**（frontmatter + 任务 + 依赖检测 + 使用方式 + 文件结构 + 引用）
+- **principles/ 8 个**：tdd-discipline / scope-and-modification / verification-evidence / reuse-and-design / code-style / external-and-real / doc-sync / quality-and-security
+- **workflows/ 5 个**：init-or-continue / init / task-loop / phase-verify / self-drive
+- **contracts/ 2 个**：input.schema.json / output.schema.json
+- 验收：check_skill_structure 默认 + strict 都过 / 47/50 关键短语保留（3 表述差异非丢失）/ 56 测试全绿
+
+### 🚧 下一步（阶段 3：平行重构其余 7 个 skill，10 天）
+
+按 dev-builder 样板模式重构：
+1. code-review (61 行) — TDD/Stage2 强相关
+2. bug-fixer (49 行) — 已 ≤ 50，只需加 principles/workflows
+3. dev-planner (57 行)
+4. product-spec-builder (109 行) — 最大
+5. design-brief-builder (86 行)
+6. design-maker (33 行) — 已 ≤ 50
+7. release-builder (50 行) — 已 ≤ 50
+8. goal-creator (52 行) / evolution-engine (40 行) / skill-builder (48 行) — 元 skill 是否重构待定
 
 ### 📅 后续阶段
 

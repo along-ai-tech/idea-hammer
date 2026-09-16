@@ -15,23 +15,29 @@
 
 ### 新增（TODO-003 阶段 1，2026-09-16）
 
-Skill 三层结构模板与校验脚本：
+Skill 三层结构模板与校验脚本（commit `3f253a0`）：
 
-- `agents/skills/_template/`（10 文件）：
-  - `README.md` — 三层结构总说明
-  - `SKILL.md`（31 行模板）— 仅 frontmatter + 引用列表
-  - `principles/README.md` + `_example.md` — 原则写法规范
-  - `workflows/README.md` + `_example.md` — 流程写法规范
-  - `contracts/README.md` + `_example.schema.json` — JSON Schema 写法
-  - `assets/README.md` — 可选静态资源目录
-- `scripts/check_skill_structure.py` — 校验脚本：
-  - 必备：SKILL.md 存在 + ≤ 50 行 + YAML frontmatter 合法
-  - 触发：contracts/*.json 是合法 JSON
-  - `--strict`：三层目录必须都存在
-  - 第一次跑：11 skill（5 OK / 6 FAIL 均因 SKILL.md > 50 行）
+- `agents/skills/_template/`（10 文件）：三层结构模板
+- `scripts/check_skill_structure.py`：校验脚本（默认 + `--strict` 两档）
+- 第一次跑：11 skill（5 OK / 6 FAIL 均因 SKILL.md > 50 行）
+
+### 重构（TODO-003 阶段 2，2026-09-16）
+
+dev-builder 样板重构（commit `c8c6ec5`，135 → 33 行 SKILL.md）：
+
+- `agents/skills/dev-builder/SKILL.md` — 33 行（≤ 50 ✅）
+- `agents/skills/dev-builder/principles/` — 8 主题：
+  - tdd-discipline / scope-and-modification / verification-evidence
+  - reuse-and-design / code-style / external-and-real
+  - doc-sync / quality-and-security
+- `agents/skills/dev-builder/workflows/` — 5 流程：
+  - workflow-init-or-continue / workflow-init / workflow-task-loop
+  - workflow-phase-verify / workflow-self-drive
+- `agents/skills/dev-builder/contracts/` — 2 schema：
+  - input.schema.json（启动参数）/ output.schema.json（产出物）
+- 验收：47/50 关键短语保留（3 表述差异非丢失，知识 100%）/ 56 测试全绿
 
 ### 计划
-- TODO-003 阶段 2：用 dev-builder 做样板重构（3-4 天）
 - TODO-003 阶段 3：平行重构其余 7 个 skill（10 天）
 - TODO-004 Session State 持久化（2 周）
 - TODO-005 Skill 契约测试（2-3 周，依赖 #3）

@@ -12,7 +12,7 @@
 
 **详细任务**：
 1. ✅ 阶段 1（commit `3f253a0`）：写 `agents/skills/_template/` 模板 + `scripts/check_skill_structure.py` 校验脚本（实际 .py 而非 .sh，bash 3.2 处理 UTF-8 字节有 bug）
-2. 阶段 2：选 dev-builder 做样板重构（3-4 天）
+2. ✅ 阶段 2（commit `c8c6ec5`）：dev-builder 拆三层结构样板（135 → 33 行 + 15 文件）
 3. 阶段 3：平行重构其余 7 个 skill（10 天）
 4. 阶段 4：收尾验收 + commit（2-3 天）
 
