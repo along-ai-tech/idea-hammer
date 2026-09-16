@@ -33,6 +33,12 @@ description: 当用户说要审查代码、检查质量、验证功能是否完�
 
     Stage 2，做好了没有：
     - 代码质量：命名规范、无 any、文件不超 300 行、单一职责、无重复、错误处理
+- **工程级约束符合度（必查）**：
+    - 对照 `_engineering-constraints/anti-reinvent/` 检查是否造轮子（连接池 / 日期 / 集合 / HTTP / JSON / 线程池 / 分布式锁 / ID / 缓存 / 配置）
+    - 库选择是否合规（Java 用 Hutool 不用自造工具 / Python 用 pydantic 不用手写校验 / 锁用 Redisson 不用 SETNX）
+    - 安全基线：硬编码密钥 / 字符串拼 SQL / MD5 存密码 / Fastjson 1.x 等反模式
+    - 性能：N+1 / SELECT * / 无 LIMIT / 深分页 / 无超时
+    - 错误处理：吞异常 / 不带 stacktrace / 把内部异常返给前端
     - 测试真实性 + TDD 合规：
         测试是否先写：git blame 抽样检查，测试 commit 时间早于或同于生产代码；"测试后挂"的不算 TDD。
         预期值是否独立推导：手算/字面量/表驱动，不用被测代码生成（mirror assertion 揪出）。

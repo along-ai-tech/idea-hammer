@@ -28,6 +28,6 @@ description: 当 DEV-PLAN.md 就绪、用户说要开始写代码或继续开发
     └── contracts/                     # 输入输出 schema（2 个）
 
 [引用]
-    原则：principles/tdd-discipline.md（必读）、principles/scope-and-modification.md（必读）、principles/verification-evidence.md（必读）、principles/reuse-and-design.md、principles/code-style.md、principles/external-and-real.md、principles/doc-sync.md、principles/quality-and-security.md
+    原则：principles/engineering-constraints.md（必读，指向 _engineering-constraints/ 13 主题）、principles/tdd-discipline.md（必读）、principles/scope-and-modification.md（必读）、principles/verification-evidence.md（必读）、principles/reuse-and-design.md、principles/code-style.md、principles/external-and-real.md、principles/doc-sync.md、principles/quality-and-security.md
     流程：workflows/workflow-init-or-continue.md（启动路由）、workflows/workflow-init.md、workflows/workflow-task-loop.md、workflows/workflow-phase-verify.md、workflows/workflow-self-drive.md
     契约：contracts/input.schema.json、contracts/output.schema.json
