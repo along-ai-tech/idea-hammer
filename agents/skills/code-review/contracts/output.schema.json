@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CodeReviewOutput",
+  "description": "code-review 输出报告",
+  "type": "object",
+  "required": ["stage_results", "findings", "summary"],
+  "properties": {
+    "stage_results": {
+      "type": "object",
+      "required": ["stage1", "stage2"],
+      "properties": {
+        "stage1": {
+          "type": "object",
+          "properties": {
+            "passed": {"type": "boolean"},
+            "completeness": {
+              "type": "object",
+              "properties": {
+                "complete": {"type": "array", "items": {"type": "string"}},
+                "partial": {"type": "array", "items": {"type": "string"}},
+                "missing": {"type": "array", "items": {"type": "string"}}
+              }
+            },
+            "dead_links": {
+              "type": "array",
+              "description": "死引导（指向不存在功能的 UI）",
+              "items": {"type": "string"}
+            },
+            "ui_consistency": {
+              "type": "string",
+              "enum": ["match", "minor_diff", "major_diff", "n/a"]
+            }
+          }
+        },
+        "stage2": {
+          "type": "object",
+          "properties": {
+            "passed": {"type": "boolean"},
+            "engineering_violations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "rule": {"type": "string"},
+                  "file": {"type": "string"},
+                  "line": {"type": "integer"},
+                  "description": {"type": "string"}
+                }
+              }
+            },
+            "tdd_violations": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "security_issues": {
+              "type": "array",
+              "items": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["priority", "category", "description", "file", "line"],
+        "properties": {
+          "priority": {"type": "string", "enum": ["HIGH", "MEDIUM", "LOW"]},
+          "category": {"type": "string"},
+          "description": {"type": "string"},
+          "file": {"type": "string"},
+          "line": {"type": "integer"},
+          "evidence": {"type": "string"}
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "passed": {"type": "boolean"},
+        "stage_executed": {"type": "array", "items": {"type": "integer"}},
+        "high_count": {"type": "integer"},
+        "medium_count": {"type": "integer"},
+        "low_count": {"type": "integer"}
+      }
+    }
+  },
+  "additionalProperties": false
+}

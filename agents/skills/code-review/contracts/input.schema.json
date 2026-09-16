@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CodeReviewInput",
+  "description": "code-review 启动参数",
+  "type": "object",
+  "required": ["product_spec_path", "code_paths"],
+  "properties": {
+    "product_spec_path": {"type": "string"},
+    "design_brief_path": {"type": "string"},
+    "dev_plan_path": {"type": "string"},
+    "code_paths": {
+      "type": "array",
+      "description": "要审查的代码路径（绝对或相对项目根）",
+      "minItems": 1,
+      "items": {"type": "string"}
+    },
+    "current_phase": {"type": "integer", "minimum": 1},
+    "stages": {
+      "type": "array",
+      "description": "要跑的阶段（默认 [1, 2]）",
+      "items": {"type": "integer", "enum": [1, 2]},
+      "default": [1, 2]
+    }
+  },
+  "additionalProperties": false
+}
