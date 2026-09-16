@@ -1,0 +1,185 @@
+{
+  "name": "idea-hammer-default",
+  "version": "0.4.0",
+  "entry": "spec",
+  "state_schema": {
+    "type": "object",
+    "properties": {
+      "user_intent": {
+        "type": "string"
+      },
+      "product_spec_path": {
+        "type": "string"
+      },
+      "design_brief_path": {
+        "type": "string"
+      },
+      "dev_plan_path": {
+        "type": "string"
+      },
+      "code_changes": {
+        "type": "array"
+      },
+      "review_report": {
+        "type": "object"
+      },
+      "release_artifact": {
+        "type": "string"
+      },
+      "needs_design": {
+        "type": "boolean",
+        "default": false
+      },
+      "is_spike_only": {
+        "type": "boolean",
+        "default": false
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": "spec",
+      "skill": "product-spec-builder",
+      "mode": "0-1",
+      "inputs": {
+        "user_intent": "state.user_intent"
+      },
+      "outputs": {
+        "product_spec_path": "state.product_spec_path"
+      }
+    },
+    {
+      "id": "spec-iterate",
+      "skill": "product-spec-builder",
+      "mode": "iterate",
+      "inputs": {
+        "product_spec_path": "state.product_spec_path"
+      }
+    },
+    {
+      "id": "design-brief",
+      "skill": "design-brief-builder",
+      "mode": "0-1",
+      "inputs": {
+        "product_spec_path": "state.product_spec_path"
+      },
+      "outputs": {
+        "design_brief_path": "state.design_brief_path"
+      },
+      "parallel": true
+    },
+    {
+      "id": "dev-plan",
+      "skill": "dev-planner",
+      "mode": "generate",
+      "inputs": {
+        "product_spec_path": "state.product_spec_path"
+      },
+      "outputs": {
+        "dev_plan_path": "state.dev_plan_path"
+      },
+      "parallel": true
+    },
+    {
+      "id": "tech-spike",
+      "skill": "dev-builder",
+      "spike": true,
+      "inputs": {
+        "dev_plan_path": "state.dev_plan_path"
+      }
+    },
+    {
+      "id": "build",
+      "skill": "dev-builder",
+      "mode": "continue",
+      "inputs": {
+        "dev_plan_path": "state.dev_plan_path",
+        "product_spec_path": "state.product_spec_path",
+        "design_brief_path": "state.design_brief_path"
+      },
+      "outputs": {
+        "code_changes": "state.code_changes"
+      }
+    },
+    {
+      "id": "review",
+      "skill": "code-review",
+      "inputs": {
+        "code_paths": "state.code_changes",
+        "product_spec_path": "state.product_spec_path"
+      },
+      "outputs": {
+        "review_report": "state.review_report"
+      }
+    },
+    {
+      "id": "bug-fix",
+      "skill": "bug-fixer",
+      "inputs": {
+        "review_report": "state.review_report"
+      },
+      "outputs": {
+        "code_changes": "state.code_changes"
+      },
+      "max_retries": 3
+    },
+    {
+      "id": "release",
+      "skill": "release-builder",
+      "inputs": {
+        "code_changes": "state.code_changes"
+      },
+      "outputs": {
+        "release_artifact": "state.release_artifact"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "spec",
+      "to": "design-brief"
+    },
+    {
+      "from": "spec",
+      "to": "dev-plan"
+    },
+    {
+      "from": "design-brief",
+      "to": "tech-spike",
+      "condition": "state.get('product_spec_path') and 'unknown_tech' in str(state.get('product_spec_path'))"
+    },
+    {
+      "from": "design-brief",
+      "to": "build"
+    },
+    {
+      "from": "dev-plan",
+      "to": "build"
+    },
+    {
+      "from": "tech-spike",
+      "to": "build"
+    },
+    {
+      "from": "build",
+      "to": "review"
+    },
+    {
+      "from": "review",
+      "to": "bug-fix",
+      "condition": "state.get('review_report', {}).get('stage_results', {}).get('stage1', {}).get('passed') == False or state.get('review_report', {}).get('stage_results', {}).get('stage2', {}).get('passed') == False"
+    },
+    {
+      "from": "review",
+      "to": "release"
+    },
+    {
+      "from": "bug-fix",
+      "to": "review",
+      "loop": true
+    }
+  ],
+  "terminal": [
+    "release"
+  ]
+}
