@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DevPlannerOutput",
+  "description": "DEV-PLAN.md 结构化输出",
+  "type": "object",
+  "required": ["phases", "tech_stack"],
+  "properties": {
+    "tech_stack": {
+      "type": "object",
+      "description": "技术栈最终选型",
+      "properties": {
+        "language": {"type": "string"},
+        "framework": {"type": "string"},
+        "ui_library": {"type": "string"},
+        "database": {"type": "string"},
+        "package_manager": {"type": "string"},
+        "deploy_target": {"type": "string"}
+      }
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["number", "name", "deliverables", "key_files"],
+        "properties": {
+          "number": {"type": "integer", "minimum": 1},
+          "name": {"type": "string", "minLength": 3},
+          "deliverables": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 5}
+          },
+          "key_files": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string"}
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {"type": "integer"},
+            "description": "依赖的 Phase 编号"
+          },
+          "verification": {"type": "string"},
+          "risks": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
