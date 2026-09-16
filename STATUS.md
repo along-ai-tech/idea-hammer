@@ -78,7 +78,7 @@
 - [x] 4 份归档（CHANGELOG / DECISIONS / TODO / STATUS）✅
 - [x] 修复 hook 路径 bug（D-008，commit `8687f1c`）
 - [x] STATUS.md / DECISIONS.md / CHANGELOG.md 同步到 v0.3.1
-- [ ] tag v0.3.1 + push tag
+- [x] tag v0.3.1 推送双 remote ✅
 
 ### 🚧 本周内（v0.4.0 P0-1 阶段 1）
 
