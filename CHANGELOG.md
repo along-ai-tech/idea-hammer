@@ -9,6 +9,44 @@
 - v0.4.0：拆 Skill 模板（三层结构）+ Session State 持久化 + Skill 契约测试
 - DECISIONS.md / TODO.md / STATUS.md 在 v0.3.1 补全（见 v0.3.1 变更）
 
+## [0.6.0-dev]
+
+最新开发分支。含 TODO-401 代码简洁之道。
+
+### 新增（TODO-401 代码简洁之道 10 条原则，commit `94fffe7`）
+
+**simplification/ 主题**（10 原则 + README，887 行）：
+1. single-responsibility — SRP
+2. yagni — 不为假想未来写代码
+3. abstraction-timing — Rule of Three
+4. file-and-function-size — 阈值（≤300/50/10/3/4）
+5. naming-is-documentation — 命名即文档
+6. no-comments-by-default — 注释 why 不解释 what
+7. dead-code-deletion — 删 dead code
+8. **dependency-minimalism** ⭐ — 优先 stdlib（AI 特有）
+9. **pure-functions** ⭐ — 副作用隔离（AI 特有）
+10. **idempotency** ⭐ — 重复执行安全（AI 特有）
+
+README 含「AI 写代码特有的反模式」段（10 类反模式）。
+
+**自动化校验**：`scripts/check_simplicity.py`（264 行）
+- 文件 ≤ 300 / 函数 ≤ 50 / 圈复杂度 ≤ 10 / 嵌套 ≤ 3 / 参数 ≤ 4 / import ≤ 30
+- dead code / 无意义命名 / 装饰器套娃 / TODO 残留检测
+
+**接入主 skill**：
+- dev-builder/principles/code-style.md 引用 simplification/
+- code-review/principles/stage2-checklist.md 加「代码简洁性」10 项必查
+
+**重构框架代码（验证工具能 catch 真问题）**：
+- orchestrator.py 拆 validate_graph + run（4 个函数）
+- check_skill_structure.py 拆 main + 删 unused import
+- intent_classifier.py 删 unused import
+- check_simplicity.py 自身也符合规则（元一致性）
+
+**验收**：
+- 156 契约测试全绿（138 + 18 simplification）
+- scripts/ 目录 100% 通过 simplification 校验
+
 ## [0.4.0-dev]
 
 最新开发分支。P0 全部完成。
