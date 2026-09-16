@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DesignBriefOutput",
+  "description": "Design-Brief.md 结构化输出",
+  "type": "object",
+  "required": ["product_form", "target_audience", "design_axes", "references"],
+  "properties": {
+    "product_form": {
+      "type": "string",
+      "enum": ["界面型", "终端型", "对话式 Agent", "嵌入式扩展"],
+      "description": "产品形态（决定设计本体和可用视觉轴）"
+    },
+    "target_audience": {
+      "type": "string",
+      "description": "目标用户画像"
+    },
+    "personality": {
+      "type": "string",
+      "description": "品牌人格（生活类比）"
+    },
+    "design_axes": {
+      "type": "object",
+      "description": "设计五轴决策",
+      "properties": {
+        "density": {"type": "string"},
+        "color_temperature": {"type": "string"},
+        "formality": {"type": "string"},
+        "theme": {"type": "string", "enum": ["dark", "light"]},
+        "typography": {"type": "string"}
+      }
+    },
+    "references": {
+      "type": "object",
+      "properties": {
+        "anchors": {"type": "array", "items": {"type": "string"}, "description": "正面参考产品"},
+        "anti_references": {"type": "array", "items": {"type": "string"}, "description": "反面参考"}
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "description": "具体设计 token（间距/颜色/字号/圆角/阴影）",
+      "additionalProperties": true
+    },
+    "exclusions": {"type": "array", "items": {"type": "string"}, "description": "明确不要的元素"}
+  },
+  "additionalProperties": false
+}

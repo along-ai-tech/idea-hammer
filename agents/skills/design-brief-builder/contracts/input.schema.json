@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DesignBriefBuilderInput",
+  "description": "design-brief-builder 启动参数",
+  "type": "object",
+  "required": ["mode", "product_spec_path"],
+  "properties": {
+    "mode": {"type": "string", "enum": ["0-1", "iterate"]},
+    "product_spec_path": {"type": "string"},
+    "design_brief_path": {"type": "string", "description": "Design-Brief.md 路径（iterate 模式必填）"},
+    "design_tool_mcp": {"type": "string", "description": "设计工具 MCP（如 Figma）"}
+  },
+  "additionalProperties": false
+}
