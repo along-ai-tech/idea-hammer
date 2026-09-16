@@ -14,8 +14,8 @@
 
 | 项 | 值 |
 |----|-----|
-| 当前 commit | 待 commit 后填 |
-| 已发布版本 | v0.3.0（README + AGENTS.md 拆分）/ v0.3.1（知识归档 + hook 路径修复） |
+| 当前 tag | **v0.3.1**（fix `8687f1c` + docs `711a053`） |
+| 已发布版本 | v0.3.0（README + AGENTS.md 拆分）/ **v0.3.1（知识归档 + hook 路径修复）** |
 | 进行中 | v0.4.0 P0-1（拆 Skill 模板，阶段 1） |
 | 下一步 | 阶段 2：dev-builder 样板重构 |
 | 最近一次 push | 2026-09-16（双 remote 一致） |
