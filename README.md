@@ -4,12 +4,12 @@
 
 **一个 AI 主导的产研全流程协同框架**——把产品经理的纪律（反模糊、Spec 驱动）和研发的工程化（TDD、review、release、**工业级编码约束**）合成一条端到端流水线。
 
-| 11 | 188 | 1 | **70** | MIT |
+| 11 | 212 | 1 | **81** | MIT |
 |---|---|---|---|---|
-| skill 模块 | 测试通过 | 端到端 demo | 工程级约束 | 开源协议 |
+| skill 模块 | 测试通过 | 端到端 demo | 工程级约束（含 simplification/ 10 条）| 开源协议 |
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.4.0--dev-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.6.0--dev-blue.svg)](CHANGELOG.md)
 [![Main Repo](https://img.shields.io/badge/GitHub-along-ai-tech-181717?logo=github)](https://github.com/along-ai-tech/idea-hammer)
 [![Mirror](https://img.shields.io/badge/Gitee-zhilong811-C71D23?logo=gitee)](https://gitee.com/zhilong811/idea-hammer)
 
@@ -73,7 +73,16 @@
 - 性能反模式 → N+1 查询、`SELECT *`、深分页、无超时
 - 安全漏洞 → MD5 存密码、Fastjson 1.x、`dangerouslySetInnerHTML` 不脱敏
 
-**工程级约束把 AI 写代码的"反面教材"全列出来**——13 主题 / 70 文件 / 6440 行具体规则，dev-builder 启动必读，code-review Stage 2 必查。
+**工程级约束把 AI 写代码的"反面教材"全列出来**——14 主题 / 81 文件 / 7300+ 行具体规则，dev-builder 启动必读，code-review Stage 2 必查。
+
+**自动化校验**：`scripts/check_simplicity.py`（270 行）按 10 条原则量化校验：
+- 文件 ≤ 300 行 / 函数 ≤ 50 行 / 圈复杂度 ≤ 10 / 嵌套 ≤ 3 层 / 参数 ≤ 4 个
+- 检测 dead code / 无意义命名 / 装饰器套娃 / TODO 残留
+
+AI 写代码的**3 大特有补充**：
+- **依赖最小化**：每个 dep 是债务，优先 stdlib（AI 倾向"装包解决 5 行问题"）
+- **副作用隔离**：纯函数优先，副作用集中到边界（契约测试可写性靠这个）
+- **幂等性**：脚本 / hook 反复执行结果相同（不重复追加 / 误删）
 
 ---
 
@@ -102,7 +111,8 @@ codex
 | [agents/skills/_engineering-constraints/](./agents/skills/_engineering-constraints/) | **13 主题工程级约束**（coding-style / ecosystem-matrix / anti-reinvent / performance / security / concurrency / api-design / observability / ci-cd / error-handling / database / dependency-mgmt / i18n-a11y） |
 | [examples/flashcards/](./examples/flashcards/) | 端到端 demo：本地闪卡应用（Python + Vue3 + Element Plus，已跑通 Phase 1-5） |
 | [schemas/session.schema.json](./schemas/session.schema.json) | Session State schema（跨 session 持久化上下文） |
-| [tests/contract/](./tests/contract/) | **132 个 skill 契约测试**（TDD 纪律 / 调用规则 / 错误处理） |
+| [tests/contract/](./tests/contract/) | **156 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则）|
+| [scripts/check_simplicity.py](./scripts/check_simplicity.py) | **代码简洁自动校验**（文件/函数/圈复杂度阈值 + dead code / 命名）|
 | [CHANGELOG.md](./CHANGELOG.md) | 变更记录 |
 | [.codex/](./.codex/) | Hook 门禁 + 子 Agent + 自进化机制 |
 
@@ -147,9 +157,10 @@ dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按�
 - ✅ **v0.1** — 8 skill 骨架 + Hook 门禁 + 自进化机制
 - ✅ **v0.2** — 端到端 demo 跑通（example/flashcards Phase 1-5：CRUD + SM-2 + 学习模式 UI，56 测试全绿）
 - ✅ **v0.3** — 框架升级：拆 AGENTS.md（按域拆分）+ 拆 Skill 模板（三层结构）+ Session State 持久化
-- ✅ **v0.4** — **工程级约束体系**（13 主题 / 70 文件 / 6440 行）+ **Skill 契约测试**（132 测试 + CI 卡门禁）+ 工程约束纳入 README
-- ⏳ **v0.5** — 流水线改路由图（spike / refine / 并发）+ Skill 触发改为意图分类
-- ⏳ **v1.0** — 稳定 API，向后兼容承诺
+- ✅ **v0.4** — 工程级约束体系（13 主题）+ Skill 契约测试（132）+ 工程约束纳入 README
+- ✅ **v0.5** — P1 全部完成（路由图 + 意图分类 + Hook v2 + Evolution 三层）
+- ✅ **v0.6** — **代码简洁之道 10 条原则**（simplification/ 11 文件 / 887 行）+ `check_simplicity.py` 自动化校验 + 框架代码以身作则重构
+- ⏳ **v1.0** — TODO-201 / TODO-202 / TODO-203 / TODO-301（API 稳定化 + 英文 README + CI 补完 + Sub-Agent dag）
 
 ---
 
@@ -159,4 +170,4 @@ dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按�
 
 ## 致谢
 
-方法论受 [superpowers](https://github.com/obra/superpowers)（TDD + systematic-debugging）和 [GitHub Spec Kit](https://github.com/github/spec-kit)（SDD 三段式）启发。工程级约束覆盖的阿里 Java 手册 / PEP8 / Airbnb TS Style / OWASP Top 10 / Effective Go 等是开放共享的工业标准。
+方法论受 [superpowers](https://github.com/obra/superpowers)（TDD + systematic-debugging）和 [GitHub Spec Kit](https://github.com/github/spec-kit)（SDD 三段式）启发。工程级约束覆盖的阿里 Java 手册 / PEP8 / Airbnb TS Style / OWASP Top 10 / Effective Go 等是开放共享的工业标准。simplification/ 10 条原则来自工程共识综合（Robert C. Martin《Clean Code》/ Kent Beck《XP Explained》/ Martin Fowler《Refactoring》/ Boswell & Foucher《The Art of Readable Code》/ Sandi Metz）。
