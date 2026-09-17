@@ -28,16 +28,14 @@ def load_graph(path):
         return json.load(f)
 
 
-def validate_graph(graph):
-    """基本校验：节点存在、entry 存在、edges from/to 都存在、无环。"""
+def _validate_nodes_exist(graph):
+    """校验所有节点和 entry 存在，edge from/to 都引用存在的节点。"""
     errors = []
     node_ids = {n["id"] for n in graph.get("nodes", [])}
-
     if "entry" not in graph:
         errors.append("缺 entry 节点")
     elif graph["entry"] not in node_ids:
         errors.append(f"entry 节点 '{graph['entry']}' 不存在")
-
     for edge in graph.get("edges", []):
         if edge["from"] not in node_ids:
             errors.append(f"edge from '{edge['from']}' 不存在")
@@ -45,44 +43,48 @@ def validate_graph(graph):
         for t in targets:
             if t not in node_ids:
                 errors.append(f"edge to '{t}' 不存在")
+    return errors
 
-    # 检测环（loop=true 的边允许）
+
+def _detect_cycle(graph):
+    """检测环（loop=true 的边允许）。返回 (是否环, 错误信息)。"""
     in_degree = defaultdict(int)
     adj = defaultdict(list)
     for e in graph.get("edges", []):
         if e.get("loop"):
-            continue  # 回路边不参与环检测
-        in_degree[e["from"]] += 0
+            continue
         targets = e["to"] if isinstance(e["to"], list) else [e["to"]]
         for t in targets:
             adj[e["from"]].append(t)
             in_degree[t] += 1
-
-    queue = deque([n for n in node_ids if in_degree[n] == 0])
-    visited = 0
+    queue = deque([n for n in adj if in_degree[n] == 0])
+    visited = sum(1 for _ in queue)
     while queue:
         n = queue.popleft()
-        visited += 1
         for t in adj[n]:
             in_degree[t] -= 1
             if in_degree[t] == 0:
                 queue.append(t)
-    if visited != len(node_ids):
-        # 检查是否只是因为 loop 边被跳过
+                visited += 1
+    return visited != len(adj), "路由图存在环"
+
+
+def validate_graph(graph):
+    """校验节点存在 + 检测环。"""
+    errors = _validate_nodes_exist(graph)
+    has_cycle, cycle_err = _detect_cycle(graph)
+    if has_cycle:
+        # 排除 loop=true 的边后再测一次
         loop_edges = [e for e in graph.get("edges", []) if e.get("loop")]
         if loop_edges:
-            # 用回溯方式：去掉 loop 边后跑拓扑，如果全访问到就 OK
             saved = graph["edges"]
             graph["edges"] = [e for e in saved if not e.get("loop")]
-            err2 = validate_graph(graph)
+            still_has_cycle, _ = _detect_cycle(graph)
             graph["edges"] = saved
-            if not err2:
-                pass  # 去掉 loop 后无环，路由图合法
-            else:
-                errors.append(f"路由图存在环（loop 边之外的环）")
+            if still_has_cycle:
+                errors.append(f"{cycle_err}（loop 边之外的环）")
         else:
-            errors.append("路由图存在环")
-
+            errors.append(cycle_err)
     return errors
 
 
@@ -140,8 +142,41 @@ def find_next_nodes(graph, current_id, state):
     return [n for n, _ in next_nodes]
 
 
+def _resolve_inputs(node, state):
+    """从 state 解析节点 inputs。"""
+    resolved = {}
+    for key, path_str in (node.get("inputs") or {}).items():
+        if path_str.startswith("state."):
+            resolved[key] = state.get(path_str[len("state."):])
+    return resolved
+
+
+def _execute_node(node, resolved_inputs, dry_run, state):
+    """执行单个节点（dry_run 只 print，实际跑模拟 outputs）。"""
+    mode = node.get("mode", "default")
+    tag = "dry-run" if dry_run else "run"
+    print(f"[{tag}] {node['skill']} (mode={mode}) inputs={list(resolved_inputs.keys())}")
+    if not dry_run and not node.get("spike"):
+        for state_key in (node.get("outputs") or {}).keys():
+            state[state_key] = f"<from {node['skill']}>"
+
+
+def _next_step(graph, current, state):
+    """决定下一步：检查 terminal / 无出边 / 下一节点。"""
+    if current in graph.get("terminal", []):
+        print(f"[done] 到达终止节点 {current}")
+        return None
+    next_nodes = find_next_nodes(graph, current, state)
+    if not next_nodes:
+        print(f"[done] {current} 无出边")
+        return None
+    if len(next_nodes) > 1 and graph["nodes"][[n["id"] for n in graph["nodes"]].index(current)].get("parallel"):
+        print(f"[parallel] 下一节点: {next_nodes}")
+    return next_nodes[0]
+
+
 def run(graph, initial_state, dry_run=False):
-    """按路由图执行 skill 调用。dry_run 模式只走图不实际调 skill。"""
+    """按路由图执行 skill 调用。"""
     state = dict(initial_state)
     current = graph["entry"]
     visited = set()
@@ -155,40 +190,9 @@ def run(graph, initial_state, dry_run=False):
         path.append(current)
 
         node = next(n for n in graph["nodes"] if n["id"] == current)
-
-        # 解析 inputs
-        resolved_inputs = {}
-        for key, path_str in (node.get("inputs") or {}).items():
-            # path_str 如 "state.product_spec_path"
-            if path_str.startswith("state."):
-                resolved_inputs[key] = state.get(path_str[len("state."):])
-
-        # 执行节点
-        if dry_run:
-            print(f"[dry-run] {node['skill']} (mode={node.get('mode', 'default')}) inputs={list(resolved_inputs.keys())}")
-        else:
-            print(f"[run] {node['skill']} (mode={node.get('mode', 'default')})")
-
-        # 模拟 outputs（dry_run 不实际执行）
-        if not dry_run and not node.get("spike"):
-            for state_key, path_str in (node.get("outputs") or {}).items():
-                # 实际执行时会更新 state[state_key]
-                state[state_key] = f"<from {node['skill']}>"
-
-        # 找下一节点
-        if current in graph.get("terminal", []):
-            print(f"[done] 到达终止节点 {current}")
-            break
-        next_nodes = find_next_nodes(graph, current, state)
-        if not next_nodes:
-            print(f"[done] {current} 无出边")
-            break
-
-        # 并发节点同时跑（实际 orchestrator 会并行调度）
-        if len(next_nodes) > 1 and node.get("parallel"):
-            print(f"[parallel] 下一节点: {next_nodes}")
-
-        current = next_nodes[0] if next_nodes else None
+        resolved_inputs = _resolve_inputs(node, state)
+        _execute_node(node, resolved_inputs, dry_run, state)
+        current = _next_step(graph, current, state)
 
     return state, path
 

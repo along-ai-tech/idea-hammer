@@ -24,7 +24,6 @@ check_skill_structure.py — 校验 IdeaHammer skill 结构
 """
 
 import sys
-import os
 import json
 import re
 from pathlib import Path
@@ -114,6 +113,57 @@ def check_skill(skill_dir: Path):
     return errors, warns
 
 
+def _extras_str(skill_dir):
+    """生成 PWC 三层标记。"""
+    extras = ""
+    if (skill_dir / "principles").is_dir() and any((skill_dir / "principles").iterdir()):
+        extras += "P"
+    if (skill_dir / "workflows").is_dir() and any((skill_dir / "workflows").iterdir()):
+        extras += "W"
+    if (skill_dir / "contracts").is_dir() and any((skill_dir / "contracts").iterdir()):
+        extras += "C"
+    return f" [{extras}]" if extras else ""
+
+
+def _print_template(skill_dir):
+    """打印 _template 目录结果。"""
+    lines = len((skill_dir / "SKILL.md").read_text(encoding="utf-8").splitlines())
+    print(f"[TEMPLATE] {skill_dir.name} ({lines} 行){_extras_str(skill_dir)}")
+
+
+def _print_skill_result(skill_dir, errors, warns):
+    """打印单个 skill 的校验结果。"""
+    for w in warns:
+        print(w)
+    if errors:
+        for e in errors:
+            print(e)
+        return len(errors)
+    lines = len((skill_dir / "SKILL.md").read_text(encoding="utf-8").splitlines())
+    print(f"[OK   ] {skill_dir.name} ({lines} 行){_extras_str(skill_dir)}")
+    return 0
+
+
+def _print_summary(checked, total_errors):
+    """打印最终 summary + 设置 exit code。"""
+    print("---")
+    print(f"📊 检查 {checked} 个 skill，错误 {total_errors} 个")
+    if total_errors == 0:
+        print("✅ 全部 OK")
+    else:
+        print("❌ 有失败项，需修复")
+
+
+def _iter_skill_dirs(root):
+    """迭代所有 skill 目录（排除无 SKILL.md 的目录）。"""
+    for skill_dir in sorted(root.iterdir()):
+        if not skill_dir.is_dir():
+            continue
+        if not (skill_dir / "SKILL.md").exists():
+            continue
+        yield skill_dir
+
+
 def main():
     parse_args()
     root = Path(SKILL_ROOT)
@@ -126,57 +176,17 @@ def main():
     print("---")
 
     checked = 0
-    template_count = 0
     total_errors = 0
-    for skill_dir in sorted(root.iterdir()):
-        if not skill_dir.is_dir():
-            continue
-        name = skill_dir.name
-        # 排除规则：目录里没有 SKILL.md 的不算 skill
-        # （避免 _template/ 的子目录被误判为 skill）
-        if not (skill_dir / "SKILL.md").exists():
-            continue
-        if name == "_template":
-            template_count += 1
-            # 模板不计入 skill 数，但仍打印
-            lines = len((skill_dir / "SKILL.md").read_text(encoding="utf-8").splitlines())
-            extras = ""
-            if (skill_dir / "principles").is_dir(): extras += "P"
-            if (skill_dir / "workflows").is_dir(): extras += "W"
-            if (skill_dir / "contracts").is_dir(): extras += "C"
-            extra_str = f" [{extras}]" if extras else ""
-            print(f"[TEMPLATE] {name} ({lines} 行){extra_str}")
+    for skill_dir in _iter_skill_dirs(root):
+        if skill_dir.name == "_template":
+            _print_template(skill_dir)
             continue
         checked += 1
         errors, warns = check_skill(skill_dir)
-        for w in warns:
-            print(w)
-        if errors:
-            for e in errors:
-                print(e)
-            total_errors += len(errors)
-        else:
-            extras = ""
-            if (skill_dir / "principles").is_dir():
-                extras += "P"
-            if (skill_dir / "workflows").is_dir():
-                extras += "W"
-            if (skill_dir / "contracts").is_dir():
-                extras += "C"
-            extra_str = f" [{extras}]" if extras else ""
-            lines = len((skill_dir / "SKILL.md").read_text(encoding="utf-8").splitlines())
-            # 模板目录标 TEMPLATE，便于辨识
-            tag = "TEMPLATE" if name == "_template" else "OK"
-            print(f"[{tag:5s}] {name} ({lines} 行){extra_str}")
+        total_errors += _print_skill_result(skill_dir, errors, warns)
 
-    print("---")
-    print(f"📊 检查 {checked} 个 skill，错误 {total_errors} 个")
-    if total_errors == 0:
-        print("✅ 全部 OK")
-        sys.exit(0)
-    else:
-        print("❌ 有失败项，需修复")
-        sys.exit(1)
+    _print_summary(checked, total_errors)
+    sys.exit(0 if total_errors == 0 else 1)
 
 
 if __name__ == "__main__":

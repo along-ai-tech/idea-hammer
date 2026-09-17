@@ -12,7 +12,6 @@ intent_classifier.py — IdeaHammer 意图分类器
 """
 
 import argparse
-import json
 import re
 from pathlib import Path
 
