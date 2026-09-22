@@ -53,3 +53,24 @@
 - [ ] 幂等性（脚本 / hook 反复执行安全，同操作不重复追加）
 
 自动校验：`python3 scripts/check_simplicity.py path/to/file.py`
+
+## 兼容性 / 完整性交付（必查，对照 [compatibility/ 6 条原则](../../_engineering-constraints/compatibility/)）
+
+- [ ] Blast Radius 文档化（数据 / API / 用户 / 依赖 4 类）
+- [ ] 数据迁移（如有 schema 改动）：3 阶段 Expand → Migrate → Contract
+- [ ] Backfill 计划 + 校验（老数据 vs 新数据一致）
+- [ ] API 向后兼容：新增字段 / 保留老字段 / 版本号 / 弃用 header
+- [ ] 老用户路径：草稿 / 收藏 / 工作流 / localStorage 兼容
+- [ ] 老数据查询：订单类用 snapshot（不读实时表）
+- [ ] 依赖：grep import 找调用方（内部）+ 查 SDK changelog（外部）
+- [ ] Feature Flag（默认关闭，灰度打开）
+- [ ] 文档同步（API doc + 迁移指南 + CHANGELOG）
+- [ ] 测试覆盖：老数据 + 新数据 + 老 API + 新 API + 老用户路径 + 新用户路径
+- [ ] 监控 + 告警（关键指标埋点）
+- [ ] 回滚方案（一键回滚）
+- [ ] 完整性交付 8 项 Checklist 全过
+
+**反模式**：改一处代码直接 commit，不考虑老数据 / 老客户端 / 老用户。
+**正模式**：完整 8 项交付（见 compatibility/completeness-delivery.md）。
+
+自动校验：`python3 scripts/check_compatibility.py`（未来）
