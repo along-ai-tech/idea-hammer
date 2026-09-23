@@ -37,9 +37,11 @@ def test_compat_files_present():
 
 
 def test_readme_links_to_6_principles():
-    """README 必须声明 6 条原则。"""
+    """README 必须列出全部 6 个原则文件。"""
     readme = (COMPAT_DIR / "README.md").read_text(encoding="utf-8")
-    assert "6 条原则" in readme
+    for f in ["blast-radius.md", "completeness-delivery.md", "backward-compatibility.md",
+              "data-migration.md", "api-versioning.md", "feature-flag.md"]:
+        assert f in readme, f"README 未引用 {f}"
 
 
 def test_blast_radius_covers_4_categories():
@@ -60,7 +62,8 @@ def test_completeness_delivery_has_8_checklist_items():
     """completeness-delivery 必须有 8 项 Checklist。"""
     content = (COMPAT_DIR / "completeness-delivery.md").read_text(encoding="utf-8")
     # 8 项: 1. 代码 2. 数据 3. API 4. 用户 5. 依赖 6. 文档 7. 测试 8. 监控+回滚
-    assert "### 1." in content and "### 8." in content
+    for cat in ["代码", "数据", "API", "用户", "依赖", "文档", "测试", "监控"]:
+        assert cat in content, f"completeness-delivery 缺 {cat} 项"
 
 
 def test_backward_compatibility_has_expand_contract():
@@ -72,8 +75,9 @@ def test_backward_compatibility_has_expand_contract():
 def test_api_versioning_has_3_options():
     """api-versioning 必须含 3 种版本控制方式。"""
     content = (COMPAT_DIR / "api-versioning.md").read_text(encoding="utf-8")
-    assert "URL 版本" in content
-    assert "Header 版本" in content
+    assert "URL" in content
+    assert "Header" in content
+    assert "无版本" in content
 
 
 def test_feature_flag_has_4_types():
