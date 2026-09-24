@@ -12,8 +12,15 @@ description: product-spec 迭代模式工作流。用户对已有 Product-Spec.m
 
 [变更轻重判断]
     重度：涉及新 AI 能力、核心路径、布局结构、新增主模块。问到能答"这变更怎么影响现有产品"。
+        重度变更必走 ceo-lens / eng-lens / qa-lens 收尾自检，并跑 question-bank Phase 3.5 pre-mortem（只针对新增部分）。
     中度：现有功能逻辑调整、局部布局。问到能答"具体改成什么样"。
+        中度变更如涉及业务数据修改（价格/规格/权限）→ 必走 eng-lens Q1（数据快照），触发 _engineering-constraints/database/versioning-and-immutability.md。
     轻度：只改文字、选项、样式。确认理解即可。
+        轻度变更跳过 Phase 0 / Phase 1.5 / Phase 3.5 / 收尾多视角。
+
+[跳过规则汇总]
+    迭代模式统一跳过：Phase 0 商业可行性快筛 / Phase 1.5 竞品扫描 / Phase 3.5 pre-mortem / 收尾多视角自检。
+    但重度变更必须补：eng-lens 至少 Q1（数据快照）+ ceo-lens Q2（P0/P1 划分）。
 
 [流程]
     接住需求，按轻重定追问深度，追问时按需翻 references/question-bank.md 对应维度。

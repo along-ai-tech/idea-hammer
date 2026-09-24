@@ -46,7 +46,7 @@
 | **observability/** | 结构化日志 / 指标 / 链路 / 健康检查 |
 | **ci-cd/** | 必备检查 / migration / 回滚 |
 | **error-handling/** | 异常规范 / 错误响应 |
-| **database/** | 索引 / 事务 / 连接池 |
+| **database/** | 索引 / 事务 / 连接池 / **版本化与不可变** |
 | **dependency-mgmt/** | lockfile / 漏洞 / 升级 / 重复依赖 |
 | **i18n-a11y/** | 国际化 / 时区 / 可访问性 |
 
@@ -58,6 +58,23 @@ dev-builder 每个 Task 启动：
 2. 查对应库选择矩阵
 3. 写代码时遵守红线
 4. code-review Stage 2 对照检查
+
+## 版本化与不可变（接 Spec 层 eng-lens Q1）
+
+业务实体修改（价格/规格/权限/规则/状态机）→ 必读 `database/versioning-and-immutability.md`：
+- 价格/规格/规则字段必须 version / effective_time，禁止 UPDATE 覆盖
+- 修改前必 grep 调用方，区分快照式 vs 关联式
+- 写测试：`test_old_order_returns_old_price` 是 TDD 卡门
+- eng-lens Q1 触发本规则
+
+## 反模式自检卡门（每 Phase 收尾跑一次）
+
+- 是否触发了 versioning-and-immutability 但忘了加 version 字段？
+- 是否在 versioned 字段上写了 UPDATE 而非 INSERT 新版本？
+- 是否只改了主表没改引用方（历史订单 / 合规导出 / 报表）？
+- migration 是否包含老数据自动版本化脚本？
+
+不通过的 code-review Stage 2 必失败。
 
 ## 与现有原则关系
 

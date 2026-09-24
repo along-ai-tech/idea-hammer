@@ -4,6 +4,54 @@
 
 ---
 
+## 2026-09-24
+
+### D-009：P1 业务纪律体系（防方向错 + 防遗漏 + 防上下游影响）
+
+**背景**：用户洞察 IdeaHammer 在三方面缺纪律：
+1. 竞品分析 / 商业可行性 / 多视角评审——做完发现没人要 / 方向错
+2. AI 改业务数据（价格/规格/规则）会把老订单也改了——上下游影响
+3. Spec 收尾只靠主 Agent 一种视角——漏防方向错
+
+**候选**：
+- A. 重写 product-spec-builder 的 question-bank，加全套（评审 / 多视角 / 风险）
+- B. 加 5 个独立轻量原则文件，主 Agent 显式戴帽子切换提示词
+- C. 真的 spawn subagent 做 CEO/Eng/QA/Security 多视角（参考 gstack `plan-ceo-review`）
+
+**决定**：B + 部分 C
+
+**理由**：
+- A 会膨胀 question-bank，违反"规则只许更精炼"原则
+- B 每个文件 ≤ 80 行，6 个文件总计 ~600 行，是最小侵入式增量
+- C 的子 agent spawn 太重，且没看出能比提示词切换多 catch 多少问题——先把 B 跑起来，效果不行再升级到 C
+- 借鉴 gstack `/office-hours` 6 问 → 化为 Phase 0 5 问快筛（"凭什么你活"/"1 年后死在哪"等）
+- 借鉴 gstack `/plan-ceo-review` `/plan-eng-review` → ceo-lens / eng-lens
+
+**轻量化措施**：
+- 不进 Spec 模板（除 1.6 节一表）
+- 不 spawn subagent（提示词切换足够）
+- Phase 0/1.5/3.5/收尾 迭代模式统一跳过
+
+**和现有原则关系**：
+- scope-discipline "不问商业化" 保留——我们只问"值不值得"不问"怎么变现"
+- phase-discipline 7 Phase 顺序保留——Phase 0 是"之前"插入，1.5/3.5 是"之间"插入
+- 模板保持原 12 节，只在 1.5 后加 1.6 竞品扫描表
+
+**借鉴 gstack 但没抄的**：
+- design-review（我们已有 design-brief-builder）
+- qa（运行时浏览器交互，我们不做运行时）
+- cso（已部分被 _engineering-constraints/security/ 覆盖）
+
+**影响**：
+- v0.7.0-dev 版本上线
+- product-spec-builder/principles/ 加 5 个文件（~280 行）
+- _engineering-constraints/database/ 加 1 个文件（75 行）
+- 接线改动 < 10 处，每处 < 5 行
+- 不动 SPEC 模板大结构（除 1.6 一表）
+- 框架对外的卖点从"工程级约束"扩到"工程级约束 + 业务纪律"
+
+---
+
 ## 2026-09-16
 
 ### D-008：hook 路径 bug 修复（`codex/` → `.codex/`）

@@ -2,6 +2,9 @@
 
 > Stage 2 才进。Stage 2 不通过 = dev-builder / bug-fixer 必须修。
 
+> **多视角自检衔接**：product-spec-builder 收尾阶段已跑 ceo-lens / eng-lens / qa-lens。
+> 本 Stage 2 是"Spec 已经自我审视过"前提下做代码级深审，重点对照 Spec 自检报告中标记的 [eng-lens Q1 未过] / [qa-lens Q3 未过] 等遗留项。
+
 ## 代码质量
 
 - 命名规范、无 any、文件 ≤ 300 行、单一职责、无重复、错误处理
@@ -53,6 +56,19 @@
 - [ ] 幂等性（脚本 / hook 反复执行安全，同操作不重复追加）
 
 自动校验：`python3 scripts/check_simplicity.py path/to/file.py`
+
+## 版本化与不可变（必查，对照 [versioning-and-immutability](../../_engineering-constraints/database/versioning-and-immutability.md)）
+
+- [ ] 修改的字段是否在 versioned 字段清单（价格/规格/规则/权限/状态机）？
+- [ ] 若在，是否 INSERT 新版本 而非 UPDATE 覆盖？
+- [ ] 是否 grep 过所有调用方（订单 / 合规 / 报表 / 导出）？
+- [ ] 引用是快照式还是关联式？关联式的必须保证历史快照
+- [ ] 是否有 `test_old_order_returns_old_value` 类的回归测试？
+- [ ] migration 是否包含老数据自动版本化脚本？
+- [ ] dev-planner / Spec 是否声明了"不可变设计"？未声明 + 触发条件满足 → 标 [eng-lens Q1 未过]
+
+**反模式**：改商品/价格/规则直接 commit，AI 没考虑老订单/合同/合规快照还在引用。
+**正模式**：每个 versioned 字段修改 = 关闭旧版本 + 新建新版本 + 历史快照回归测试覆盖。
 
 ## 兼容性 / 完整性交付（必查，对照 [compatibility/ 6 条原则](../../_engineering-constraints/compatibility/)）
 

@@ -4,14 +4,13 @@
 
 **一个 AI 主导的产研全流程协同框架**——把产品经理的纪律（反模糊、Spec 驱动）和研发的工程化（TDD、review、release、**工业级编码约束**）合成一条端到端流水线。
 
-| 11 | 212 | 1 | **81** | MIT |
-|---|---|---|---|---|
-| skill 模块 | 测试通过 | 端到端 demo | 工程级约束（含 simplification/ 10 条）| 开源协议 |
+| 11       | 212  | 1        | **87**                        | MIT  |
+| -------- | ---- | -------- | ----------------------------- | ---- |
+| skill 模块 | 测试通过 | 端到端 demo | 工程级约束（含 simplification/ 10 条 + P1 业务纪律 6 文件） | 开源协议 |
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.6.0--dev-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.7.0--dev-blue.svg)](CHANGELOG.md)
 [![Main Repo](https://img.shields.io/badge/GitHub-along-ai-tech-181717?logo=github)](https://github.com/along-ai-tech/idea-hammer)
-[![Mirror](https://img.shields.io/badge/Gitee-zhilong811-C71D23?logo=gitee)](https://gitee.com/zhilong811/idea-hammer)
 
 ---
 
@@ -44,14 +43,14 @@
 
 ## 和同类项目有什么不同
 
-| 项目 | 端到端 | Spec 驱动 | TDD 强制 | 审查闭环 | **工程级约束** | 进化机制 |
-|------|--------|-----------|---------|---------|---------|---------|
-| **IdeaHammer** | ✅ 8 步 | ✅ | ✅ 内置 | ✅ 两阶段 | ✅ **13 主题 / 70 文件** | ✅ |
-| GitHub Spec Kit | ⚠️ 3 段 | ✅ | ❌ | ❌ | ❌ | ❌ |
-| 裸 Codex/Claude Code | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| 纯 vibe coding | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| 项目                  | 端到端    | Spec 驱动 | TDD 强制 | 审查闭环  | **工程级约束**           | **业务纪律** | 进化机制 |
+| ------------------- | ------ | ------- | ------ | ----- | ------------------- | --------- | ---- |
+| **IdeaHammer**      | ✅ 8 步  | ✅       | ✅ 内置   | ✅ 两阶段 | ✅ **14 主题 / 76 文件** | ✅ **5 主题 / 6 文件** | ✅    |
+| GitHub Spec Kit     | ⚠️ 3 段 | ✅       | ❌      | ❌     | ❌                   | ❌         | ❌    |
+| 裸 Codex/Claude Code | ❌      | ❌       | ❌      | ❌     | ❌                   | ❌         | ❌    |
+| 纯 vibe coding       | ❌      | ❌       | ❌      | ❌     | ❌                   | ❌         | ❌    |
 
-**它是 Spec Kit + 工程级约束的组合**——比 vibe coding 多纪律围栏，比传统 PRD 多 AI 执行力，比裸 Codex 多工程级底线（不让 AI 反复造轮子 / 写四不像代码 / 留 N+1 / 用 `setnx` 当分布式锁）。
+**它是 Spec Kit + 工程级约束 + 业务纪律的三重组合**——比 vibe coding 多纪律围栏，比传统 PRD 多 AI 执行力，比裸 Codex 多工程级底线 + 业务底线。防"做完发现没人要 / AI 改价格把老订单也改了 / Spec 只过一种视角漏问题"。
 
 ---
 
@@ -76,13 +75,35 @@
 **工程级约束把 AI 写代码的"反面教材"全列出来**——14 主题 / 81 文件 / 7300+ 行具体规则，dev-builder 启动必读，code-review Stage 2 必查。
 
 **自动化校验**：`scripts/check_simplicity.py`（270 行）按 10 条原则量化校验：
+
 - 文件 ≤ 300 行 / 函数 ≤ 50 行 / 圈复杂度 ≤ 10 / 嵌套 ≤ 3 层 / 参数 ≤ 4 个
 - 检测 dead code / 无意义命名 / 装饰器套娃 / TODO 残留
 
 AI 写代码的**3 大特有补充**：
+
 - **依赖最小化**：每个 dep 是债务，优先 stdlib（AI 倾向"装包解决 5 行问题"）
 - **副作用隔离**：纯函数优先，副作用集中到边界（契约测试可写性靠这个）
 - **幂等性**：脚本 / hook 反复执行结果相同（不重复追加 / 误删）
+
+**AI 写产品（不只是代码）的独特浪费**：
+
+- 没扫竞品就动手 → 做完发现市场已饱和 / 已有巨头
+- 没做商业可行性快筛 → 做完发现没人付费 / 凭什么是你
+- Spec 只过一种视角（主 Agent） → 漏掉 CEO/工程/QA 各自能看见的问题
+- AI 改业务数据（价格/规格/规则）→ 把老订单 / 历史快照也改了（最常见、最隐蔽）
+- 唯一视角写 Spec → 1 年后回看才后悔"当时没记下来"
+
+**P1 业务纪律把以上 5 类"做完才发现"全列出来**——6 个文件 / ~600 行轻量纪律：
+
+| 主题 | 解决什么 | 关键文件 |
+|---|---|---|
+| **business-context-check** | Phase 0 商业可行性 5 问快筛（防"做完没人要"） | `product-spec-builder/principles/business-context-check.md` |
+| **competitive-scan** | Phase 1.5 竞品扫描（≥ 2 直接 + ≥ 2 替代，每行必填"我们凭什么"） | `product-spec-builder/principles/competitive-scan.md` |
+| **ceo-lens / eng-lens / qa-lens** | Spec 收尾多视角自检（不 spawn subagent，提示词切换 + 自检清单） | 同上目录 3 文件 |
+| **pre-mortem (Phase 3.5)** | question-bank 反向思考："1 年后死在哪 3 个原因 + 监控信号" | `principles/question-bank.md` |
+| **versioning-and-immutability** | 价格/规格/规则字段必 version，禁止 UPDATE 覆盖（防 AI 改代码影响上下游） | `_engineering-constraints/database/versioning-and-immutability.md` |
+
+dev-builder 启动必读，code-review Stage 2 必查。借鉴 gstack `office-hours` / `plan-ceo-review` 的 adversarial planning 思路，不抄实现，化为最小侵入式纪律。
 
 ---
 
@@ -104,17 +125,17 @@ codex
 
 ## 详细文档
 
-| 入口 | 内容 |
-|------|------|
-| [AGENTS.md](./AGENTS.md) | 主控：编排规则、Skill 调用、Sub-Agent 调度 |
-| [agents/skills/](./agents/skills/) | **11 个 skill**（每个含 SKILL.md + principles/ + workflows/ + contracts/）|
+| 入口                                                                                   | 内容                                                                                                                                                                                                    |
+| ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [AGENTS.md](./AGENTS.md)                                                             | 主控：编排规则、Skill 调用、Sub-Agent 调度                                                                                                                                                                         |
+| [agents/skills/](./agents/skills/)                                                   | **11 个 skill**（每个含 SKILL.md + principles/ + workflows/ + contracts/）                                                                                                                                  |
 | [agents/skills/_engineering-constraints/](./agents/skills/_engineering-constraints/) | **13 主题工程级约束**（coding-style / ecosystem-matrix / anti-reinvent / performance / security / concurrency / api-design / observability / ci-cd / error-handling / database / dependency-mgmt / i18n-a11y） |
-| [examples/flashcards/](./examples/flashcards/) | 端到端 demo：本地闪卡应用（Python + Vue3 + Element Plus，已跑通 Phase 1-5） |
-| [schemas/session.schema.json](./schemas/session.schema.json) | Session State schema（跨 session 持久化上下文） |
-| [tests/contract/](./tests/contract/) | **156 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则）|
-| [scripts/check_simplicity.py](./scripts/check_simplicity.py) | **代码简洁自动校验**（文件/函数/圈复杂度阈值 + dead code / 命名）|
-| [CHANGELOG.md](./CHANGELOG.md) | 变更记录 |
-| [.codex/](./.codex/) | Hook 门禁 + 子 Agent + 自进化机制 |
+| [examples/flashcards/](./examples/flashcards/)                                       | 端到端 demo：本地闪卡应用（Python + Vue3 + Element Plus，已跑通 Phase 1-5）                                                                                                                                           |
+| [schemas/session.schema.json](./schemas/session.schema.json)                         | Session State schema（跨 session 持久化上下文）                                                                                                                                                                |
+| [tests/contract/](./tests/contract/)                                                 | **156 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则）                                                                                                                                                |
+| [scripts/check_simplicity.py](./scripts/check_simplicity.py)                         | **代码简洁自动校验**（文件/函数/圈复杂度阈值 + dead code / 命名）                                                                                                                                                           |
+| [CHANGELOG.md](./CHANGELOG.md)                                                       | 变更记录                                                                                                                                                                                                  |
+| [.codex/](./.codex/)                                                                 | Hook 门禁 + 子 Agent + 自进化机制                                                                                                                                                                             |
 
 ---
 
@@ -128,21 +149,21 @@ codex
 
 **工程级约束（Engineering Constraints）** — IdeaHammer 的核心差异化能力。13 主题 / 70 文件 / 6440 行具体规则，覆盖 AI 写代码的常见反模式：
 
-| 主题 | 解决什么 | 关键文件 |
-|---|---|---|
-| **coding-style/** | 强制引用正式规范（阿里 Java / PEP8 / Airbnb TS / Effective Go / SQL / Rust） | `java-alibaba.md` `python-pep8.md` |
-| **ecosystem-matrix/** | "X 场景该用哪个库"决策（Redisson / Hutool / Jackson / FastAPI） | `java-ecosystem.md` `redis-clients.md` |
-| **anti-reinvent/** | **10 条造轮子红线**：禁止自造连接池 / 日期 / 集合 / HTTP / JSON / 线程池 / 分布式锁 / ID / 缓存 / 配置中心 | `no-connection-pool.md` `no-distributed-lock.md` |
-| **performance/** | N+1 / 慢查询 / 缓存策略 / benchmark-first | `db-query.md` `caching.md` |
-| **security/** | OWASP Top 10 / JWT / bcrypt / Vault / 漏洞扫描 / License 白名单 | `owasp-top10.md` `password-hashing.md` |
-| **concurrency/** | 线程池命名 / 分布式锁 / 幂等 / 超时 | `distributed-lock.md` `timeouts.md` |
-| **api-design/** | REST / 状态码 / 分页 / 错误响应 / OpenAPI 强制 | `rest-conventions.md` `http-status-codes.md` |
-| **observability/** | 结构化日志 / 指标 / OpenTelemetry / 健康检查 | `structured-logging.md` `metrics.md` |
-| **ci-cd/** | 必备检查 / migration 安全 / 回滚策略 | `required-checks.md` `migration-safety.md` |
-| **error-handling/** | 异常规范 / stacktrace / 统一错误响应 | `exception-practices.md` |
-| **database/** | 索引策略 / 事务边界 / 连接池 | `indexing.md` `transactions.md` |
-| **dependency-mgmt/** | lockfile / 漏洞扫描 / 重复依赖 | `lockfile-required.md` |
-| **i18n-a11y/** | 国际化 / 时区 / WCAG AA | `i18n.md` `a11y.md` |
+| 主题                    | 解决什么                                                                        | 关键文件                                             |
+| --------------------- | --------------------------------------------------------------------------- | ------------------------------------------------ |
+| **coding-style/**     | 强制引用正式规范（阿里 Java / PEP8 / Airbnb TS / Effective Go / SQL / Rust）            | `java-alibaba.md` `python-pep8.md`               |
+| **ecosystem-matrix/** | "X 场景该用哪个库"决策（Redisson / Hutool / Jackson / FastAPI）                        | `java-ecosystem.md` `redis-clients.md`           |
+| **anti-reinvent/**    | **10 条造轮子红线**：禁止自造连接池 / 日期 / 集合 / HTTP / JSON / 线程池 / 分布式锁 / ID / 缓存 / 配置中心 | `no-connection-pool.md` `no-distributed-lock.md` |
+| **performance/**      | N+1 / 慢查询 / 缓存策略 / benchmark-first                                          | `db-query.md` `caching.md`                       |
+| **security/**         | OWASP Top 10 / JWT / bcrypt / Vault / 漏洞扫描 / License 白名单                    | `owasp-top10.md` `password-hashing.md`           |
+| **concurrency/**      | 线程池命名 / 分布式锁 / 幂等 / 超时                                                      | `distributed-lock.md` `timeouts.md`              |
+| **api-design/**       | REST / 状态码 / 分页 / 错误响应 / OpenAPI 强制                                         | `rest-conventions.md` `http-status-codes.md`     |
+| **observability/**    | 结构化日志 / 指标 / OpenTelemetry / 健康检查                                           | `structured-logging.md` `metrics.md`             |
+| **ci-cd/**            | 必备检查 / migration 安全 / 回滚策略                                                  | `required-checks.md` `migration-safety.md`       |
+| **error-handling/**   | 异常规范 / stacktrace / 统一错误响应                                                  | `exception-practices.md`                         |
+| **database/**         | 索引策略 / 事务边界 / 连接池                                                           | `indexing.md` `transactions.md`                  |
+| **dependency-mgmt/**  | lockfile / 漏洞扫描 / 重复依赖                                                      | `lockfile-required.md`                           |
+| **i18n-a11y/**        | 国际化 / 时区 / WCAG AA                                                          | `i18n.md` `a11y.md`                              |
 
 dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按语言加载对应规范 → 写代码时遵守。code-review Stage 2 必查"是否造轮子"。下次再看到 `new SimpleDateFormat()` / `setnx` / `Executors.newFixedThreadPool()` 这种反模式会被立刻 catch。
 
@@ -160,6 +181,11 @@ dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按�
 - ✅ **v0.4** — 工程级约束体系（13 主题）+ Skill 契约测试（132）+ 工程约束纳入 README
 - ✅ **v0.5** — P1 全部完成（路由图 + 意图分类 + Hook v2 + Evolution 三层）
 - ✅ **v0.6** — **代码简洁之道 10 条原则**（simplification/ 11 文件 / 887 行）+ `check_simplicity.py` 自动化校验 + 框架代码以身作则重构
+- ✅ **v0.7** — **P1 业务纪律体系**（防方向错 + 防遗漏 + 防上下游影响）
+  - 商业可行性 5 问快筛（Phase 0）+ 竞品扫描（Phase 1.5）+ pre-mortem（Phase 3.5）
+  - ceo-lens / eng-lens / qa-lens 收尾多视角自检
+  - `_engineering-constraints/database/versioning-and-immutability.md`（接上轮"AI 改商品把老订单也改了"问题）
+  - 借鉴 gstack adversarial planning gauntlet（office-hours / plan-ceo-review）化为轻量化纪律
 - ⏳ **v1.0** — TODO-201 / TODO-202 / TODO-203 / TODO-301（API 稳定化 + 英文 README + CI 补完 + Sub-Agent dag）
 
 ---
@@ -170,4 +196,4 @@ dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按�
 
 ## 致谢
 
-方法论受 [superpowers](https://github.com/obra/superpowers)（TDD + systematic-debugging）和 [GitHub Spec Kit](https://github.com/github/spec-kit)（SDD 三段式）启发。工程级约束覆盖的阿里 Java 手册 / PEP8 / Airbnb TS Style / OWASP Top 10 / Effective Go 等是开放共享的工业标准。simplification/ 10 条原则来自工程共识综合（Robert C. Martin《Clean Code》/ Kent Beck《XP Explained》/ Martin Fowler《Refactoring》/ Boswell & Foucher《The Art of Readable Code》/ Sandi Metz）。
+方法论受 [superpowers](https://github.com/obra/superpowers)（TDD + systematic-debugging）和 [GitHub Spec Kit](https://github.com/github/spec-kit)（SDD 三段式）启发。工程级约束覆盖的阿里 Java 手册 / PEP8 / Airbnb TS Style / OWASP Top 10 / Effective Go 等是开放共享的工业标准。simplification/ 10 条原则来自工程共识综合（Robert C. Martin《Clean Code》/ Kent Beck《XP Explained》/ Martin Fowler《Refactoring》/ Boswell & Foucher《The Art of Readable Code》/ Sandi Metz）。P1 业务纪律的多视角自检借鉴了 [gstack](https://github.com/garrytan/gstack) 的 adversarial planning gauntlet（office-hours / plan-ceo-review / plan-eng-review）思路。

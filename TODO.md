@@ -149,6 +149,48 @@ skill-name/
 
 ---
 
+### ✅ TODO-105：P1 业务纪律体系（2026-09-24）
+
+**目标**：补 IdeaHammer 在"竞品分析、商业可行性、多视角评审"上的空白。防"做完发现没人要 / 方向错 / AI 改代码影响上下游"。
+
+**详细任务**：
+
+1. ✅ **Phase 0 商业可行性快筛**：`business-context-check.md`（77 行）
+   - 5 问：用户已付出 / 凭什么你 / 1 年后死在哪 / 变现 / 大厂下场
+   - 和 scope-discipline "不问商业化" 不冲突——只问"值不值得"不问"怎么变现"
+2. ✅ **Phase 1.5 竞品扫描**：`competitive-scan.md`（53 行）+ Spec 模板 1.6 节
+   - ≥ 2 直接竞品 + ≥ 2 替代方案 + 每行必填"我们凭什么"
+3. ✅ **Phase 3.5 pre-mortem**：question-bank 加新维度
+   - 3 个失败原因 + 概率最高那个的"提前发现信号"
+4. ✅ **收尾多视角自检**：`ceo-lens.md` + `eng-lens.md` + `qa-lens.md`（共 215 行）
+   - 主 Agent 显式戴 3 顶帽子过自检，不 spawn subagent
+   - 漏掉的进 Spec 10.2 待确认表
+5. ✅ **业务实体版本化与不可变**：`versioning-and-immutability.md`（75 行）
+   - 接用户上轮"AI 改商品信息把老订单也改了"问题
+   - 价格/规格/规则/权限字段必 version，禁止 UPDATE 覆盖
+   - dev-builder 启动必读 + code-review Stage 2 必查
+6. ✅ **接线**：
+   - phase-discipline.md：加 Phase 0/1.5/3.5/收尾映射表
+   - SKILL.md：引用列表加 5 个新原则
+   - workflow-0-1.md：Phase 0 加 5 问 + 加 1.5 + 加 3.5 + 加收尾
+   - workflow-iteration.md：跳过规则汇总
+   - dev-builder/engineering-constraints.md：database 主题加 versioning + 反模式自检卡门
+   - code-review/stage2-checklist.md：加"版本化与不可变"必查项 + 多视角自检衔接段
+
+**验收标准**：
+- 6 个新文件 / 约 600 行（轻量）
+- 接线改动 < 10 处，每处 < 5 行
+- Spec 模板只加 1.6 节一表，不膨胀
+- 借鉴 gstack adversarial planning gauntlet（office-hours + ceo/eng 视角）
+
+**依赖**：无
+
+**工时**：1 session
+
+**详见**：D-009 决策记录
+
+---
+
 ## 🟢 P2（锦上添花，6 个月+）
 
 ### TODO-201：英文版 README
@@ -190,10 +232,11 @@ skill-name/
 ## 状态统计
 
 - **P0 完成**：3 项（TODO-003 / 004 / 005）全部 ✅
-- **P1 完成**：4 项（TODO-101/102/103/104）全部 ✅
+- **P1 完成**：5 项（TODO-101/102/103/104/105）全部 ✅
 - **P2 待办**：3 项，总工时 5-6 周
 - **已完成 P0**：2 项（TODO-001 拆 AGENTS.md ✅ / TODO-002 README 30 秒扫视 ✅）
-- **P0 阶段完成**：TODO-003 阶段 1 ✅（commit `3f253a0`）
+- **已完成 P1 业务纪律**：TODO-105 ✅（2026-09-24）
+- **已完成简化**：TODO-401 ✅（代码简洁之道 10 条）
 
 ---
 

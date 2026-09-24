@@ -4,19 +4,29 @@
 
 ## Phase 划分
 
-| Phase | 主题 |
-|---|---|
-| Phase 1 | 问题与人 |
-| Phase 2 | Job 与成功 |
-| Phase 3 | 范围与非目标 |
-| Phase 4 | 旅程与功能 |
-| Phase 5 | AI 能力 |
-| Phase 6 | UI 与状态 |
-| Phase 7 | 验收与边界 |
+| Phase | 主题 | 对应原则 |
+|---|---|---|
+| Phase 0 | 商业可行性快筛（仅 0-1 模式） | business-context-check |
+| Phase 1 | 问题与人 | question-bank |
+| Phase 1.5 | 竞品扫描 | competitive-scan |
+| Phase 2 | Job 与成功 | question-bank |
+| Phase 3 | 范围与非目标 | question-bank |
+| Phase 3.5 | pre-mortem 反向思考 | question-bank |
+| Phase 4 | 旅程与功能 | question-bank |
+| Phase 5 | AI 能力 | question-bank + ai-capability-awareness |
+| Phase 6 | UI 与状态 | question-bank |
+| Phase 7 | 验收与边界 | question-bank |
+| 收尾 | 多视角自检（CEO/Eng/QA） | ceo-lens + eng-lens + qa-lens |
 
 **关键**：
-- Phase 1 到 3 是地基
+- Phase 0 / 1 / 3 是地基
 - **不过地基不解锁后面**
+- Phase 0 跳过条件：迭代模式（已存在 Spec 的功能调整）
+- 收尾多视角自检跳过条件：迭代模式
+
+**搜索增强双遍与竞品扫描的关系**：
+- 第一遍（提问前搜种子）→ 落地为 Phase 0 + Phase 1.5 结构化产出物
+- 第二遍（聊完再搜可行性）→ 仍由主 Agent 在 Spec 收尾前跑
 
 ## 搜索增强双遍
 

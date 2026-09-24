@@ -3,6 +3,52 @@
 本项目的所有重要变更记录于此。格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.7.0-dev]
+
+最新开发分支。含 P1 业务纪律体系（防方向错 + 防遗漏 + 防上下游影响）。
+
+### 新增（P1 业务纪律，2026-09-24）
+
+**`product-spec-builder/principles/` 新增 5 个文件 / 280 行**：
+- `business-context-check.md`（77 行）— Phase 0 商业可行性 5 问快筛，防"做完发现没人要"
+- `competitive-scan.md`（53 行）— 竞品扫描纪律（≥ 2 直接 + ≥ 2 替代方案），结构化产出进 Spec 1.6 节
+- `ceo-lens.md`（68 行）— 收尾自检（v1 唯一指标 / P0 数量 / Phase 0 过没 / 1 年后悔漏什么）
+- `eng-lens.md`（80 行）— 工程视角收尾自检（数据快照 / 数据流闭环 / P0 可测 / 边缘 / 部署回滚）
+- `qa-lens.md`（67 行）— QA 视角收尾自检（端到端 / 5 态 / 非功能数字 / AI 概率性）
+
+**Phase 顺序扩展**：
+- Phase 0（商业可行性 5 问）— 仅 0-1 模式
+- Phase 1.5（竞品扫描）— 仅 0-1 模式
+- Phase 3.5（pre-mortem 反向思考）— question-bank 加新维度
+- 收尾多视角自检（CEO + Eng + QA）— Spec 生成前必过
+
+**Spec 模板扩展**：
+- 1.6 节 竞品扫描表（4 行卡门：≥ 2 直接 + ≥ 2 替代 + 每行必填"我们凭什么"）
+
+**`_engineering-constraints/database/` 新增 1 个文件 / 75 行**：
+- `versioning-and-immutability.md` — 业务实体修改的红线：价格/规格/规则/权限字段必 version，禁止 UPDATE 覆盖历史快照。接用户上轮"AI 改商品把老订单也改了"问题。dev-builder 启动必读 + code-review Stage 2 必查。
+
+**接线**：
+- `phase-discipline.md` — 加 Phase 0/1.5/3.5/收尾的对应原则映射表
+- `SKILL.md`（product-spec-builder）— 引用列表加 5 个新原则
+- `workflow-0-1.md` — Phase 0 加 5 问快筛、新增 Phase 1.5 + Phase 3.5、生成前加多视角自检
+- `workflow-iteration.md` — 跳过规则汇总：迭代模式统一跳过 Phase 0/1.5/3.5/收尾；重度变更必补 eng-lens Q1
+- `dev-builder/principles/engineering-constraints.md` — database 主题加 versioning-and-immutability + 反模式自检卡门
+- `code-review/principles/stage2-checklist.md` — 加"版本化与不可变"必查项 + 多视角自检衔接段
+- `_engineering-constraints/database/README.md` — 加 versioning-and-immutability 链接
+
+**轻量化指标**：
+- 新增 6 个文件 / 约 600 行
+- 接线改动 < 10 处，每处 < 5 行
+- 不进 Spec 模板不膨胀（只加 1.6 节一表）
+- 不 spawn subagent，提示词切换 + 自检清单足够
+
+**借鉴 gstack**（adversarial planning gauntlet）：
+- office-hours 6 问 → 化为我们的 Phase 0 5 问快筛
+- plan-ceo-review → ceo-lens
+- plan-eng-review → eng-lens
+- 不抄 design-maker（已有）/ cso（已部分覆盖）
+
 ## [未发布]
 
 ### 计划中

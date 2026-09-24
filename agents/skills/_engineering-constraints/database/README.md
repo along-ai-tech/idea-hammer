@@ -9,6 +9,7 @@
 | 索引策略 | [indexing.md](./indexing.md) |
 | 事务边界 | [transactions.md](./transactions.md) |
 | 连接池 | [connection-pool.md](./connection-pool.md) |
+| 版本化与不可变 | [versioning-and-immutability.md](./versioning-and-immutability.md) |
 
 ## 见主原则
 

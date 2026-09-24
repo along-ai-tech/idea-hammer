@@ -14,10 +14,10 @@
 
 | 项 | 值 |
 |----|-----|
-| 当前 tag | **v0.4.0-dev**（多个 commit，P0 全完成） |
-| 已发布版本 | v0.3.0 / v0.3.1 / v0.4.0 / v0.5.0 / **v0.6.0-dev**（含 TODO-401 simplification） |
-| 已完成 | v0.4.0 P0 + v0.5.0 P1 + **TODO-401（simplification 10 条 + check_simplicity）** |
-| 下一步 | v1.0 规划（TODO-301 API 稳定化） |
+| 当前 tag | **v0.7.0-dev**（P1 业务纪律完成） |
+| 已发布版本 | v0.3.0 / v0.3.1 / v0.4.0 / v0.5.0 / v0.6.0-dev（含 TODO-401） / **v0.7.0-dev**（P1 业务纪律） |
+| 已完成 | v0.4.0 P0 + v0.5.0 P1 + TODO-401 simplification + **P1 业务纪律（5 问快筛+竞品+多视角+pre-mortem+版本化）** |
+| 下一步 | v1.0 规划（TODO-301 API 稳定化）或接 P2 英文 README |
 | 最近一次 push | 2026-09-16（双 remote 一致） |
 
 ---
@@ -29,9 +29,11 @@
 | **v0.1 骨架** | ✅ 完成 | AGENTS.md + 8 skill + Hook + EVOLUTION + LICENSE |
 | **v0.2 example 跑通** | ✅ 完成 | flashcards Phase 1-5，56 测试全绿 |
 | **v0.3 框架升级** | ✅ 完成 | README 30 秒扫视 + AGENTS.md 拆分 + 知识归档 4 件套 + hook 路径修复 |
-| **v0.4 P0 改进** | 🚧 进行中 | TODO-003 拆 Skill 模板（阶段 1 即将开始） |
-| **v0.5 CI + 英文** | ⏳ 远期 | CI 自动化 + 英文 README |
-| **v1.0 稳定 API** | ⏳ 远期 | 锁定 skill API，向后兼容 |
+| **v0.4 P0 改进** | ✅ 完成 | 拆 Skill 模板（三层）+ Session State + 契约测试 |
+| **v0.5 P1 业务改进** | ✅ 完成 | 路由图 + 意图分类 + Hook v2 + Evolution 三层 |
+| **v0.6 simplification** | ✅ 完成 | 代码简洁之道 10 条 + check_simplicity |
+| **v0.7 P1 业务纪律** | ✅ 完成 | 5 问快筛 + 竞品 + 多视角 + pre-mortem + 版本化（2026-09-24） |
+| **v0.8+ CI + 英文** | ⏳ 远期 | CI 自动化 + 英文 README + API 稳定化 |
 
 ---
 
@@ -68,6 +70,7 @@
 | D-006 | README 30 秒扫视重写 | 2026-09-16 |
 | D-007 | AGENTS.md 按域拆分 | 2026-09-16 |
 | D-008 | hook 路径修复（codex/ → .codex/） | 2026-09-16 |
+| **D-009** | **P1 业务纪律体系（5 问快筛+竞品+多视角+pre-mortem+版本化）** | **2026-09-24** |
 
 ---
 
