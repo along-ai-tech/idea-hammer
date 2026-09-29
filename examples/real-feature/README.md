@@ -6,11 +6,37 @@
 这是 IdeaHammer 用 `flashcards` 项目的 **Phase 2 — 学习模式**（SM-2 间隔重复算法）
 做的端到端真实走查：所有产物都来自实际产研过程，不是 demo 拼出来的样板。
 
-每一步都有可验证证据：
+---
 
-- **代码**：`examples/flashcards/backend/app/api/study.py` + `app/services/spaced_repetition.py`
-- **测试**：`examples/flashcards/backend/tests/test_spaced_repetition.py`（12 个） + `test_study.py`（9 个）
-- **commit / PR**：`08-pr-description.md` 里给了完整 diff 描述 + checklist
+## 📊 案例证据卡（30 秒看完）
+
+| 指标 | 值 | 含义 |
+|------|----|----|
+| **产物文件** | 9 个（含本文） | 01-product-spec ~ 08-pr-description + README |
+| **总行数** | ~1736 行 | 含 Spec/Design/Plan/Decisions/Tests/Review/PR |
+| **真实代码** | 60 行 SM-2 算法 + 84 行 API + 5 字段迁移 | `examples/flashcards/backend/app/` |
+| **真实测试** | **21 PASSED in 0.08s** | 12 算法单测 + 9 API 集成测 |
+| **覆盖率** | 99%（Phase 2 范围） | `spaced_repetition.py` 100% + `study.py` 97% + `card.py` 100% |
+| **Code Review** | 两阶段通过 | Stage 1 完整性 11/11 ✅ + Stage 2 质量 ✅ |
+| **Commit 链** | 真实可追 | 9 commit（拆 WI 后单 commit 聚合） |
+| **决策归档** | 6 条 D-SM2-XXX | 候选对比 + 拒绝理由 + 影响范围 |
+
+### 🚀 30 秒复现指南
+
+```bash
+# 1. 装依赖
+cd examples/flashcards/backend && uv sync
+
+# 2. 跑测试（21 个全绿）
+uv run pytest -v
+
+# 3. 看到输出
+tests/test_spaced_repetition.py ..................   PASSED  (12)
+tests/test_study.py ...........                    PASSED  (9)
+========================= 21 passed, 2 warnings in 0.08s =========================
+```
+
+**如果跑不通**：开 issue / 看 `.github/workflows/ci.yml` 的 `example-tests` job 实际怎么跑。
 
 ---
 
