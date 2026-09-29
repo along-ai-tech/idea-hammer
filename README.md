@@ -2,9 +2,7 @@
 
 > **AI 辅助从模糊想法锤出可发布产品** — 一个真实跑通过端到端产研流水线的工程化作品集
 
-**给面试官的 3 分钟路径**：看一眼 [真实 Feature 端到端案例](./examples/real-feature/README.md)
-（业务需求 → Spec → Design → Plan → Session State → AI 开发 → Test → Review → PR）。
-*AI Coding 痕迹自证 / 作者主页：Batch 2-3 上线，先看上面这两个足够 3 分钟路径走通。*
+**给面试官的 3 分钟路径**：看一眼 [`examples/personal-blog/`](./examples/personal-blog/)（按方法论从零到一真跑的 demo）。
 
 ---
 
@@ -14,7 +12,7 @@
 |------|------|
 | **11 skill** | product-spec-builder / design-brief-builder / dev-builder / code-review / bug-fixer / release-builder …全 8 步流水线 |
 | **172 契约测试 + 21 真实 Feature 测试** | 框架自身契约 100% + 真实案例（SM-2 学习模式）全绿 |
-| **1 真实 Feature 案例** | [examples/real-feature/](./examples/real-feature/)：8 个产物文件 / +1736 行 / 锚定 flashcards Phase 2 |
+| **1 真实 Feature 案例** | [`examples/personal-blog/`](./examples/personal-blog/)：按 IdeaHammer 8 步流水线从零到一跑出（建设中） |
 | **15 主题 / 73 文件 / ~7300 行** 工程级约束 | 编码规范 / 库选型 / 性能 / 安全 / 错误处理 / 数据库 / **simplification 10 条** / **compatibility 6 条** |
 | **5 主题 / 6 文件** 业务纪律 | Phase 0 5 问快筛 / 竞品扫描 / pre-mortem / ceo-eng-qa 多视角 / 版本化与不可变 |
 | **MIT** | 可商用 / 可改 / 可二次发布 |
@@ -46,7 +44,7 @@
 ## 📑 目录
 
 1. [首屏证据（已在顶部）](#-首屏证据3-秒看清这不是-ppt)
-2. [真实 Feature 端到端案例](./examples/real-feature/README.md) ← **3 分钟看这个就够了**
+2. [真实 Feature 端到端案例](./examples/personal-blog/) ← **3 分钟看这个就够了（建设中）**
 3. [AI Coding 痕迹自证](./AIDER-FOOTPRINT/ai-coding-footprint.md)
 4. [它解决什么问题](#-它解决什么问题)
 5. [快速开始](#-快速开始)
@@ -204,7 +202,7 @@ codex
    ✅ 可发布产品
 ```
 
-完整 demo：`examples/flashcards/`（已跑通 Phase 1-5，56 测试全绿，README 在 `examples/flashcards/README.md`）
+完整 demo：`examples/personal-blog/`（按方法论从零到一真跑，README 在 `examples/personal-blog/README.md`）
 
 ---
 
@@ -294,8 +292,7 @@ flowchart TB
 | [.codex/EVOLUTION.md](./.codex/EVOLUTION.md)                                         | 自进化机制说明                                                                                                                                                                                                 |
 | [agents/skills/](./agents/skills/)                                                   | **11 个 skill**（每个含 SKILL.md + principles/ + workflows/ + contracts/）                                                                                                                                      |
 | [agents/skills/_engineering-constraints/](./agents/skills/_engineering-constraints/) | **15 主题工程级约束**（coding-style / ecosystem-matrix / anti-reinvent / performance / security / concurrency / api-design / observability / ci-cd / error-handling / database / dependency-mgmt / i18n-a11y / **simplification** / **compatibility**） |
-| [examples/flashcards/](./examples/flashcards/)                                       | 端到端 demo：本地闪卡应用（Python + Vue3 + Element Plus，已跑通 Phase 1-5）                                                                                                                                            |
-| [examples/real-feature/](./examples/real-feature/)                                 | **真实 Feature 端到端案例**：业务需求 → Spec → Design → Plan → AI 开发 → Test → Review → PR（8 个产物文件 + 21 测试全绿，详见 `examples/real-feature/README.md`） |
+| [`examples/personal-blog/`](./examples/personal-blog/)                                 | **从零到一真跑的 demo**：按 IdeaHammer 8 步流水线（Spec → Design → Plan → Dev → Test → Review → PR），Phase 0-1 完成后填入 |
 | [schemas/session.schema.json](./schemas/session.schema.json)                         | Session State schema（跨 session 持久化上下文）                                                                                                                                                                  |
 | [tests/contract/](./tests/contract/)                                                 | **172 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则）— CI 卡门禁                                                                                                                                  |
 | [scripts/check_simplicity.py](./scripts/check_simplicity.py)                         | **代码简洁自动校验**（文件/函数/圈复杂度阈值 + dead code / 命名）                                                                                                                                                          |
