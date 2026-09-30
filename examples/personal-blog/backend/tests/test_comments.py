@@ -7,7 +7,7 @@
 约束（Design-Brief §comments）：
 - content 不能为空
 - post_id 必存在（外键 → Post.id，Post 删除则级联删评论）
-- nickname 非空（v0 简化：单访客硬编码 nickname 为 "visitor"）
+- nickname 客户端提供（Pydantic 校验非空、≤50 字符），v0 不做用户系统
 
 fixtures (client / db_engine / db_session) 由 conftest.py 提供。
 """

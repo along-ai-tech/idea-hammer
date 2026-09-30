@@ -136,3 +136,44 @@ def test_pin_post_toggles_is_pinned(client: TestClient):
     response = client.patch(f"/api/posts/{created['id']}/pin")
     assert response.status_code == 200
     assert response.json()["is_pinned"] is False
+
+
+# ---------- WI-5 F-2.3 详情端点聚合 ----------
+
+def test_get_post_detail_includes_comments(client: TestClient):
+    """详情端点应返回评论列表（含 nickname / content / created_at）"""
+    post = _create_post(client, title="有评论的博客", content="x").json()
+    client.post(f"/api/posts/{post['id']}/comments", json={"nickname": "alice", "content": "1"})
+    client.post(f"/api/posts/{post['id']}/comments", json={"nickname": "bob", "content": "2"})
+
+    data = client.get(f"/api/posts/{post['id']}").json()
+    assert len(data["comments"]) == 2
+    nicknames = {c["nickname"] for c in data["comments"]}
+    assert nicknames == {"alice", "bob"}
+    contents = {c["content"] for c in data["comments"]}
+    assert contents == {"1", "2"}
+
+
+def test_get_post_detail_includes_up_and_down_counts(client: TestClient):
+    """详情端点应返回 up_count / down_count"""
+    post = _create_post(client, title="有反应的博客", content="x").json()
+    h1 = {"X-Forwarded-For": "1.1.1.1"}
+    h2 = {"X-Forwarded-For": "2.2.2.2"}
+    h3 = {"X-Forwarded-For": "3.3.3.3"}
+
+    client.post(f"/api/posts/{post['id']}/react", json={"type": "up"}, headers=h1)
+    client.post(f"/api/posts/{post['id']}/react", json={"type": "up"}, headers=h2)
+    client.post(f"/api/posts/{post['id']}/react", json={"type": "down"}, headers=h3)
+
+    data = client.get(f"/api/posts/{post['id']}").json()
+    assert data["up_count"] == 2
+    assert data["down_count"] == 1
+
+
+def test_get_post_detail_returns_empty_collections_when_no_interactions(client: TestClient):
+    """无评论无反应的博客详情应返回空 collections + 全 0"""
+    post = _create_post(client, title="孤博客", content="x").json()
+    data = client.get(f"/api/posts/{post['id']}").json()
+    assert data["comments"] == []
+    assert data["up_count"] == 0
+    assert data["down_count"] == 0
