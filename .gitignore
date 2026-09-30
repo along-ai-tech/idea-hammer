@@ -48,6 +48,7 @@ yarn-debug.log*
 flashcards.db
 *.sqlite
 *.sqlite3
+*.db
 
 # IdeaHammer session state（反向排除）
 !.idea-hammer/
