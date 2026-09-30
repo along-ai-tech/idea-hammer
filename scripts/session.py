@@ -17,6 +17,9 @@ session.py — IdeaHammer Session State 工具
   # 验证
   python3 scripts/session.py validate [--path PATH]
 
+  # 往数组 key 追加一条（key 不存在则建空数组）
+  python3 scripts/session.py append <key> <value> [--path PATH]
+
   # 显示精简版（启动时只读这个，省 token）
   python3 scripts/session.py context [--path PATH]
 """
@@ -93,6 +96,19 @@ def update_field(session, key, value):
         obj[last] = value
 
 
+def append_to_array(session, key, value):
+    """往 JSON 数组 key 追加一条；key 不存在则建空数组再追加。
+
+    只支持顶层数组 key（key 中点号视为字面量）。
+    必须先读后写，避免覆盖并发写丢数据（调用方负责）。
+    """
+    if key in session and not isinstance(session[key], list):
+        raise ValueError(f"key {key!r} 已存在但不是数组（type={type(session[key]).__name__}）")
+    if key not in session:
+        session[key] = []
+    session[key].append(value)
+
+
 def validate(session):
     """基本验证（必填字段、类型）。"""
     errors = []
@@ -124,6 +140,15 @@ def cmd_write(args):
 
 def cmd_update(args):
     cmd_write(args)
+
+
+def cmd_append(args):
+    session = read_session(args.path)
+    if session is None:
+        session = {"schema_version": SCHEMA_VERSION}
+    append_to_array(session, args.key, json.loads(args.value))
+    write_session(session, args.path)
+    print(json.dumps({"appended": args.key, "path": str(find_session_path(args.path))}, ensure_ascii=False))
 
 
 def cmd_validate(args):
@@ -166,6 +191,12 @@ def main():
     p_upd.add_argument("--key", required=True)
     p_upd.add_argument("--value", required=True)
     p_upd.set_defaults(func=cmd_update)
+
+    p_app = sub.add_parser("append", help="往 JSON 数组 key 追加一条（key 不存在则建空数组）")
+    p_app.add_argument("--path")
+    p_app.add_argument("key", help="顶层数组 key 名（key 含点号视为字面量）")
+    p_app.add_argument("value", help="JSON 字面量")
+    p_app.set_defaults(func=cmd_append)
 
     p_val = sub.add_parser("validate", help="校验")
     p_val.add_argument("--path")

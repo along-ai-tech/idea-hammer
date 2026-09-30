@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
-  "last_updated": "2026-09-16T19:39:34.152914+08:00",
+  "last_updated": "2026-09-30T18:30:00+08:00",
   "current_project": "idea-hammer",
-  "current_phase": "v0.4.0 P0-1 / 3",
-  "current_task": "测试 session.py 工具",
+  "current_phase": "v0.8.0-dev · PRD 吸收 + spec纪律补强 (D-012)",
+  "current_task": "worker 已完成 v0.8.0 改动，待用户验收",
   "key_decisions": [
     {
       "id": "D-001",
@@ -52,6 +52,30 @@
       "summary": "hook 路径修复：codex/ → .codex/（4 个月盲区）",
       "date": "2026-09-16",
       "tag": "tooling"
+    },
+    {
+      "id": "D-009",
+      "summary": "P1 业务纪律体系（5 问快筛+竞品+多视角+pre-mortem+版本化）",
+      "date": "2026-09-24",
+      "tag": "framework"
+    },
+    {
+      "id": "D-010",
+      "summary": "竞品扫描扩为 Part1 差异化 + Part2 行业借鉴双轨；模板新增 1.7 节、workflow 加 Phase 1.6、phase 表同步；迭代模式默认跳过 Part2",
+      "date": "2026-09-29",
+      "tag": "framework"
+    },
+    {
+      "id": "D-011",
+      "summary": "竞品扫描引入项目类型路由（业务参照型 vs 市场机会型）：模板新增 0.5 产品类型字段、workflow 加 Phase 0.5、Phase 1.5/1.6 按类型加权；业务参照型 1.7 强化，市场机会型 1.6 严格",
+      "date": "2026-09-30",
+      "tag": "framework"
+    },
+    {
+      "id": "D-012",
+      "summary": "v0.8.0 PRD 吸收 + spec 纪律补强（文档元信息表/三问/架构图/流程图/状态流转/并发路由/3 个原则文件）",
+      "date": "2026-09-30",
+      "tag": "framework"
     }
   ],
   "open_questions": [],
@@ -64,9 +88,9 @@
   "recent_projects": [
     {
       "name": "idea-hammer",
-      "last_touched": "2026-09-16",
-      "current_phase": "v0.4.0 P0-1 / 3",
-      "last_decision_id": "D-008"
+      "last_touched": "2026-09-30",
+      "current_phase": "v0.8.0-dev · PRD 吸收 + spec纪律补强 (D-012)",
+      "last_decision_id": "D-012"
     },
     {
       "name": "flashcards",

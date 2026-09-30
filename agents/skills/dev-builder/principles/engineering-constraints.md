@@ -82,3 +82,7 @@ dev-builder 每个 Task 启动：
 - **复用优先**（已有）→ 落地到 `anti-reinvent/`
 - **测试纪律**（已有）→ 与 `_engineering-constraints/` 并行不冲突
 - **范围纪律**（已有）→ 配合 `error-handling/` 的统一异常规范
+
+## Spec 字段映射（v0.8.0 起）
+
+读 spec 时按 v0.8.0 模板字段提取约束：展示字段→UI；输入字段→API；状态流转→状态机实现；派生计算→公式/聚合逻辑。

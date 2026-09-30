@@ -28,7 +28,7 @@ description: 当用户说想做一个产品、应用或工具，或者说要加�
     └── examples/                 # 填充示例
 
 [引用]
-    原则：principles/interview-discipline.md（必读）/ principles/ai-capability-awareness.md / principles/scope-discipline.md / principles/phase-discipline.md / principles/question-bank.md / **principles/business-context-check.md（0-1 必走）** / **principles/competitive-scan.md（0-1 必走）** / **principles/ceo-lens.md（收尾必走）** / **principles/eng-lens.md（收尾必走）** / **principles/qa-lens.md（收尾必走）**
+    原则：principles/interview-discipline.md（必读）/ principles/ai-capability-awareness.md / principles/scope-discipline.md / principles/phase-discipline.md / principles/question-bank.md / **principles/business-context-check.md（0-1 必走）** / **principles/competitive-scan.md（0-1 必走）** / **principles/ceo-lens.md（收尾必走）** / **principles/eng-lens.md（收尾必走）** / **principles/qa-lens.md（收尾必走）** / **principles/spec-red-green.md（改 spec 前必读）** / **principles/path-classification.md（Phase 0 前必读）** / **principles/spec-audit.md（收尾必读）**
     流程：workflows/workflow-0-1.md（0-1）/ workflows/workflow-iteration.md（迭代）
     契约：contracts/input.schema.json / contracts/output.schema.json
     模板：templates/product-spec-template.md / templates/changelog-template.md

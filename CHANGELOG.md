@@ -3,6 +3,41 @@
 本项目的所有重要变更记录于此。格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.8.0-dev]
+
+需求纪律强化版（spec 层）。让 Product Spec 一出就能被下游流水线（design-brief / dev-planner / dev-builder / code-review）一次写对，减少下游返工。本批次只做 spec 层纪律，不做 subagent 任务循环（v0.9.0）、不做运行时验证（v1.0.0）。
+
+### 新增
+
+- **PRD 吸收 11 处字段**（v0.8.0 模板）：文档元信息表 / 三问结构 / 架构图 / 流程图 / 展示字段 / 取消态 / 派生计算 / 状态流转 / 并发与一致性路由 / 图必填规则
+- **3 个原则文件**：
+  - `spec-red-green.md`（44 行）— Spec 自身 TDD 纪律，改 spec 前先有反例
+  - `path-classification.md`（41 行）— spike / bounded / architectural 三路径分类
+  - `spec-audit.md`（38 行）— Spec 收尾自检清单（11 项必填 / 应填 / 选填）
+- **D-012 决策记录**（DECISIONS.md）
+
+### 改动
+
+- `product-spec-template.md`：原 333 行 → 改后 400 行（净增 67 行）
+- `product-spec-builder/SKILL.md`：`[引用]` 段加 3 个新原则
+- `dev-planner/SKILL.md`：`[引用]` 段加 Spec 字段映射说明（输入字段→API / 展示字段→UI / 状态流转→状态机）
+- `dev-builder/principles/engineering-constraints.md`：加 1 段 Spec 字段映射说明
+- `examples/personal-blog/Product-Spec.md`：升级到 v0.8.0 模板（加文档元信息表 / 三问 / 架构图 / 流程图 / 状态流转 / 并发与一致性路由）
+
+### PRD 不采的 2 条
+
+- 菜单层级（绑死 UI）
+- 菜单路径分组（同上）
+
+### 借鉴 superpowers/gstack 但不进 v0.8.0
+
+- subagent 任务循环
+- judgment ledger
+- auto-fix 二元
+- 3+fix 架构门
+
+——统一进 v0.9.0。
+
 ## [0.7.0-dev]
 
 最新开发分支。含 P1 业务纪律体系（防方向错 + 防遗漏 + 防上下游影响）。
