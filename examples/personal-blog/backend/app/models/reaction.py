@@ -1,9 +1,17 @@
-"""Reaction ORM 模型（WI-4 stub，WI-3 先声明避免 Post mapper 失败）
+"""Reaction ORM 模型（WI-4）
 
-点赞 / 点踩 = 一行 (post_id, ip, type)，用 UNIQUE(post_id, ip) 防重复。
-WI-4 会接入 API。
+点赞 / 点踩 = 一行 (post_id, ip, type)，UNIQUE(post_id, ip) 防重复。
+同 IP 切换 type（up → down）= delete 旧 + insert 新，或 UPSERT。
+v0 简化：API 用 "toggle 语义"，不存在则新增、存在则删除（同 IP 不留痕）。
 """
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    DateTime,
+    UniqueConstraint,
+)
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 
@@ -12,6 +20,9 @@ from app.db import Base
 
 class Reaction(Base):
     __tablename__ = "reactions"
+    __table_args__ = (
+        UniqueConstraint("post_id", "ip", name="uniq_post_ip"),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     post_id = Column(
