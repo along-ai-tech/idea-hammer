@@ -13,12 +13,13 @@ create_all 在线程 A 建的表，线程 B 拿 connection 时看到的是另一
 """
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.db import Base, get_db
 from app.main import app
+from app.models import post, comment, reaction  # noqa: F401  确保 mapper 注册
 
 
 @pytest.fixture
@@ -29,6 +30,15 @@ def db_engine():
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
+
+    # SQLite 默认 PRAGMA foreign_keys=OFF，必须每个 connection 显式开启，
+    # 否则 ON DELETE CASCADE 在 DDL 上写了也是无效（与 app/db.py 行为一致）。
+    @event.listens_for(engine, "connect")
+    def _enable_sqlite_fk(dbapi_connection, _):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
     Base.metadata.create_all(bind=engine)
     yield engine
     engine.dispose()

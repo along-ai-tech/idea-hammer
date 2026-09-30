@@ -4,7 +4,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.db import Base, engine
-from app.api import health, posts  # noqa: F401  后续会加 comments / reactions
+from app.api import health, posts, comments  # noqa: F401
+
+# 显式 import 所有 ORM 模型，确保 Base.metadata 在 create_all 时能见到全部表
+from app.models import post, comment, reaction  # noqa: F401
 
 
 @asynccontextmanager
@@ -22,3 +25,4 @@ app = FastAPI(
 )
 app.include_router(health.router, prefix="/api")
 app.include_router(posts.router, prefix="/api")
+app.include_router(comments.router, prefix="/api")
