@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.db import Base, engine
-from app.api import health  # noqa: F401  后续会加 posts / comments / reactions
+from app.api import health, posts  # noqa: F401  后续会加 comments / reactions
 
 
 @asynccontextmanager
@@ -21,3 +21,4 @@ app = FastAPI(
     lifespan=lifespan,
 )
 app.include_router(health.router, prefix="/api")
+app.include_router(posts.router, prefix="/api")
