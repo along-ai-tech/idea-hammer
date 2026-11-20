@@ -2,7 +2,7 @@
 
 > **AI 辅助从模糊想法锤出可发布产品** — 一个真实跑通过端到端产研流水线的工程化作品集
 
-**给面试官的 3 分钟路径**：看一眼 [`examples/personal-blog/`](./examples/personal-blog/)（按方法论从零到一真跑的 demo）。
+**给各位看官的 3 分钟路径**：看一眼 [`examples/personal-blog/`](./examples/personal-blog/)（按方法论从零到一真跑的 demo）。
 
 ---
 
