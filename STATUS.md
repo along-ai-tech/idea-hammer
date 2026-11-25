@@ -179,6 +179,5 @@ dev-builder 样板重构（135 → 33 行 SKILL.md + 15 个新文件）：
 
 ## 联系方式
 
-- 作者：wuzhilong
-- 简历已包含本项目（IdeaHammer GitHub 仓库链接）
-- 项目目的：展示 AI 编程标准化落地能力
+- 维护者：wuzhilong
+- 项目定位：面向 AI-native coding 的开源工程框架

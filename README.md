@@ -1,21 +1,22 @@
 # IdeaHammer
 
-> **AI 辅助从模糊想法锤出可发布产品** — 一个真实跑通过端到端产研流水线的工程化作品集
+> **面向 AI-native coding 的开源工程框架** — 把模糊想法锤成可发布产品，全程由 Spec、测试、审查与需求追踪守住纪律
 
 **3 分钟看懂完整案例**：打开 [`examples/personal-blog/`](./examples/personal-blog/)，按 8 步流水线从 Spec 一路看到发布——含可运行的前后端、测试、审查报告与需求追踪矩阵。
 
 ***
 
-## 📊 首屏证据（3 秒看清这不是 PPT）
+## 📊 项目构成
 
-| 数字                                 | 含义                                                                                                              |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| **11 skill**                       | product-spec-builder / design-brief-builder / dev-builder / code-review / bug-fixer / release-builder …全 8 步流水线 |
-| **185 契约测试 + 39 真实 Feature 测试**    | 框架自身契约 100% + 示例博客前后端测试全绿                                                                                        |
-| **1 真实 Feature 案例**                | [`examples/personal-blog/`](./examples/personal-blog/)：按 8 步流水线从零到一跑通（Spec → 设计 → 计划 → TDD → 审查 → 发布 → 追踪） |
-| **15 主题 / 73 文件 / \~7300 行** 工程级约束 | 编码规范 / 库选型 / 性能 / 安全 / 错误处理 / 数据库 / **simplification 10 条** / **compatibility 6 条**                             |
-| **5 主题 / 6 文件** 业务纪律               | Phase 0 5 问快筛 / 竞品扫描 / pre-mortem / ceo-eng-qa 多视角 / 版本化与不可变                                                    |
-| **MIT**                            | 可商用 / 可改 / 可二次发布                                                                                                |
+**流水线**：11 个 skill 覆盖 8 步——需求澄清 → Product-Spec → Design-Brief → 设计稿 → DEV-PLAN → TDD 开发 → 两阶段审查 → 构建发布；bug-fixer 作为审查失败时的回派回路，goal-creator / evolution-engine / skill-builder 是三个元 skill。
+
+**约束与纪律**：15 个主题、73 个文件的工程级约束（编码规范、库选型、性能、安全、并发、数据库、简化、兼容性等），以及 5 个主题、6 个文件的业务纪律（商业可行性快筛、竞品扫描、多视角自检、pre-mortem、版本化与不可变）。dev-builder 启动时必读，code-review 第二阶段必查。
+
+**示例工程**：[`examples/personal-blog/`](./examples/personal-blog/) 按流水线从零跑通，FastAPI + Vue3 全栈博客，Spec、开发计划、代码、测试、审查报告、发布清单与需求追踪矩阵齐全。
+
+**可验证的结果**：仓库自带 185 个框架契约测试（`pytest tests/contract/`）与 39 个示例测试（后端 29 + 前端 10），均可在本地跑通；`python3 scripts/check_traceability.py` 校验需求→任务→测试→版本链路。
+
+**许可**：MIT，可商用、可修改、可二次发布。
 
 [![CI](https://img.shields.io/github/actions/workflow/status/along-ai-tech/idea-hammer/ci.yml?label=CI\&logo=github)](.github/workflows/ci.yml)
 [![Version](https://img.shields.io/badge/version-0.7.0--dev-blue.svg)](CHANGELOG.md)
@@ -43,19 +44,18 @@
 
 ## 📑 目录
 
-1. [首屏证据（已在顶部）](#-首屏证据3-秒看清这不是-ppt)
-2. [真实 Feature 端到端案例](./examples/personal-blog/) ← **推荐从这里看方法论如何落地**
-3. [AI Coding 痕迹自证](./AIDER-FOOTPRINT/ai-coding-footprint.md)
-4. [它解决什么问题](#-它解决什么问题)
-5. [快速开始](#-快速开始)
-6. [示例对话](#-示例对话)
-7. [架构与组件关系](#-架构与组件关系)
-8. [详细文档](#-详细文档)
-9. [方法论详解](#-方法论详解)
-10. [路线图](#-路线图)
-11. [谁会用 / 项目目的](#-谁会用--项目目的)
-12. [贡献](#-贡献)
-13. [许可 & 致谢](#-许可--致谢)
+1. [项目构成（已在顶部）](#-项目构成)
+2. [端到端示例：personal-blog](./examples/personal-blog/) ← 完整走一遍 8 步流水线
+3. [它解决什么问题](#-它解决什么问题)
+4. [快速开始](#-快速开始)
+5. [示例对话](#-示例对话)
+6. [架构与组件关系](#-架构与组件关系)
+7. [详细文档](#-详细文档)
+8. [方法论详解](#-方法论详解)
+9. [路线图](#-路线图)
+10. [谁会用 / 项目定位](#-谁会用--项目定位)
+11. [贡献](#-贡献)
+12. [许可 & 致谢](#-许可--致谢)
 
 ***
 
@@ -88,7 +88,7 @@
 
 ***
 
-## 🤔 和同类项目有什么不同
+## 🤔 与同类项目的对照
 
 | 项目                  | 端到端    | Spec 驱动 | TDD 强制 | 审查闭环  | **工程级约束**           | **业务纪律**          | 进化机制 |
 | ------------------- | ------ | ------- | ------ | ----- | ------------------- | ----------------- | ---- |
@@ -97,7 +97,7 @@
 | 裸 Codex/Claude Code | ❌      | ❌       | ❌      | ❌     | ❌                   | ❌                 | ❌    |
 | 纯 vibe coding       | ❌      | ❌       | ❌      | ❌     | ❌                   | ❌                 | ❌    |
 
-**它是 Spec Kit + 工程级约束 + 业务纪律的三重组合**——比 vibe coding 多纪律围栏，比传统 PRD 多 AI 执行力，比裸 Codex 多工程级底线 + 业务底线。防"做完发现没人要 / AI 改价格把老订单也改了 / Spec 只过一种视角漏问题"。
+IdeaHammer 的组成是 Spec 驱动 + 工程级约束 + 业务纪律：前者定义做什么，后两者约束 AI 怎么写、写成什么样。三者分别对应表中的列，每一项都能在仓库里找到对应文件。
 
 ***
 
@@ -122,7 +122,7 @@
 - 上下文污染 → 不分层（pure 函数、副作用隔离、幂等性）
 - 增量退化 → dead code / 无意义命名 / 装饰器套娃 / TODO 残留
 
-**工程级约束把 AI 写代码的"反面教材"全列出来**——15 主题 / 73 文件 / 7300+ 行具体规则，dev-builder 启动必读，code-review Stage 2 必查：
+**工程级约束**：15 主题 / 73 文件 / 7300+ 行具体规则，逐条对应 AI 写代码的常见反模式。dev-builder 启动必读，code-review Stage 2 必查：
 
 - 13 个**原始主题**（编码规范 / 库选型 / 造轮子红线 / 性能 / 安全 / 并发 / API / 可观测 / CI·CD / 异常 / 数据库 / 依赖 / 国际化）+ **`simplification`（代码简洁之道 10 条）** + **`compatibility`（API 版本化 / 向后兼容 / blast radius / 数据迁移 / feature flag / 交付完整性）**
 
@@ -146,7 +146,7 @@ AI 写代码的 **3 大特有补充**（写在 `simplification/` 主题下）：
 - 唯一视角写 Spec → 1 年后回看才后悔"当时没记下来"
 - API 不版本化 → 上游改动炸下游所有调用方（兼容性问题）
 
-**P1 业务纪律把以上 5 类"做完才发现"全列出来**——6 个文件 / \~600 行轻量纪律：
+**业务纪律**用 6 个文件、约 600 行覆盖上述 5 类问题：
 
 | 主题                                | 解决什么                                            | 关键文件                                                               |
 | --------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------ |
@@ -179,7 +179,7 @@ codex
 ## 💬 示例对话
 
 ```
-👤 用户：我想做一个本地闪卡应用，准备 AI 应用岗面试。
+👤 用户：我想做一个本地闪卡应用，用来按 SM-2 间隔重复复习。
 
 🤖 主 Agent：好，进入 product-spec-builder。先做 Phase 0 商业可行性 5 问快筛，
    然后是 persona 和核心 job。准备好了就开始。
@@ -199,29 +199,29 @@ codex
    → dev-builder：按 Phase 1 骨架开跑，RED → GREEN → REFACTOR
         后端 FastAPI + SQLAlchemy + SQLite
         前端 Vue3 + Element Plus + Vite
-        14 个测试先写失败再补实现
-   → code-reviewer：Stage 1 完整性 ✅ / Stage 2 质量 ✅（按工程级约束扫了 0 反模式）
+        先写失败测试，再补实现
+   → code-reviewer：Stage 1 完整性、Stage 2 质量（按工程级约束检查）均通过
    → release-builder：打包
    ✅ 可发布产品
 ```
 
-完整 demo：`examples/personal-blog/`（按方法论从零到一真跑，README 在 `examples/personal-blog/README.md`）
+完整示例：`examples/personal-blog/`（按 8 步流水线走完，说明见 `examples/personal-blog/README.md`）
 
 ***
 
 ## 🏗 架构与组件关系
 
 ```mermaid
-flowchart TB
-    User([用户输入"我想做 X"])
+graph TB
+    User([用户输入：我想做 X])
 
-    subgraph Main["主 Agent（AGENTS.md）"]
+    subgraph Main[主 Agent（AGENTS.md）]
         SessionLoad["SESSION-LOAD<br/>读精简版 session.json"]
         Router["STATE-ROUTING<br/>检测项目进度"]
         Orchestrator["规划 + 自驱执行"]
     end
 
-    subgraph Skills["11 个 skill（按 description 自动触发）"]
+    subgraph Skills[11 个 skill（按 description 自动触发）]
         S1[product-spec-builder]
         S2[design-brief-builder]
         S3[design-maker]
@@ -235,12 +235,12 @@ flowchart TB
         M3[skill-builder]
     end
 
-    subgraph SubAgents["子 Agent（显式 spawn）"]
+    subgraph SubAgents[子 Agent（显式 spawn）]
         CR[code-reviewer<br/>两阶段审查]
         ER[evolution-runner<br/>消化 signals]
     end
 
-    subgraph Hooks["Hook 门禁（确定性检查）"]
+    subgraph Hooks[Hook 门禁（确定性检查）]
         H1[SessionStart<br/>check-evolution]
         H2[PreToolUse<br/>pre-tool-shell]
         H3[PostToolUse<br/>auto-lint / mark-review-needed]
@@ -248,26 +248,26 @@ flowchart TB
         H5[UserPromptSubmit<br/>detect-feedback-signal]
     end
 
-    subgraph EC["工程级约束（跨 skill 共享）"]
+    subgraph EC[工程级约束（跨 skill 共享）]
         EC1[15 主题 / 73 文件<br/>编码规范 + 库选型 + 反模式]
         EC2[simplification<br/>10 条原则]
         EC3[compatibility<br/>API 版本化]
     end
 
     User --> SessionLoad --> Router --> Orchestrator
-    Orchestrator -->|"按 description 触发"| Skills
-    Orchestrator -->|"显式 spawn"| SubAgents
-    Orchestrator -.->|"写入 / 读出"| SessionState[(session.json)]
+    Orchestrator -->|按 description 触发| Skills
+    Orchestrator -->|显式 spawn| SubAgents
+    Orchestrator -.->|写入 / 读出| SessionState[(session.json)]
 
     H1 --> ER
-    ER -->|"产出 proposals"| Orchestrator
+    ER -->|产出 proposals| Orchestrator
 
-    S5 -.->|"启动必读"| EC
-    S7 -.->|"Stage 2 必查"| EC
+    S5 -.->|启动必读| EC
+    S7 -.->|Stage 2 必查| EC
 
     H5 --> Signals[(signals.jsonl)]
-    H2 -.->|"防误删 / 超时"| Orchestrator
-    H3 -.->|"标 review-needed"| Orchestrator
+    H2 -.->|防误删 / 超时| Orchestrator
+    H3 -.->|标 review-needed| Orchestrator
 
     classDef main fill:#e3f2fd,stroke:#1976d2
     classDef skill fill:#f3e5f5,stroke:#7b1fa2
@@ -296,9 +296,9 @@ flowchart TB
 | [agents/skills/](./agents/skills/)                                                    | **11 个 skill**（每个含 SKILL.md + principles/ + workflows/ + contracts/）                                                                                                                                                                           |
 | [agents/skills/\_engineering-constraints/](./agents/skills/_engineering-constraints/) | **15 主题工程级约束**（coding-style / ecosystem-matrix / anti-reinvent / performance / security / concurrency / api-design / observability / ci-cd / error-handling / database / dependency-mgmt / i18n-a11y / **simplification** / **compatibility**） |
 | [agents/skills/\_traceability/](./agents/skills/_traceability/)                       | **需求追踪规范**：REQ / AC / DT / TEST / SemVer 的 ID 体系、`@trace` 注解、变更影响分析                                                                                                                                                                            |
-| [`examples/personal-blog/`](./examples/personal-blog/)                                | **从零到一真跑的 demo**：完整 8 步产物 + 可运行前后端 + 测试/审查/发布/追踪证据，入口见其 [README](./examples/personal-blog/README.md)                                                                                                                   |
+| [`examples/personal-blog/`](./examples/personal-blog/)                                | **端到端示例**：完整 8 步产物 + 可运行前后端 + 测试/审查/发布/追踪产物，入口见其 [README](./examples/personal-blog/README.md)                                                                                                                   |
 | [schemas/session.schema.json](./schemas/session.schema.json)                          | Session State schema（跨 session 持久化上下文）                                                                                                                                                                                                         |
-| [tests/contract/](./tests/contract/)                                                  | **184 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则 + 需求追踪）— CI 卡门禁                                                                                                                                                                          |
+| [tests/contract/](./tests/contract/)                                                  | **185 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则 + 需求追踪）— CI 卡门禁                                                                                                                                                                          |
 | [scripts/check\_simplicity.py](./scripts/check_simplicity.py)                         | **代码简洁自动校验**（文件/函数/圈复杂度阈值 + dead code / 命名）                                                                                                                                                                                                    |
 | [scripts/check\_traceability.py](./scripts/check_traceability.py)                     | **需求追踪校验**：REQ→DT→TEST→版本链路缺口、`--write` 生成矩阵、`--impact` 查变更影响面                                                                                                                                                                                 |
 | [CHANGELOG.md](./CHANGELOG.md)                                                        | 变更记录                                                                                                                                                                                                                                           |
@@ -314,11 +314,11 @@ flowchart TB
 
 **SDD（Spec-Driven Development）** — 文档是开发的入口和单一真相源。代码从 Spec 生成，Spec 变则下游文档和代码同步更。
 
-**TDD（Test-Driven Development）** — 铁律：*无失败测试不写生产代码*。RED → GREEN → REFACTOR 强制循环；bug 修复前必先写失败复现测试。**184 个契约测试 + CI 卡门禁**确保框架自身遵循纪律（解决"框架说 TDD 但不测"的自相矛盾）。
+**TDD（Test-Driven Development）** — 铁律：*无失败测试不写生产代码*。RED → GREEN → REFACTOR 强制循环；bug 修复前必先写失败复现测试。框架自身同样由 185 个契约测试与 CI 门禁覆盖。
 
 **Design-Brief 与设计稿** — Spec 是文字（可能歧义），设计稿是图片（无歧义但不直接驱动代码）。Design-Brief 在中间做翻译：把 Spec 钉成可执行的视觉规范，再由 design-maker 生成精确参照图。UI 实现以设计稿为准；无稿无 Brief 时继承项目既有先例，不自由发挥。
 
-**工程级约束（Engineering Constraints）** — IdeaHammer 的核心差异化能力。15 主题 / 73 文件 / 7300+ 行具体规则，覆盖 AI 写代码的常见反模式：
+**工程级约束（Engineering Constraints）** — 框架的主要组成部分之一：15 主题 / 73 文件 / 7300+ 行具体规则，覆盖 AI 写代码的常见反模式：
 
 | 主题                    | 解决什么                                                                             | 关键文件                                             |
 | --------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------ |
@@ -338,11 +338,11 @@ flowchart TB
 | **simplification/**   | 代码简洁之道 10 原则（SRP / YAGNI / 抽象时机 / 阈值 / 命名 / 注释 / 删 dead code / 依赖最小化 / 纯函数 / 幂等） | `single-responsibility.md` `pure-functions.md`   |
 | **compatibility/**    | **API 版本化 / 向后兼容 / blast radius / 数据迁移 / feature flag / 交付完整性**（防上游改动炸下游）        | `api-versioning.md` `blast-radius.md`            |
 
-dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按语言加载对应规范 → 写代码时遵守。code-review Stage 2 必查"是否造轮子 / 是否版本化 / 是否符合 simplification 10 条"。下次再看到 `new SimpleDateFormat()` / `setnx` / `Executors.newFixedThreadPool()` / `UPDATE products SET price = ? WHERE id = ?` 这种反模式会被立刻 catch。
+dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按语言加载对应规范 → 写代码时遵守。code-review Stage 2 必查"是否造轮子 / 是否版本化 / 是否符合 simplification 10 条"。诸如 `new SimpleDateFormat()` / `setnx` / `Executors.newFixedThreadPool()` / `UPDATE products SET price = ? WHERE id = ?` 这类写法会被拦下。
 
 **Session State 持久化** — `.idea-hammer/session.json` 跨 session 保留上下文：当前 Phase / Task / 关键决策摘要（D-001 \~ D-N）/ 用户偏好（语言 / 风格 / 技术栈 / commit 风格）。启动时先读精简版（\~2.3KB），不重读全部域文件（\~15KB），**节省 \~85% 启动 token**。
 
-**进化机制** — 你提的纠正被抓成信号，session 启动时主 Agent 同步消化，逐条问同意即改对应文档。框架越用越准，不是一次性写死的剧本。
+**进化机制** — 你提的纠正被抓成信号，session 启动时主 Agent 同步消化，逐条问同意即改对应文档。框架随使用迭代，而不是一次性写死的规则集。
 
 ***
 
@@ -364,9 +364,9 @@ dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按�
 
 ***
 
-## 👤 谁会用 / 项目目的
+## 👤 谁会用 / 项目定位
 
-**项目目的**：展示 AI 编程标准化落地能力。IdeaHammer 本身不是产品，是一套**让 AI 在产研全流程中守住纪律的围栏**。
+**项目定位**：面向 AI-native coding 的开源工程框架。IdeaHammer 本身不做业务功能，它是一套**让 AI 在产研全流程中守住纪律的围栏**——把 Spec、TDD、审查、发布与需求追踪固化成可执行的流水线。
 
 **典型用户**：
 
@@ -374,7 +374,7 @@ dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按�
 - **AI 重度用户**：用 Codex / Claude Code 写代码时，需要工程级约束防"AI 造轮子 / 写四不像 / 改坏上下游"
 - **想评估这套方法论的人**：可直接跑 [`examples/personal-blog/`](./examples/personal-blog/)，按 8 步产物逐项对照，30 秒扫完 README、10 分钟深入源码
 
-**作者**：wuzhilong · 主仓库 [along-ai-tech/idea-hammer](https://github.com/along-ai-tech/idea-hammer) · 简历已包含本项目链接
+**维护者**：wuzhilong · 主仓库 [along-ai-tech/idea-hammer](https://github.com/along-ai-tech/idea-hammer) · 镜像 [Gitee](https://gitee.com/zhilong811/idea-hammer)
 
 ***
 
