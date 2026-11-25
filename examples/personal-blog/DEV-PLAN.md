@@ -27,6 +27,23 @@
 
 ---
 
+## 1.5 设计输入（来自 Design-Brief）
+
+> 前端 WI 按 Design-Brief 的线框与组件清单实现；本文不重复视觉细节。
+
+| 页面编号 | 路由 | 组件 | 实现 WI | 状态覆盖 |
+|---|---|---|---|---|
+| SCREEN-001 | `/` | CMP-001 / CMP-002 / CMP-005 | WI-9 | Loading / Empty / Error |
+| SCREEN-002 | `/posts` | CMP-005 | WI-9 | Loading / Empty / Error |
+| SCREEN-003 | `/posts/:id` | CMP-001 / CMP-002 / CMP-003 | WI-9 | Loading / Empty / Error / Submitting / Success |
+| SCREEN-004 | `/admin` | CMP-004 / CMP-001 | WI-10 | Loading / Empty / Error / Submitting / Success |
+| SCREEN-005 | `/admin/new` | CMP-003 / CMP-001 | WI-10 | 正常 / Error / Disabled / Submitting / Success |
+| SCREEN-006 | `/admin/posts/:id/edit` | CMP-003 / CMP-001 | WI-10 | 正常 / Error / Disabled / Submitting / Success |
+
+无设计稿，视觉按 Design-Brief §6 的 Element Plus 映射实现；不新增自定义组件。
+
+---
+
 ## 2. WI 拆解
 
 每 WI 一个 commit。**先 RED，再 GREEN**。
@@ -128,6 +145,7 @@
 | **做什么** | `HomeView`（置顶优先 + 分页）、`PostDetailView`（正文 / 评论 / 点赞点踩）、`PostCard`、`ReactionBar` |
 | **依赖** | WI-8 |
 | **关联需求** | REQ-002 / REQ-003 / REQ-004 / AC-002-01 / AC-003-01 / AC-003-02 / AC-004-01 / AC-004-02 |
+| **设计引用** | SCREEN-001 / SCREEN-002 / SCREEN-003；CMP-001 ~ CMP-005 |
 | **完成标准** | 访客可完成"看列表 → 看详情 → 评论 → 点赞"完整路径；空/加载/错误状态齐全 |
 | **TDD** | 先写 `HomeView.test.js`（TEST-033）与 `PostDetailView.test.js`（TEST-034/035），再补实现 |
 | **Commit** | `feat(blog-web): 列表页 + 详情页（评论/点赞）` |
@@ -140,6 +158,7 @@
 | **做什么** | `AdminView`（表格 + 置顶 + 删除）、`PostEditorView`（新建 / 编辑） |
 | **依赖** | WI-9 |
 | **关联需求** | REQ-001 / REQ-005 / AC-001-01 / AC-001-03 / AC-005-01 |
+| **设计引用** | SCREEN-004 / SCREEN-005 / SCREEN-006；CMP-001 / CMP-003 / CMP-004 |
 | **完成标准** | 作者可发布、编辑、删除、置顶；表单空值前端拦截；保存后回列表 |
 | **TDD** | 先写 `AdminView.test.js`（TEST-036/037）与 `PostEditorView.test.js`（TEST-038），再补实现 |
 | **Commit** | `feat(blog-web): 管理后台（发布/编辑/删除/置顶）` |

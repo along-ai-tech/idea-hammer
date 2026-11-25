@@ -3,7 +3,7 @@
   "title": "DesignBriefOutput",
   "description": "Design-Brief.md 结构化输出",
   "type": "object",
-  "required": ["product_form", "target_audience", "design_axes", "references"],
+  "required": ["product_form", "target_audience", "ux", "design_axes", "references"],
   "properties": {
     "product_form": {
       "type": "string",
@@ -13,6 +13,63 @@
     "target_audience": {
       "type": "string",
       "description": "目标用户画像"
+    },
+    "ux": {
+      "type": "object",
+      "description": "UX 四要素；未齐不得进入高保真",
+      "required": ["personas", "user_flows", "ia", "wireframes"],
+      "properties": {
+        "personas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role", "task", "focus"],
+            "properties": {
+              "role": {"type": "string"},
+              "task": {"type": "string"},
+              "focus": {"type": "string"}
+            }
+          }
+        },
+        "user_flows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["entry", "steps", "branches", "failure_handling", "confirmations", "completion"],
+            "properties": {
+              "entry": {"type": "string"},
+              "steps": {"type": "array", "items": {"type": "string"}},
+              "branches": {"type": "array", "items": {"type": "string"}},
+              "failure_handling": {"type": "array", "items": {"type": "string"}},
+              "confirmations": {"type": "array", "items": {"type": "string"}},
+              "completion": {"type": "string"}
+            }
+          }
+        },
+        "ia": {
+          "type": "object",
+          "required": ["navigation", "pages"],
+          "properties": {
+            "navigation": {"type": "string"},
+            "pages": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "wireframes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["screen", "layout", "content_regions", "hierarchy", "actions", "page_relations"],
+            "properties": {
+              "screen": {"type": "string"},
+              "layout": {"type": "string"},
+              "content_regions": {"type": "array", "items": {"type": "string"}},
+              "hierarchy": {"type": "string"},
+              "actions": {"type": "string"},
+              "page_relations": {"type": "string"}
+            }
+          }
+        }
+      }
     },
     "personality": {
       "type": "string",

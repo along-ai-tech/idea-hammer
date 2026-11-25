@@ -3,11 +3,12 @@
 > 从需求到发布的每条链路都要有稳定 ID，能被机器解析、能被脚本校验。只知道"功能开发了"不够。
 
 [链路]
-    需求 → 用户任务 → 开发任务 → 测试 → 发布版本
-    REQ  → TASK     → DT       → TEST → vX.Y.Z
+    需求 → 设计 → 用户任务 → 开发任务 → 测试 → 发布版本
+    REQ  → SCREEN/CMP → TASK → DT → TEST → vX.Y.Z
 
     每个箭头都必须靠 ID 显式关联，不靠文件名、标题或记忆：
     - Product-Spec.md：REQ 声明关联 TASK / FLOW，并给出可测试的 AC
+    - Design-Brief.md：页面 / 组件清单声明覆盖的 REQ（设计层关联）
     - DEV-PLAN.md：每个开发任务 DT 声明覆盖的 REQ / AC
     - 测试代码：每条测试声明自己的 TEST ID 和验证的 REQ / AC
     - RELEASE.json：发布清单声明版本、覆盖的 REQ、通过的 TEST
@@ -20,8 +21,10 @@
 | 需求 | `REQ-###` | `REQ-003` | Product-Spec §5 | 全局唯一，只增不改 |
 | 验收标准 | `AC-<REQ>-<nn>` | `AC-003-01` | Product-Spec §5 | 挂在 REQ 下，全局唯一 |
 | 用户任务 | `TASK-###` | `TASK-005` | Product-Spec §3 | 用户目标，不含实现 |
-| 用户流程 | `FLOW-###` | `FLOW-001` | Product-Spec §4 | 可跨多个 REQ |
+| 用户流程 | `FLOW-###` | `FLOW-001` | Product-Spec §3 | 可跨多个 REQ |
 | 范围项 | `SCOPE-###` / `OUT-###` | `SCOPE-001` | Product-Spec §2 | 做 / 不做 |
+| 页面 | `SCREEN-###` | `SCREEN-003` | Design-Brief 页面清单 | 必须声明覆盖的 REQ |
+| 组件 | `CMP-###` | `CMP-002` | Design-Brief 组件清单 | 被 SCREEN 引用，不直接挂 REQ |
 | 开发任务 | `DT-###` | `DT-004` | DEV-PLAN | 一个 DT 可覆盖多个 REQ |
 | 测试 | `TEST-###` | `TEST-012` | 测试代码注解 | 一条测试一个 ID |
 | 版本 | `vMAJOR.MINOR.PATCH` | `v1.0.0` | RELEASE.json | SemVer |
@@ -84,6 +87,11 @@
 
     查询某需求的影响面：
     python3 scripts/check_traceability.py --project <项目根> --impact REQ-003
+
+[设计关联]
+    Design-Brief 的页面清单必须有「覆盖 REQ」列（模板 2.2 已内置），每个 P0 SCREEN 至少挂一个 REQ。
+    组件（CMP）通过所属 SCREEN 间接关联，不单独挂 REQ。
+    脚本当前校验 REQ → DT → TEST → 版本；设计层由 Design-Brief 清单 + 收尾审查人工核对，暂未纳入 check_traceability（脚本 300 行上限）。
 
 [校验]
     python3 scripts/check_traceability.py --project <项目根>

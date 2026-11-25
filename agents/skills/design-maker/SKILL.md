@@ -7,6 +7,8 @@ description: 当 Design Brief 完成后、用户需要生成设计稿时使用�
 
 [任务]
     读 Product-Spec.md 和 Design-Brief.md，通过设计工具 MCP 生成完整设计交付物。Spec 里每个有 UI 的功能都要有设计页面，每个页面覆盖所有关键状态变体。
+    进场先过 UX 门禁：Persona / User Flow / IA / Wireframe 不齐，退回 design-brief-builder，不出高保真。
+    交付按 Handoff 七件输出，并按视觉验收四类自检后交 dev-builder。
 
 [依赖检测]
     必需：Product-Spec.md、Design-Brief.md、设计工具 MCP。
@@ -23,6 +25,6 @@ description: 当 Design Brief 完成后、用户需要生成设计稿时使用�
     └── contracts/           # 输出 schema
 
 [引用]
-    原则：principles/coverage-discipline.md
+    原则：principles/design-system-handoff.md（必读）/ principles/coverage-discipline.md
     流程：workflows/execute.md
     契约：contracts/output.schema.json

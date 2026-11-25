@@ -3,8 +3,43 @@
   "title": "DesignMakerOutput",
   "description": "design-maker 交付物结构",
   "type": "object",
-  "required": ["design_variables", "components", "pages", "page_states"],
+  "required": ["ux_gate", "design_variables", "components", "pages", "page_states", "handoff"],
   "properties": {
+    "ux_gate": {
+      "type": "object",
+      "description": "UX 四要素门禁，未全 true 不得进入高保真",
+      "required": ["persona", "user_flow", "ia", "wireframe"],
+      "properties": {
+        "persona": {"type": "boolean"},
+        "user_flow": {"type": "boolean", "description": "P0 流程六项齐全：入口 / 每步信息 / 分支 / 失败处理 / 二次确认 / 完成态"},
+        "ia": {"type": "boolean"},
+        "wireframe": {"type": "boolean", "description": "五项齐全：布局 / 内容区域 / 信息层级 / 操作入口 / 页面关系"}
+      }
+    },
+    "handoff": {
+      "type": "object",
+      "description": "Handoff 七件 + 视觉验收结论",
+      "required": ["design_files", "tokens", "component_inventory", "interaction_spec", "page_states", "asset_manifest", "responsive_rules", "visual_qa"],
+      "properties": {
+        "design_files": {"type": "array", "items": {"type": "string"}, "description": "设计稿（页面 + 关键状态）；无设计稿时填降级说明"},
+        "tokens": {"type": "object", "description": "Design Tokens 变量表 + 前端映射方式"},
+        "component_inventory": {"type": "array", "items": {"type": "string"}, "description": "组件编号清单（CMP-###）"},
+        "interaction_spec": {"type": "object", "description": "每个操作的确认 / 处理中 / 成功 / 失败 / 超时 / 重试"},
+        "page_states": {"type": "object", "description": "每页八态矩阵：正常 / Loading / Empty / Error / Disabled / 无权限 / Submitting / Success"},
+        "asset_manifest": {"type": "array", "items": {"type": "string"}, "description": "图标 / 图片 / 字体：名称、尺寸、格式、来源、是否装饰性"},
+        "responsive_rules": {"type": "object", "description": "断点、栅格、折叠顺序、最小可操作尺寸"},
+        "visual_qa": {
+          "type": "object",
+          "required": ["visual", "interaction", "responsive", "accessibility"],
+          "properties": {
+            "visual": {"type": "string"},
+            "interaction": {"type": "string"},
+            "responsive": {"type": "string"},
+            "accessibility": {"type": "string"}
+          }
+        }
+      }
+    },
     "design_variables": {
       "type": "object",
       "description": "设计变量（颜色 / 字体 / 间距 / 圆角）",

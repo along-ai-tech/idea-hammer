@@ -43,9 +43,10 @@ description: DEV-PLAN.md 输出模板。分析 Product Spec 后，按此模板�
 ### DT-001 · [技术任务名]
 
 **关联需求**：AC-001-01 / AC-001-02
+**设计引用**：SCREEN-001 / CMP-001（无 UI 标 N/A）
 **产出**：[这个任务具体产出什么]
 **关键文件**：`src/path/to/file1.tsx`
-**完成判据**：[可验证的完成条件，对应 AC]
+**完成判据**：[可验证的完成条件，对应 AC；UI 任务需含交互与状态]
 
 ### DT-002 · [技术任务名]
 
@@ -94,6 +95,14 @@ description: DEV-PLAN.md 输出模板。分析 Product Spec 后，按此模板�
 |------|-----------|------|
 | `table_name` | Phase N | [用途说明] |
 
+## 设计输入（来自 Design-Brief）
+
+> 无 Design-Brief 时整段标「设计降级：按 Spec + 既定组件库实现」，并说明影响。
+
+| 页面编号 | 路由 | 组件 | 实现 DT | 状态覆盖 |
+|---|---|---|---|---|
+| SCREEN-001 | `/path` | CMP-001 / CMP-003 | DT-00X | Loading / Empty / Error / Success |
+
 ## 开发规则
 
 - 每完成一个 Phase 执行四步走：Code Review → 测试完整性 → 编译验证 → 功能测试
@@ -137,3 +146,7 @@ description: DEV-PLAN.md 输出模板。分析 Product Spec 后，按此模板�
 8. **Phase 顺序**：
    - 基础设施先行：骨架、数据库、路由 → 核心功能 → 辅助功能 → 收尾如 i18n、打包、部署。
    - 不违反依赖关系。
+9. **设计引用**：
+   - 含 UI 的 DT 必须写 SCREEN / CMP 编号，并指向 Design-Brief 中真实存在的条目。
+   - 前端 DT 的完成判据覆盖 Loading / Empty / Error / Success / Submitting，不只写"页面能用"。
+   - 无 Design-Brief 或页面未覆盖时标「设计降级」，不静默跳过。

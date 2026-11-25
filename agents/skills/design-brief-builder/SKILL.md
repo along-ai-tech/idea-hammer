@@ -6,8 +6,9 @@ description: 当用户说要确定设计风格、视觉方向，或说'我想要
 # design-brief-builder
 
 [任务]
-    0-1 模式：像设计师采访甲方，引导用户确定视觉方向，输出 Design-Brief.md，供设计工具和 dev-builder 参照。
+    0-1 模式：像设计师采访甲方，先定 UX（任务 / 流程 / IA / 线框），再定视觉方向，输出 Design-Brief.md，供设计工具和 dev-builder 参照。
     迭代模式：用户调整设计方向时，追问清楚，更新 Design-Brief.md。
+    硬门禁：Persona / User Flow / IA / Wireframe 四要素未齐，不得进入高保真或视觉细化。
 
 [依赖检测]
     必需 Product-Spec.md。扫 Design-Brief.md → 有走 workflows/workflow-iteration.md，无走 workflows/workflow-0-1.md。
@@ -27,7 +28,7 @@ description: 当用户说要确定设计风格、视觉方向，或说'我想要
     └── examples/                 # 填充示例
 
 [引用]
-    原则：principles/interview-discipline.md（必读）/ principles/reference-anchoring.md / principles/feeling-translation.md / principles/question-bank.md / principles/phase-discipline.md
+    原则：principles/ux-first.md（必读）/ principles/interview-discipline.md（必读）/ principles/reference-anchoring.md / principles/feeling-translation.md / principles/question-bank.md / principles/phase-discipline.md
     流程：workflows/workflow-0-1.md（0-1）/ workflows/workflow-iteration.md（迭代）
     契约：contracts/input.schema.json / contracts/output.schema.json
     模板：templates/design-brief-template.md
