@@ -19,7 +19,7 @@ description: product-spec 迭代模式工作流。用户对已有 Product-Spec.m
         轻度变更跳过 Phase 0 / Phase 1.5 / Phase 3.5 / 收尾多视角。
 
 [跳过规则汇总]
-    迭代模式统一跳过：Phase 0 商业可行性快筛 / Phase 1.5 竞品扫描 / Phase 3.5 pre-mortem / 收尾多视角自检。
+    迭代模式统一跳过：Phase 0 产品定义 / Phase 1.5 行业标杆参考 / Phase 3.5 pre-mortem / 收尾多视角自检。
     但重度变更必须补：eng-lens 至少 Q1（数据快照）+ ceo-lens Q2（P0/P1 划分）。
 
 [流程]
@@ -29,7 +29,8 @@ description: product-spec 迭代模式工作流。用户对已有 Product-Spec.m
     停止追问的标准：能直接动手改 Spec，改完用户不会说"不是这个意思"。
 
 [更新]
-    在现有 Spec 上直接改，保持文档结构，只改需要改的部分。
+    在现有 Spec 上直接改，保持文档结构与五层落位（PRD / FRD / User Story / AC / Spec），只改需要改的部分。
+    新增功能必须同时补：用户故事（作为一个…我希望…以便于…）+ FRD 行为描述 + AC（AC-<REQ>-<nn> 只增不改）。
     涉及新 AI 功能 → 补全模板扩展 AI 能力表的概率性四问，质量条、触发方式、不确定行为、降级，加护栏。
     按 templates/changelog-template.md 追加变更到 Product-Spec-CHANGELOG.md，填「影响追踪」表（REQ / DT / TEST）。
     改完跑 `python3 scripts/check_traceability.py --project <项目根> --impact REQ-xxx`，把受影响的 DT/TEST 列表给用户。

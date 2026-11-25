@@ -27,6 +27,9 @@ jobs:
       
       - name: 校验示例需求追踪链路
         run: python3 scripts/check_traceability.py --project examples/personal-blog
+
+      - name: 校验示例 Spec 四要素标准
+        run: python3 scripts/check_spec_standard.py --project examples/personal-blog
       
       - name: 校验 session.json
         run: |

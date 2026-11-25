@@ -43,7 +43,7 @@ def test_create_post_with_empty_content_returns_422(client: TestClient):
 
 # ---------- F-2.2 GET /api/posts ----------
 
-# @trace TEST-004 REQ-002/AC-002-01
+# @trace TEST-004 REQ-002/AC-002-01 REQ-005/AC-005-03
 def test_list_posts_returns_all_with_pinned_first(client: TestClient):
     """列表：置顶博客应排在最前"""
     _create_post(client, title="普通 1", content="x")
@@ -134,7 +134,7 @@ def test_delete_post_returns_204_and_subsequent_get_returns_404(client: TestClie
 
 # ---------- F-2.8 PATCH /api/posts/{id}/pin ----------
 
-# @trace TEST-011 REQ-005/AC-005-01
+# @trace TEST-011 REQ-005/AC-005-01 REQ-005/AC-005-02
 def test_pin_post_toggles_is_pinned(client: TestClient):
     """PATCH pin 应翻转 is_pinned"""
     created = _create_post(client, title="要置顶", content="x").json()

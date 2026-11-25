@@ -94,7 +94,7 @@ python3 scripts/check_traceability.py --project examples/personal-blog --write e
 
 1. **反模糊**：先写 5 条 P0 REQ + 13 条 Given/When/Then AC，再动代码。
 2. **反假设**：Design-Brief §4 明确拒绝评论分页、富文本、点赞动画、登录后台四个"看起来该做"的方案。
-3. **竞品与差异化**：Spec §1.6 / §1.7 对比 Hexo、Halo、WordPress、Notion 等，写清"我们凭什么"。
+3. **行业标杆参考**：Spec §1.7 / §1.8 对照 Hexo、Halo、WordPress、Notion 等，逐行写清契合点、需定制点与原创点。
 4. **TDD 铁律**：每个 WI 先写失败测试；后端 29 个测试、前端 10 个测试都可用一条命令复跑。
 5. **两阶段审查**：Code-Review-Report 记录了 Stage 1 发现 F-2.3 详情聚合缺失 → WI-5 返工 → 复审 PASS 的完整闭环。
 6. **工程约束**：Pydantic 校验、SQLAlchemy 表达式查询、`selectinload` 防 N+1、前端纯函数拆分状态机与校验。

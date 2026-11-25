@@ -8,13 +8,13 @@
 
 ## 📊 项目构成
 
-**流水线**：11 个 skill 覆盖 8 步——需求澄清 → Product-Spec → Design-Brief → 设计稿 → DEV-PLAN → TDD 开发 → 两阶段审查 → 构建发布；bug-fixer 作为审查失败时的回派回路，goal-creator / evolution-engine / skill-builder 是三个元 skill。
+**流水线**：11 个 skill 覆盖 8 步——一句话入口 → Discovery → 引导补齐 → Product-Spec → Design-Brief → 设计稿 → DEV-PLAN → TDD 开发 → 两阶段审查 → 构建发布；bug-fixer 作为审查失败时的回派回路，goal-creator / evolution-engine / skill-builder 是三个元 skill。
 
-**约束与纪律**：15 个主题、73 个文件的工程级约束（编码规范、库选型、性能、安全、并发、数据库、简化、兼容性等），以及 5 个主题、6 个文件的业务纪律（商业可行性快筛、竞品扫描、多视角自检、pre-mortem、版本化与不可变）。dev-builder 启动时必读，code-review 第二阶段必查。
+**约束与纪律**：15 个主题、73 个文件的工程级约束（编码规范、库选型、性能、安全、并发、数据库、简化、兼容性等），以及 5 个主题、6 个文件的业务纪律（产品定义、行业标杆参考、多视角自检、pre-mortem、版本化与不可变）。dev-builder 启动时必读，code-review 第二阶段必查。
 
 **示例工程**：[`examples/personal-blog/`](./examples/personal-blog/) 按流水线从零跑通，FastAPI + Vue3 全栈博客，Spec、开发计划、代码、测试、审查报告、发布清单与需求追踪矩阵齐全。
 
-**可验证的结果**：仓库自带 185 个框架契约测试（`pytest tests/contract/`）与 39 个示例测试（后端 29 + 前端 10），均可在本地跑通；`python3 scripts/check_traceability.py` 校验需求→任务→测试→版本链路。
+**可验证的结果**：仓库自带 199 个框架契约测试（`pytest tests/contract/`）与 39 个示例测试（后端 29 + 前端 10），均可在本地跑通；`check_traceability.py` 校验需求→任务→测试→版本链路，`check_spec_standard.py` 校验 PRD / FRD / User Story / AC 四要素是否补齐。
 
 **许可**：MIT，可商用、可修改、可二次发布。
 
@@ -35,7 +35,7 @@
 合成一条端到端流水线。Codex / Claude Code 启动即用，主 Agent 自动按 8 步推进：
 
 ```
-① 需求澄清 → ② Product-Spec.md → ③ Design-Brief.md → ④ 设计稿（可选）
+① 一句话入口 → Discovery → 引导补齐 → ② Product-Spec.md → ③ Design-Brief.md → ④ 设计稿（可选）
             → ⑤ DEV-PLAN.md → ⑥ 按 Phase 开发（RED → GREEN → REFACTOR）
             → ⑦ 两阶段审查 → ⑧ 构建发布
 ```
@@ -62,7 +62,7 @@
 ## 🛠 方法论：8 步流水线
 
 ```
-① 需求澄清（product-spec-builder）
+① 一句话入口 → Discovery → 引导补齐（product-spec-builder）
             ↓
 ② Product-Spec.md  ← 单一真相源
             ↓
@@ -139,8 +139,8 @@ AI 写代码的 **3 大特有补充**（写在 `simplification/` 主题下）：
 
 **AI 写产品（不只是代码）的独特浪费**：
 
-- 没扫竞品就动手 → 做完发现市场已饱和 / 已有巨头
-- 没做商业可行性快筛 → 做完发现没人付费 / 凭什么是你
+- 没看行业怎么做的就动手 → 重复发明轮子，或漏掉别人已经验证过的做法
+- 没讲清为什么做 / 给谁做 → Spec 写得再细，方向错了照样白做
 - Spec 只过一种视角（主 Agent） → 漏掉 CEO/工程/QA 各自能看见的问题
 - AI 改业务数据（价格/规格/规则）→ 把老订单 / 历史快照也改了（最常见、最隐蔽）
 - 唯一视角写 Spec → 1 年后回看才后悔"当时没记下来"
@@ -150,8 +150,8 @@ AI 写代码的 **3 大特有补充**（写在 `simplification/` 主题下）：
 
 | 主题                                | 解决什么                                            | 关键文件                                                               |
 | --------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------ |
-| **business-context-check**        | Phase 0 商业可行性 5 问快筛（防"做完没人要"）                   | `product-spec-builder/principles/business-context-check.md`        |
-| **competitive-scan**              | Phase 1.5 竞品扫描（≥ 2 直接 + ≥ 2 替代，每行必填"我们凭什么"）     | `product-spec-builder/principles/competitive-scan.md`              |
+| **product-definition** | Phase 0 两轮：Discovery 5 问（值不值得投入）+ 用户层 5 问（场景 / 范围 / 指标），分轮不混问 | `product-spec-builder/principles/product-definition.md` |
+| **competitive-scan**              | Phase 1.5 行业标杆参考（≥ 2 同类 + ≥ 2 替代，输出契合 / 定制 / 原创） | `product-spec-builder/principles/competitive-scan.md`              |
 | **ceo-lens / eng-lens / qa-lens** | Spec 收尾多视角自检（不 spawn subagent，提示词切换 + 自检清单）     | 同上目录 3 文件                                                          |
 | **pre-mortem (Phase 3.5)**        | question-bank 反向思考："1 年后死在哪 3 个原因 + 监控信号"       | `principles/question-bank.md`                                      |
 | **versioning-and-immutability**   | 价格/规格/规则字段必 version，禁止 UPDATE 覆盖（防 AI 改代码影响上下游） | `_engineering-constraints/database/versioning-and-immutability.md` |
@@ -181,15 +181,21 @@ codex
 ```
 👤 用户：我想做一个本地闪卡应用，用来按 SM-2 间隔重复复习。
 
-🤖 主 Agent：好，进入 product-spec-builder。先做 Phase 0 商业可行性 5 问快筛，
-   然后是 persona 和核心 job。准备好了就开始。
+🤖 主 Agent：好，进入 product-spec-builder。先做 Discovery 前置层 5 问：
+   为什么做、为谁做、价值是增收/降本/降风险、为什么现在、投入产出与更便宜的替代。
+   这一轮只判断值不值得做，不问具体场景。
 
-👤 用户：（回答 5 问 + persona + job）
+👤 用户：（回答 Discovery 5 问）
 
-🤖 主 Agent：Phase 0 通过 → 进 Phase 1 核心功能。继续 Phase 1.5 竞品扫描。
-   你能想到 ≥ 2 直接竞品 + ≥ 2 替代方案吗？每行告诉我"我们凭什么"。
+🤖 主 Agent：值得投入 → 进入第二轮，只看你真实的使用场景：
+   谁在什么场景被卡住、现在怎么凑合、解决后哪一步变好、第一版做什么不做什么、怎么算做成。
 
-👤 用户：（答竞品）
+👤 用户：（回答场景 5 问）
+
+🤖 主 Agent：Phase 0 通过 → 进 Phase 1 核心功能。继续 Phase 1.5 行业标杆参考。
+   给我 ≥ 2 个同类产品 + ≥ 2 个替代方案，逐行说清它的做法、对我们哪个需求有用、要改什么、哪块必须原创。
+
+👤 用户：（答标杆做法）
 
 🤖 主 Agent：Phase 1.5 通过 → 写完 Product-Spec.md，做收尾多视角自检
    （ceo-lens / eng-lens / qa-lens）→ Spec 定稿。
@@ -298,7 +304,7 @@ graph TB
 | [agents/skills/\_traceability/](./agents/skills/_traceability/)                       | **需求追踪规范**：REQ / AC / DT / TEST / SemVer 的 ID 体系、`@trace` 注解、变更影响分析                                                                                                                                                                            |
 | [`examples/personal-blog/`](./examples/personal-blog/)                                | **端到端示例**：完整 8 步产物 + 可运行前后端 + 测试/审查/发布/追踪产物，入口见其 [README](./examples/personal-blog/README.md)                                                                                                                   |
 | [schemas/session.schema.json](./schemas/session.schema.json)                          | Session State schema（跨 session 持久化上下文）                                                                                                                                                                                                         |
-| [tests/contract/](./tests/contract/)                                                  | **185 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则 + 需求追踪）— CI 卡门禁                                                                                                                                                                          |
+| [tests/contract/](./tests/contract/)                                                  | **199 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则 + 需求追踪 + Spec 四要素标准 + 输出 schema 契约）— CI 卡门禁                                                                                                                                                                          |
 | [scripts/check\_simplicity.py](./scripts/check_simplicity.py)                         | **代码简洁自动校验**（文件/函数/圈复杂度阈值 + dead code / 命名）                                                                                                                                                                                                    |
 | [scripts/check\_traceability.py](./scripts/check_traceability.py)                     | **需求追踪校验**：REQ→DT→TEST→版本链路缺口、`--write` 生成矩阵、`--impact` 查变更影响面                                                                                                                                                                                 |
 | [CHANGELOG.md](./CHANGELOG.md)                                                        | 变更记录                                                                                                                                                                                                                                           |
@@ -314,7 +320,7 @@ graph TB
 
 **SDD（Spec-Driven Development）** — 文档是开发的入口和单一真相源。代码从 Spec 生成，Spec 变则下游文档和代码同步更。
 
-**TDD（Test-Driven Development）** — 铁律：*无失败测试不写生产代码*。RED → GREEN → REFACTOR 强制循环；bug 修复前必先写失败复现测试。框架自身同样由 185 个契约测试与 CI 门禁覆盖。
+**TDD（Test-Driven Development）** — 铁律：*无失败测试不写生产代码*。RED → GREEN → REFACTOR 强制循环；bug 修复前必先写失败复现测试。框架自身同样由 199 个契约测试与 CI 门禁覆盖。
 
 **Design-Brief 与设计稿** — Spec 是文字（可能歧义），设计稿是图片（无歧义但不直接驱动代码）。Design-Brief 在中间做翻译：把 Spec 钉成可执行的视觉规范，再由 design-maker 生成精确参照图。UI 实现以设计稿为准；无稿无 Brief 时继承项目既有先例，不自由发挥。
 
@@ -355,7 +361,7 @@ dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按�
 - ✅ **v0.5** — P1 全部完成（路由图 + 意图分类 + Hook v2 + Evolution 三层）
 - ✅ **v0.6** — **代码简洁之道 10 条原则**（`simplification/` 11 文件 / 约 800 行）+ `check_simplicity.py` 自动化校验 + 框架代码以身作则重构
 - ✅ **v0.7** — **P1 业务纪律体系**（防方向错 + 防遗漏 + 防上下游影响）
-  - 商业可行性 5 问快筛（Phase 0）+ 竞品扫描（Phase 1.5）+ pre-mortem（Phase 3.5）
+  - Discovery 5 问 + 用户层 5 问（Phase 0）+ 行业标杆参考（Phase 1.5）+ pre-mortem（Phase 3.5）
   - ceo-lens / eng-lens / qa-lens 收尾多视角自检
   - `_engineering-constraints/database/versioning-and-immutability.md`（接上轮"AI 改商品把老订单也改了"问题）
   - `_engineering-constraints/compatibility/` 新增 6 文件（API 版本化 / 向后兼容 / blast radius / 数据迁移 / feature flag / 交付完整性）

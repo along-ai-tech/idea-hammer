@@ -15,7 +15,7 @@ description: Phase 0 之前先判定需求类型（spike / bounded / architectur
 [三路径]
     [spike]
         可行性问题（"能不能…/可行吗…/快速试一下…"），输出是答案不是产品。
-        - 跳过 Phase 0 商业快筛 / Phase 1.5/1.6 竞品扫描 / Phase 5 AI 能力 / Phase 6 UI 状态 / Phase 7.2 非功能
+        - 跳过 Phase 0 产品定义 / Phase 1.5/1.6 行业标杆参考 / Phase 5 AI 能力 / Phase 6 UI 状态 / Phase 7.2 非功能
         - 仅走 Phase 1 问题确认 + Phase 3.5 pre-mortem + 一句话结论
         - 抛报告不是 spec 文件
     [bounded]

@@ -1,34 +1,66 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "ProductSpecOutput",
-  "description": "Product-Spec.md 结构化输出",
+  "description": "Product-Spec.md 结构化输出。四要素（PRD / FRD / User Story / AC）均有强制字段，缺一即校验失败。",
   "type": "object",
-  "required": ["phases_complete", "features", "non_goals", "ai_capabilities"],
+  "required": [
+    "phases_complete",
+    "target_user",
+    "job_to_be_done",
+    "success_metrics",
+    "features",
+    "non_goals",
+    "ai_capabilities",
+    "assumptions",
+    "open_questions"
+  ],
   "properties": {
     "phases_complete": {
       "type": "array",
       "description": "完成的 Phase 列表（1-7）",
       "items": {"type": "integer", "minimum": 1, "maximum": 7}
     },
-    "target_user": {"type": "string"},
-    "job_to_be_done": {"type": "string"},
-    "success_metrics": {"type": "array", "items": {"type": "string"}},
+    "target_user": {"type": "string", "minLength": 1, "description": "PRD：一类具体用户，禁止写“所有人/开发者”"},
+    "job_to_be_done": {"type": "string", "minLength": 1},
+    "success_metrics": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "description": "PRD：可计数或可观察的达标信号"
+    },
     "features": {
       "type": "array",
+      "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "name", "user_value", "delete_path"],
+        "required": ["id", "name", "user_value", "user_story", "acceptance_criteria", "delete_path"],
         "properties": {
-          "id": {"type": "string"},
-          "name": {"type": "string"},
-          "user_value": {"type": "string", "description": "用户价值"},
+          "id": {"type": "string", "pattern": "^REQ-\\d{3}$"},
+          "name": {"type": "string", "minLength": 1},
+          "user_value": {"type": "string", "minLength": 1, "description": "用户价值（Before → After）"},
+          "user_story": {
+            "type": "string",
+            "pattern": "^(?=.*作为一个)(?=.*我希望)(?=.*以便于)",
+            "description": "作为一个 [角色]，我希望 [完成某件事]，以便于 [获得某种价值]"
+          },
+          "acceptance_criteria": {
+            "type": "array",
+            "minItems": 3,
+            "items": {"type": "string", "pattern": "^AC-\\d{3}-\\d{2}"},
+            "description": "AC-<REQ>-<nn>，至少主路径/边界/错误各一条"
+          },
           "delete_path": {"type": "string", "description": "删除/移除路径（可建必可删）"},
           "ai_capability": {"type": "string", "description": "用到的 AI 能力"},
           "phase": {"type": "integer"}
         }
       }
     },
-    "non_goals": {"type": "array", "items": {"type": "string"}},
+    "non_goals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "description": "PRD：显式非目标，可标 [待定] 但不得为空"
+    },
     "ai_capabilities": {
       "type": "array",
       "items": {
@@ -42,6 +74,33 @@
           "latency_cost": {"type": "string"}
         }
       }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "statement", "basis", "risk_if_wrong"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^ASM-\\d{3}$"},
+          "statement": {"type": "string", "minLength": 1},
+          "basis": {"type": "string", "description": "依据"},
+          "risk_if_wrong": {"type": "string", "description": "猜错的后果"}
+        }
+      },
+      "description": "§10.1：可推断但未确认的假设"
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "question", "blocking"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^Q-\\d{3}$"},
+          "question": {"type": "string", "minLength": 1},
+          "blocking": {"type": "boolean"}
+        }
+      },
+      "description": "§10.2：不可推断的开放问题；blocking=true 的不允许带出 Phase 0"
     },
     "ui_states": {"type": "array", "items": {"type": "string"}},
     "verification": {"type": "string"}
