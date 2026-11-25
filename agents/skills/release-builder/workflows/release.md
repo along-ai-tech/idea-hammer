@@ -18,14 +18,17 @@
 
 **完成**：依赖就绪
 
-## 阶段 3：确认版本
+## 阶段 3：确认版本 + 追踪门禁
 
 **动作**：
 - package.json version 已更新
 - CHANGELOG 已更新
 - 工作区干净（git status 无 uncommitted）
+- 生成 `RELEASE.json`（至少 version / commit / requirements / tests）；完整发布报告与 `contracts/output.schema.json` 一致
+- 跑追踪校验：`python3 scripts/check_traceability.py --project <项目根> --strict`
+- P0 REQ 缺 DT、缺 TEST、未进发布清单 → 禁止发布
 
-**完成**：版本合规
+**完成**：版本合规 + 追踪链路通过
 
 ## 阶段 4：构建 + 打包
 
@@ -64,6 +67,7 @@ grep -rn -E "sk-ant-|sk-proj-|ANTHROPIC_API_KEY|OPENAI_API_KEY|password.*=.*['\"
 
 - 对照 Spec 跑核心功能
 - 关键 API 验证返回
+- P0 AC 逐条对照 TEST 结果，测试未覆盖的 AC 不许算通过
 
 ## 阶段 8：发布
 

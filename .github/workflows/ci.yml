@@ -25,15 +25,17 @@ jobs:
       - name: 校验 skill 结构
         run: python3 scripts/check_skill_structure.py --strict
       
+      - name: 校验示例需求追踪链路
+        run: python3 scripts/check_traceability.py --project examples/personal-blog
+      
       - name: 校验 session.json
         run: |
           python3 scripts/session.py validate
           python3 scripts/session.py context > /dev/null
   
   example-tests:
-    name: Example 后端 + 前端测试（暂跳过：examples/ 正在按方法论重建）
+    name: Example 后端 + 前端测试
     runs-on: ubuntu-latest
-    if: false  # 临时禁用：examples/flashcards/ 已删除，等 examples/personal-blog/ 跑通后恢复
     steps:
       - uses: actions/checkout@v4
 
@@ -57,3 +59,4 @@ jobs:
         run: |
           npm ci || npm install
           npx vitest run
+          npm run build

@@ -16,6 +16,7 @@ from fastapi.testclient import TestClient
 
 # ---------- F-2.6 POST /api/posts/{id}/comments ----------
 
+# @trace TEST-015 REQ-003/AC-003-01
 def test_create_comment_returns_201_with_id_and_fields(client: TestClient):
     """创建评论应返回 201 + id + 必填字段"""
     post = client.post("/api/posts", json={"title": "x", "content": "y"}).json()
@@ -32,6 +33,7 @@ def test_create_comment_returns_201_with_id_and_fields(client: TestClient):
     assert data["content"] == "写得不错"
 
 
+# @trace TEST-016 REQ-003/AC-003-02
 def test_create_comment_with_empty_content_returns_422(client: TestClient):
     """空 content 应被 Pydantic 拦截，返回 422"""
     post = client.post("/api/posts", json={"title": "x", "content": "y"}).json()
@@ -42,6 +44,7 @@ def test_create_comment_with_empty_content_returns_422(client: TestClient):
     assert response.status_code == 422
 
 
+# @trace TEST-017 REQ-003/AC-003-02
 def test_create_comment_with_empty_nickname_returns_422(client: TestClient):
     """空 nickname 应被 Pydantic 拦截，返回 422"""
     post = client.post("/api/posts", json={"title": "x", "content": "y"}).json()
@@ -52,6 +55,7 @@ def test_create_comment_with_empty_nickname_returns_422(client: TestClient):
     assert response.status_code == 422
 
 
+# @trace TEST-018 REQ-003/AC-003-02
 def test_create_comment_on_nonexistent_post_returns_404(client: TestClient):
     """对不存在的 post_id 评论应返回 404"""
     response = client.post(
@@ -63,6 +67,7 @@ def test_create_comment_on_nonexistent_post_returns_404(client: TestClient):
 
 # ---------- F-2.9 DELETE /api/comments/{id} ----------
 
+# @trace TEST-019 REQ-003/AC-003-03
 def test_delete_comment_returns_204_and_subsequent_create_still_works(client: TestClient):
     """删评论 204；删后再发一条新评论应能正常创建（不报错、内容正确）"""
     post = client.post("/api/posts", json={"title": "x", "content": "y"}).json()
@@ -87,12 +92,14 @@ def test_delete_comment_returns_204_and_subsequent_create_still_works(client: Te
     assert data["content"] == "2"
 
 
+# @trace TEST-020 REQ-003/AC-003-03
 def test_delete_nonexistent_comment_returns_404(client: TestClient):
     """删不存在的评论 id 应返回 404"""
     response = client.delete("/api/comments/9999")
     assert response.status_code == 404
 
 
+# @trace TEST-021 REQ-003/AC-003-03
 def test_delete_post_cascades_to_its_comments(client: TestClient):
     """删博客应级联删它的评论（Design-Brief: ON DELETE CASCADE）"""
     post = client.post("/api/posts", json={"title": "x", "content": "y"}).json()

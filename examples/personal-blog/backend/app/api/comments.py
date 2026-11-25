@@ -6,8 +6,6 @@
 
 依赖：app.models.comment 必须先 import 才能让 Base 知道表。
 """
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.orm import Session
@@ -15,9 +13,6 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.models.post import Post
 from app.models.comment import Comment
-
-# 显式 import —— 确保 ORM 类被注册到 Base.metadata
-from app.models import comment as _comment  # noqa: F401
 
 
 router = APIRouter()
@@ -27,7 +22,7 @@ router = APIRouter()
 
 class CommentCreate(BaseModel):
     nickname: str = Field(..., min_length=1, max_length=50)
-    content: str = Field(..., min_length=1, max_length=2000)
+    content: str = Field(..., min_length=1, max_length=5000)
 
 
 class CommentOut(BaseModel):

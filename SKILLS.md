@@ -23,6 +23,7 @@
     - Codex hook 不支持异步后台。session 启动主 Agent 第一件事：signals 有货就同步 spawn evolution-runner 消化成建议、消化轻量尽快还给用户，当场逐条问用户，同意即改对应文档、全盘否定即删 signal 和 proposal。主 Agent 照常处理用户的修正本身
     - 设计优先级从高到低：设计稿、Design-Brief.md、Product-Spec.md。有设计稿时 UI 一切以设计稿为准。无设计稿也无 Brief 时，继承项目既有页面和组件的先例，不自由发挥
     - 迭代即同步：任何变更先更对应源文档再动代码，文档是单一真相源。上游文档变了，主 Agent 主动查下游文档和代码受不受影响、要不要一起更，只提醒不自动改，不只改一个留其余脱节
+    - 需求追踪：REQ/AC/DT/TEST 全程携带，ID 只增不改；发布前必须跑 `check_traceability.py`，链路断点禁止发布
     - 进化沉淀通用规则落到对应文档：编排进 AGENTS.md、技能进对应 SKILL.md、门禁进对应 hook；项目专属归用户记忆，不混
 
 [Skill 调用规则]

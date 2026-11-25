@@ -14,6 +14,7 @@ from fastapi.testclient import TestClient
 
 # ---------- F-2.7 POST /api/posts/{id}/react ----------
 
+# @trace TEST-022 REQ-004/AC-004-01
 def test_react_up_creates_row_and_returns_counts(client: TestClient):
     """首次点赞应创建一行 + 返回当前 up/down 计数"""
     post = client.post("/api/posts", json={"title": "x", "content": "y"}).json()
@@ -30,6 +31,7 @@ def test_react_up_creates_row_and_returns_counts(client: TestClient):
     assert data["down_count"] == 0
 
 
+# @trace TEST-023 REQ-004/AC-004-01
 def test_react_down_creates_row(client: TestClient):
     """首次点踩：up=0 down=1"""
     post = client.post("/api/posts", json={"title": "x", "content": "y"}).json()
@@ -42,6 +44,7 @@ def test_react_down_creates_row(client: TestClient):
     assert response.json()["down_count"] == 1
 
 
+# @trace TEST-024 REQ-004/AC-004-02
 def test_same_ip_react_up_twice_does_not_double_count(client: TestClient):
     """同 IP 重复点赞 → 计数仍是 1（UNIQUE 防重）"""
     post = client.post("/api/posts", json={"title": "x", "content": "y"}).json()
@@ -54,6 +57,7 @@ def test_same_ip_react_up_twice_does_not_double_count(client: TestClient):
     assert r2.json()["up_count"] == 1  # 仍是 1
 
 
+# @trace TEST-025 REQ-004/AC-004-02
 def test_same_ip_switch_up_to_down_replaces_reaction(client: TestClient):
     """同 IP 从 up 切换到 down → up=0 down=1（v0 toggle 语义：删旧增新）"""
     post = client.post("/api/posts", json={"title": "x", "content": "y"}).json()
@@ -67,6 +71,7 @@ def test_same_ip_switch_up_to_down_replaces_reaction(client: TestClient):
     assert r2.json()["down_count"] == 1
 
 
+# @trace TEST-026 REQ-004/AC-004-03
 def test_different_ips_can_both_react_up(client: TestClient):
     """不同 IP 各点一次 up → up=2"""
     post = client.post("/api/posts", json={"title": "x", "content": "y"}).json()
@@ -84,6 +89,7 @@ def test_different_ips_can_both_react_up(client: TestClient):
     assert r2.json()["up_count"] == 2
 
 
+# @trace TEST-027 REQ-004/AC-004-03
 def test_react_with_invalid_type_returns_422(client: TestClient):
     """type 不是 up/down → 422"""
     post = client.post("/api/posts", json={"title": "x", "content": "y"}).json()
@@ -95,6 +101,7 @@ def test_react_with_invalid_type_returns_422(client: TestClient):
     assert response.status_code == 422
 
 
+# @trace TEST-028 REQ-004/AC-004-03
 def test_react_on_nonexistent_post_returns_404(client: TestClient):
     """对不存在的博客 react 应 404"""
     response = client.post(

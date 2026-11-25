@@ -6,11 +6,11 @@
 
 **目标**：把当前 Phase 拆成 Task
 **动作**：
-1. 读 DEV-PLAN 当前 Phase 章节 + Product-Spec 相关章节原文（不凭记忆）
-2. 写 Task 拆分：每个页面、组件、功能一个 Task
+1. 读 DEV-PLAN 当前 Phase 的 DT 章节 + Product-Spec 相关章节原文（不凭记忆）
+2. 写 Task 拆分：每个页面、组件、功能一个 Task，标明对应的 DT-### 与 REQ/AC
 3. 列出每个 Task 的交付清单（具体行为点）
 
-**完成**：Task 列表 + 交付清单
+**完成**：Task 列表 + DT/REQ 映射 + 交付清单
 
 ## 阶段 2：单 Task 执行（每个 Task 必走）
 
@@ -20,11 +20,12 @@
 **动作**：
 1. 读 DEV-PLAN 交付清单、Spec 功能描述、Design-Brief 视觉方向的原文（不凭记忆）
 2. 为本 Task 每个行为点写最小失败测试，测试名回答"什么 break 让它失败"
-3. 跑测试确认 FAIL 且失败原因是"功能缺失"非笔误或 typo
-4. AI 生成代码不豁免 RED
-5. 看不到失败不准进 GREEN
+3. 每条测试上方加追踪注解：`# @trace TEST-### REQ-###/AC-###-##`（TEST ID 全局唯一，不复用）
+4. 跑测试确认 FAIL 且失败原因是"功能缺失"非笔误或 typo
+5. AI 生成代码不豁免 RED
+6. 看不到失败不准进 GREEN
 
-**完成**：测试 FAIL 且原因合理
+**完成**：测试 FAIL + 原因合理 + 每条测试有 TEST/AC 追踪
 
 ### GREEN
 

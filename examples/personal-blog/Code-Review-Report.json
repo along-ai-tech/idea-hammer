@@ -19,7 +19,7 @@
         "missing": []
       },
       "dead_links": [],
-      "ui_consistency": "n/a",
+      "ui_consistency": "PASS — frontend 6 routes align with Design-Brief §2.1 (frontend review 2026-11-25)",
       "_re_review_meta": {
         "rereview_date": "2026-09-30",
         "scope": "Stage 1 only",
@@ -36,6 +36,23 @@
       "_note": "Stage 2 unchanged from prior round; not re-executed per scope. Prior findings still hold: file metrics within thresholds, no engineering violations, no security issues, TDD truthfulness confirmed (29/29 green).",
       "engineering_violations": [],
       "tdd_violations": [],
+      "security_issues": []
+    },
+    "frontend": {
+      "passed": true,
+      "review_date": "2026-11-25",
+      "scope": "frontend/src + frontend/tests (Vue 3 + Element Plus + Vite)",
+      "routes_verified": [
+        "/ and /posts (list, pinned-first, pagination)",
+        "/posts/:id (detail, comments, reactions)",
+        "/admin (edit, pin, delete)",
+        "/admin/new (create)",
+        "/admin/posts/:id/edit (edit)"
+      ],
+      "state_coverage": ["loading", "empty", "error", "validation"],
+      "tests": { "files": 7, "passed": 10, "total": 10 },
+      "build": "npm run build success (dist/)",
+      "engineering_violations": [],
       "security_issues": []
     }
   },
@@ -58,24 +75,35 @@
     },
     {
       "priority": "LOW",
-      "category": "docstring_accuracy",
-      "description": "test_comments.py module docstring says 'v0 简化：单访客硬编码 nickname 为 visitor', but the implementation never hardcodes nickname; the nickname is taken from the request payload. Stale docstring.",
-      "file": "examples/personal-blog/backend/tests/test_comments.py",
+      "category": "bundle_size",
+      "description": "Element Plus is imported in full, producing ~1.07 MB JS (353 KB gzip). Acceptable for a demo; production should switch to unplugin-vue-components on-demand imports.",
+      "file": "examples/personal-blog/frontend/src/main.js",
+      "line": 2,
+      "evidence": "npm run build reports a chunk-size warning for the main bundle."
+    },
+    {
+      "priority": "LOW",
+      "category": "security_boundary",
+      "description": "Admin UI has no authentication, matching the documented v0 boundary. The page shows an explicit warning; public deployment requires v1 login/token.",
+      "file": "examples/personal-blog/frontend/src/views/AdminView.vue",
       "line": 8,
-      "evidence": "Docstring line 8 vs comments.py schema accepting client-supplied nickname."
+      "evidence": "el-alert warning renders on /admin; Spec OUT-001 keeps auth out of v0."
     }
   ],
   "summary": {
     "passed": true,
-    "stage_executed": [1],
+    "stage_executed": [1, 2],
     "stage_1_verdict_before_rereview": "FAIL",
     "stage_1_verdict_after_rereview": "PASS",
     "stage_2_verdict_unchanged": "PASS",
+    "frontend_verdict": "PASS",
     "high_count": 0,
     "medium_count": 0,
-    "low_count": 2,
-    "tests_passed": 29,
-    "tests_total": 29,
+    "low_count": 3,
+    "tests_passed": 39,
+    "tests_total": 39,
+    "backend_tests": 29,
+    "frontend_tests": 10,
     "wi_5_commit": "918f258",
     "regression_on_other_8_endpoints": "none",
     "new_findings_introduced_by_wi_5": []

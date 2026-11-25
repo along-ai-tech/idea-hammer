@@ -14,6 +14,7 @@ def _create_post(client: TestClient, title="默认标题", content="默认内容
 
 # ---------- F-2.1 POST /api/posts ----------
 
+# @trace TEST-001 REQ-001/AC-001-01
 def test_create_post_returns_201_with_id_and_slug(client: TestClient):
     """创建博客应返回 201 + id + slug + 必填字段"""
     response = _create_post(client, title="我的第一篇博客", content="Hello World")
@@ -26,12 +27,14 @@ def test_create_post_returns_201_with_id_and_slug(client: TestClient):
     assert data["is_pinned"] is False
 
 
+# @trace TEST-002 REQ-001/AC-001-02
 def test_create_post_with_empty_title_returns_422(client: TestClient):
     """空 title 应被 Pydantic 拦截，返回 422"""
     response = _create_post(client, title="", content="x")
     assert response.status_code == 422
 
 
+# @trace TEST-003 REQ-001/AC-001-02
 def test_create_post_with_empty_content_returns_422(client: TestClient):
     """空 content 应被 Pydantic 拦截，返回 422"""
     response = _create_post(client, title="x", content="")
@@ -40,6 +43,7 @@ def test_create_post_with_empty_content_returns_422(client: TestClient):
 
 # ---------- F-2.2 GET /api/posts ----------
 
+# @trace TEST-004 REQ-002/AC-002-01
 def test_list_posts_returns_all_with_pinned_first(client: TestClient):
     """列表：置顶博客应排在最前"""
     _create_post(client, title="普通 1", content="x")
@@ -54,6 +58,7 @@ def test_list_posts_returns_all_with_pinned_first(client: TestClient):
     assert items[0]["is_pinned"] is True
 
 
+# @trace TEST-005 REQ-002/AC-002-02
 def test_list_posts_supports_pagination(client: TestClient):
     """列表应支持分页（limit + offset）"""
     for i in range(5):
@@ -67,6 +72,7 @@ def test_list_posts_supports_pagination(client: TestClient):
 
 # ---------- F-2.3 GET /api/posts/{id_or_slug} ----------
 
+# @trace TEST-006 REQ-002/AC-002-03
 def test_get_post_by_id_returns_full_content(client: TestClient):
     """按 id 查博客应返回完整 content"""
     created = _create_post(client, title="查我", content="完整内容").json()
@@ -78,6 +84,7 @@ def test_get_post_by_id_returns_full_content(client: TestClient):
     assert data["content"] == "完整内容"
 
 
+# @trace TEST-007 REQ-002/AC-002-03
 def test_get_post_by_slug_returns_same_post(client: TestClient):
     """按 slug 查博客应跟按 id 等价"""
     created = _create_post(client, title="slug-查我", content="x").json()
@@ -87,6 +94,7 @@ def test_get_post_by_slug_returns_same_post(client: TestClient):
     assert response.json()["id"] == created["id"]
 
 
+# @trace TEST-008 REQ-002/AC-002-03
 def test_get_nonexistent_post_returns_404(client: TestClient):
     """不存在的 id 应返回 404，非 500"""
     response = client.get("/api/posts/9999")
@@ -95,6 +103,7 @@ def test_get_nonexistent_post_returns_404(client: TestClient):
 
 # ---------- F-2.4 PUT /api/posts/{id} ----------
 
+# @trace TEST-009 REQ-001/AC-001-03
 def test_update_post_changes_title_and_content(client: TestClient):
     """PUT 应能改 title + content"""
     created = _create_post(client, title="旧标题", content="旧内容").json()
@@ -111,6 +120,7 @@ def test_update_post_changes_title_and_content(client: TestClient):
 
 # ---------- F-2.5 DELETE /api/posts/{id} ----------
 
+# @trace TEST-010 REQ-001/AC-001-03
 def test_delete_post_returns_204_and_subsequent_get_returns_404(client: TestClient):
     """删除后 GET 应返回 404"""
     created = _create_post(client, title="要删", content="x").json()
@@ -124,6 +134,7 @@ def test_delete_post_returns_204_and_subsequent_get_returns_404(client: TestClie
 
 # ---------- F-2.8 PATCH /api/posts/{id}/pin ----------
 
+# @trace TEST-011 REQ-005/AC-005-01
 def test_pin_post_toggles_is_pinned(client: TestClient):
     """PATCH pin 应翻转 is_pinned"""
     created = _create_post(client, title="要置顶", content="x").json()
@@ -140,6 +151,7 @@ def test_pin_post_toggles_is_pinned(client: TestClient):
 
 # ---------- WI-5 F-2.3 详情端点聚合 ----------
 
+# @trace TEST-012 REQ-002/AC-002-04
 def test_get_post_detail_includes_comments(client: TestClient):
     """详情端点应返回评论列表（含 nickname / content / created_at）"""
     post = _create_post(client, title="有评论的博客", content="x").json()
@@ -154,6 +166,7 @@ def test_get_post_detail_includes_comments(client: TestClient):
     assert contents == {"1", "2"}
 
 
+# @trace TEST-013 REQ-002/AC-002-04
 def test_get_post_detail_includes_up_and_down_counts(client: TestClient):
     """详情端点应返回 up_count / down_count"""
     post = _create_post(client, title="有反应的博客", content="x").json()
@@ -170,6 +183,7 @@ def test_get_post_detail_includes_up_and_down_counts(client: TestClient):
     assert data["down_count"] == 1
 
 
+# @trace TEST-014 REQ-002/AC-002-04
 def test_get_post_detail_returns_empty_collections_when_no_interactions(client: TestClient):
     """无评论无反应的博客详情应返回空 collections + 全 0"""
     post = _create_post(client, title="孤博客", content="x").json()

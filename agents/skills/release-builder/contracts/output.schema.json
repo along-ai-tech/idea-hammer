@@ -3,9 +3,24 @@
   "title": "ReleaseOutput",
   "description": "release-builder 发布报告",
   "type": "object",
-  "required": ["release_type", "artifact", "privacy_audit", "smoke_test"],
+  "required": ["release_type", "version", "requirements", "tests", "artifact", "privacy_audit", "smoke_test"],
   "properties": {
     "release_type": {"type": "string", "enum": ["web", "desktop", "cli"]},
+    "version": {"type": "string", "pattern": "^v\\d+\\.\\d+\\.\\d+$"},
+    "commit": {"type": "string"},
+    "requirements": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^REQ-\\d{3}$"}
+    },
+    "tests": {
+      "type": "object",
+      "required": ["total", "passed", "ids"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 0},
+        "passed": {"type": "integer", "minimum": 0},
+        "ids": {"type": "array", "items": {"type": "string", "pattern": "^TEST-\\d{3}$"}}
+      }
+    },
     "artifact": {
       "type": "object",
       "properties": {

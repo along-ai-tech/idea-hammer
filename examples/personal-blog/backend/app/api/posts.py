@@ -8,7 +8,7 @@
 - DELETE /api/posts/{id}             F-2.5 删除
 - PATCH  /api/posts/{id}/pin         F-2.8 置顶切换
 """
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, ConfigDict, Field
@@ -16,13 +16,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.db import get_db
 from app.models.post import Post
-from app.models.comment import Comment
-from app.models.reaction import Reaction
 from app.api.reactions import _counts  # 复用计数 helper（避免重复 query）
-
-# 显式 import —— 确保 mapper 注册到 Base.metadata
-from app.models import comment as _comment  # noqa: F401
-from app.models import reaction as _reaction  # noqa: F401
 
 
 router = APIRouter()

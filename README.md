@@ -2,22 +2,22 @@
 
 > **AI 辅助从模糊想法锤出可发布产品** — 一个真实跑通过端到端产研流水线的工程化作品集
 
-**给各位看官的 3 分钟路径**：看一眼 [`examples/personal-blog/`](./examples/personal-blog/)（按方法论从零到一真跑的 demo）。
+**3 分钟看懂完整案例**：打开 [`examples/personal-blog/`](./examples/personal-blog/)，按 8 步流水线从 Spec 一路看到发布——含可运行的前后端、测试、审查报告与需求追踪矩阵。
 
----
+***
 
 ## 📊 首屏证据（3 秒看清这不是 PPT）
 
-| 数字 | 含义 |
-|------|------|
-| **11 skill** | product-spec-builder / design-brief-builder / dev-builder / code-review / bug-fixer / release-builder …全 8 步流水线 |
-| **172 契约测试 + 21 真实 Feature 测试** | 框架自身契约 100% + 真实案例（SM-2 学习模式）全绿 |
-| **1 真实 Feature 案例** | [`examples/personal-blog/`](./examples/personal-blog/)：按 IdeaHammer 8 步流水线从零到一跑出（建设中） |
-| **15 主题 / 73 文件 / ~7300 行** 工程级约束 | 编码规范 / 库选型 / 性能 / 安全 / 错误处理 / 数据库 / **simplification 10 条** / **compatibility 6 条** |
-| **5 主题 / 6 文件** 业务纪律 | Phase 0 5 问快筛 / 竞品扫描 / pre-mortem / ceo-eng-qa 多视角 / 版本化与不可变 |
-| **MIT** | 可商用 / 可改 / 可二次发布 |
+| 数字                                 | 含义                                                                                                              |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| **11 skill**                       | product-spec-builder / design-brief-builder / dev-builder / code-review / bug-fixer / release-builder …全 8 步流水线 |
+| **185 契约测试 + 39 真实 Feature 测试**    | 框架自身契约 100% + 示例博客前后端测试全绿                                                                                        |
+| **1 真实 Feature 案例**                | [`examples/personal-blog/`](./examples/personal-blog/)：按 8 步流水线从零到一跑通（Spec → 设计 → 计划 → TDD → 审查 → 发布 → 追踪） |
+| **15 主题 / 73 文件 / \~7300 行** 工程级约束 | 编码规范 / 库选型 / 性能 / 安全 / 错误处理 / 数据库 / **simplification 10 条** / **compatibility 6 条**                             |
+| **5 主题 / 6 文件** 业务纪律               | Phase 0 5 问快筛 / 竞品扫描 / pre-mortem / ceo-eng-qa 多视角 / 版本化与不可变                                                    |
+| **MIT**                            | 可商用 / 可改 / 可二次发布                                                                                                |
 
-[![CI](https://img.shields.io/github/actions/workflow/status/along-ai-tech/idea-hammer/ci.yml?label=CI&logo=github)](.github/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/along-ai-tech/idea-hammer/ci.yml?label=CI\&logo=github)](.github/workflows/ci.yml)
 [![Version](https://img.shields.io/badge/version-0.7.0--dev-blue.svg)](CHANGELOG.md)
 [![Main Repo](https://img.shields.io/badge/GitHub-along--ai--tech-181717?logo=github)](https://github.com/along-ai-tech/idea-hammer)
 [![Gitee Mirror](https://img.shields.io/badge/Gitee-mirror-C71D23?logo=gitee)](https://gitee.com/zhilong811/idea-hammer)
@@ -26,7 +26,7 @@
 
 [English](./README_EN.md) · 镜像仓库：[Gitee](https://gitee.com/zhilong811/idea-hammer) · [CHANGELOG](./CHANGELOG.md) · [STATUS](./STATUS.md) · [DECISIONS](./DECISIONS.md) · [TODO](./TODO.md)
 
----
+***
 
 ## 🛠️ 一句话方法论（30 秒懂）
 
@@ -39,12 +39,12 @@
             → ⑦ 两阶段审查 → ⑧ 构建发布
 ```
 
----
+***
 
 ## 📑 目录
 
 1. [首屏证据（已在顶部）](#-首屏证据3-秒看清这不是-ppt)
-2. [真实 Feature 端到端案例](./examples/personal-blog/) ← **3 分钟看这个就够了（建设中）**
+2. [真实 Feature 端到端案例](./examples/personal-blog/) ← **推荐从这里看方法论如何落地**
 3. [AI Coding 痕迹自证](./AIDER-FOOTPRINT/ai-coding-footprint.md)
 4. [它解决什么问题](#-它解决什么问题)
 5. [快速开始](#-快速开始)
@@ -57,7 +57,7 @@
 12. [贡献](#-贡献)
 13. [许可 & 致谢](#-许可--致谢)
 
----
+***
 
 ## 🛠 方法论：8 步流水线
 
@@ -77,27 +77,29 @@
 ⑦ 两阶段审查（code-review → code-reviewer）── 失败回派
                                             ↺ bug-fixer（先写复现测试）
             ↓
-⑧ 构建发布（release-builder）
+⑧ 构建发布（release-builder）── RELEASE.json（版本 / 需求 / 测试）
             ↓
    可发布产品 ✅
+
+贯穿全程：REQ → DT → TEST → 版本，由 check_traceability.py 校验
 ```
 
 8 步对应 8 个流水线 skill，加上 `goal-creator` / `evolution-engine` / `skill-builder` 3 个元 skill，共 **11 个 skill**。bug-fixer 由审查失败触发，作为 ⑦ 的回路。每步有独立产出物，下一步按它启动。**dev-builder / code-review 启动时强制读工程级约束**（见下）。
 
----
+***
 
 ## 🤔 和同类项目有什么不同
 
-| 项目                  | 端到端    | Spec 驱动 | TDD 强制 | 审查闭环  | **工程级约束**           | **业务纪律** | 进化机制 |
-| ------------------- | ------ | ------- | ------ | ----- | ------------------- | --------- | ---- |
+| 项目                  | 端到端    | Spec 驱动 | TDD 强制 | 审查闭环  | **工程级约束**           | **业务纪律**          | 进化机制 |
+| ------------------- | ------ | ------- | ------ | ----- | ------------------- | ----------------- | ---- |
 | **IdeaHammer**      | ✅ 8 步  | ✅       | ✅ 内置   | ✅ 两阶段 | ✅ **15 主题 / 73 文件** | ✅ **5 主题 / 6 文件** | ✅    |
-| GitHub Spec Kit     | ⚠️ 3 段 | ✅       | ❌      | ❌     | ❌                   | ❌         | ❌    |
-| 裸 Codex/Claude Code | ❌      | ❌       | ❌      | ❌     | ❌                   | ❌         | ❌    |
-| 纯 vibe coding       | ❌      | ❌       | ❌      | ❌     | ❌                   | ❌         | ❌    |
+| GitHub Spec Kit     | ⚠️ 3 段 | ✅       | ❌      | ❌     | ❌                   | ❌                 | ❌    |
+| 裸 Codex/Claude Code | ❌      | ❌       | ❌      | ❌     | ❌                   | ❌                 | ❌    |
+| 纯 vibe coding       | ❌      | ❌       | ❌      | ❌     | ❌                   | ❌                 | ❌    |
 
 **它是 Spec Kit + 工程级约束 + 业务纪律的三重组合**——比 vibe coding 多纪律围栏，比传统 PRD 多 AI 执行力，比裸 Codex 多工程级底线 + 业务底线。防"做完发现没人要 / AI 改价格把老订单也改了 / Spec 只过一种视角漏问题"。
 
----
+***
 
 ## 🎯 它解决什么问题
 
@@ -108,6 +110,7 @@
 - 没有 Spec 单一真相源 → 代码和文档脱节
 - 跳过测试直接交付 → 回归一次挂一片
 - 没有 review 闭环 → 缺陷流到生产
+- 功能做完了却说不清来自哪个需求、被哪些测试覆盖、进了哪个版本
 
 **AI 写代码的独特浪费**：
 
@@ -143,19 +146,19 @@ AI 写代码的 **3 大特有补充**（写在 `simplification/` 主题下）：
 - 唯一视角写 Spec → 1 年后回看才后悔"当时没记下来"
 - API 不版本化 → 上游改动炸下游所有调用方（兼容性问题）
 
-**P1 业务纪律把以上 5 类"做完才发现"全列出来**——6 个文件 / ~600 行轻量纪律：
+**P1 业务纪律把以上 5 类"做完才发现"全列出来**——6 个文件 / \~600 行轻量纪律：
 
-| 主题 | 解决什么 | 关键文件 |
-|---|---|---|
-| **business-context-check** | Phase 0 商业可行性 5 问快筛（防"做完没人要"） | `product-spec-builder/principles/business-context-check.md` |
-| **competitive-scan** | Phase 1.5 竞品扫描（≥ 2 直接 + ≥ 2 替代，每行必填"我们凭什么"） | `product-spec-builder/principles/competitive-scan.md` |
-| **ceo-lens / eng-lens / qa-lens** | Spec 收尾多视角自检（不 spawn subagent，提示词切换 + 自检清单） | 同上目录 3 文件 |
-| **pre-mortem (Phase 3.5)** | question-bank 反向思考："1 年后死在哪 3 个原因 + 监控信号" | `principles/question-bank.md` |
-| **versioning-and-immutability** | 价格/规格/规则字段必 version，禁止 UPDATE 覆盖（防 AI 改代码影响上下游） | `_engineering-constraints/database/versioning-and-immutability.md` |
+| 主题                                | 解决什么                                            | 关键文件                                                               |
+| --------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------ |
+| **business-context-check**        | Phase 0 商业可行性 5 问快筛（防"做完没人要"）                   | `product-spec-builder/principles/business-context-check.md`        |
+| **competitive-scan**              | Phase 1.5 竞品扫描（≥ 2 直接 + ≥ 2 替代，每行必填"我们凭什么"）     | `product-spec-builder/principles/competitive-scan.md`              |
+| **ceo-lens / eng-lens / qa-lens** | Spec 收尾多视角自检（不 spawn subagent，提示词切换 + 自检清单）     | 同上目录 3 文件                                                          |
+| **pre-mortem (Phase 3.5)**        | question-bank 反向思考："1 年后死在哪 3 个原因 + 监控信号"       | `principles/question-bank.md`                                      |
+| **versioning-and-immutability**   | 价格/规格/规则字段必 version，禁止 UPDATE 覆盖（防 AI 改代码影响上下游） | `_engineering-constraints/database/versioning-and-immutability.md` |
 
 dev-builder 启动必读，code-review Stage 2 必查。借鉴 gstack `office-hours` / `plan-ceo-review` 的 adversarial planning 思路，不抄实现，化为最小侵入式纪律。
 
----
+***
 
 ## 🚀 快速开始
 
@@ -168,10 +171,10 @@ codex
 
 主 Agent 自动应用本框架。输入一句"我想做一个 X"启动 product-spec-builder，8 步流水线自动推进。
 
-> 镜像仓库：https://gitee.com/zhilong811/idea-hammer  
+> 镜像仓库：<https://gitee.com/zhilong811/idea-hammer>\
 > 前置：Codex CLI、Python 3.10+（hook 脚本依赖）
 
----
+***
 
 ## 💬 示例对话
 
@@ -204,7 +207,7 @@ codex
 
 完整 demo：`examples/personal-blog/`（按方法论从零到一真跑，README 在 `examples/personal-blog/README.md`）
 
----
+***
 
 ## 🏗 架构与组件关系
 
@@ -276,70 +279,72 @@ flowchart TB
     class EC1,EC2,EC3 ec
 ```
 
----
+***
 
 ## 📚 详细文档
 
-| 入口                                                                                   | 内容                                                                                                                                                                                                      |
-| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [AGENTS.md](./AGENTS.md)                                                             | 主控：编排规则、Skill 调用、Sub-Agent 调度                                                                                                                                                                          |
-| [IDENTITY.md](./IDENTITY.md)                                                         | 主 Agent 角色 + 第一性原理                                                                                                                                                                                       |
-| [WORKFLOW.md](./WORKFLOW.md)                                                         | 规划与执行模式、工作流程、文件结构                                                                                                                                                                                       |
-| [SKILLS.md](./SKILLS.md)                                                             | 8 步流水线 + 总体纪律 + Skill 调用规则                                                                                                                                                                               |
-| [SUBAGENTS.md](./SUBAGENTS.md)                                                       | 子 Agent 调度规则                                                                                                                                                                                            |
-| [STATE-ROUTING.md](./STATE-ROUTING.md)                                               | 项目状态检测与路由                                                                                                                                                                                               |
-| [TESTING.md](./TESTING.md)                                                           | TDD 铁律 + 四步走验证                                                                                                                                                                                          |
-| [.codex/EVOLUTION.md](./.codex/EVOLUTION.md)                                         | 自进化机制说明                                                                                                                                                                                                 |
-| [agents/skills/](./agents/skills/)                                                   | **11 个 skill**（每个含 SKILL.md + principles/ + workflows/ + contracts/）                                                                                                                                      |
-| [agents/skills/_engineering-constraints/](./agents/skills/_engineering-constraints/) | **15 主题工程级约束**（coding-style / ecosystem-matrix / anti-reinvent / performance / security / concurrency / api-design / observability / ci-cd / error-handling / database / dependency-mgmt / i18n-a11y / **simplification** / **compatibility**） |
-| [`examples/personal-blog/`](./examples/personal-blog/)                                 | **从零到一真跑的 demo**：按 IdeaHammer 8 步流水线（Spec → Design → Plan → Dev → Test → Review → PR），Phase 0-1 完成后填入 |
-| [schemas/session.schema.json](./schemas/session.schema.json)                         | Session State schema（跨 session 持久化上下文）                                                                                                                                                                  |
-| [tests/contract/](./tests/contract/)                                                 | **172 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则）— CI 卡门禁                                                                                                                                  |
-| [scripts/check_simplicity.py](./scripts/check_simplicity.py)                         | **代码简洁自动校验**（文件/函数/圈复杂度阈值 + dead code / 命名）                                                                                                                                                          |
-| [CHANGELOG.md](./CHANGELOG.md)                                                       | 变更记录                                                                                                                                                                                                    |
-| [STATUS.md](./STATUS.md)                                                             | 当前状态快照（30 秒上手）                                                                                                                                                                                          |
-| [DECISIONS.md](./DECISIONS.md)                                                       | 关键决策 Why 归档（D-001 ~ D-009）                                                                                                                                                                               |
-| [TODO.md](./TODO.md)                                                                 | P0 / P1 / P2 backlog 详情                                                                                                                                                                                  |
-| [.codex/](./.codex/)                                                                 | Hook 门禁 + 子 Agent + 自进化机制                                                                                                                                                                                |
-| [.github/workflows/ci.yml](./.github/workflows/ci.yml)                               | GitHub Actions：契约测试 + skill 结构 + session 校验 + example 测试                                                                                                                                               |
+| 入口                                                                                    | 内容                                                                                                                                                                                                                                             |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [AGENTS.md](./AGENTS.md)                                                              | 主控：编排规则、Skill 调用、Sub-Agent 调度                                                                                                                                                                                                                  |
+| [IDENTITY.md](./IDENTITY.md)                                                          | 主 Agent 角色 + 第一性原理                                                                                                                                                                                                                             |
+| [WORKFLOW.md](./WORKFLOW.md)                                                          | 规划与执行模式、工作流程、文件结构                                                                                                                                                                                                                              |
+| [SKILLS.md](./SKILLS.md)                                                              | 8 步流水线 + 总体纪律 + Skill 调用规则                                                                                                                                                                                                                     |
+| [SUBAGENTS.md](./SUBAGENTS.md)                                                        | 子 Agent 调度规则                                                                                                                                                                                                                                   |
+| [STATE-ROUTING.md](./STATE-ROUTING.md)                                                | 项目状态检测与路由                                                                                                                                                                                                                                      |
+| [TESTING.md](./TESTING.md)                                                            | TDD 铁律 + 四步走验证                                                                                                                                                                                                                                 |
+| [.codex/EVOLUTION.md](./.codex/EVOLUTION.md)                                          | 自进化机制说明                                                                                                                                                                                                                                        |
+| [agents/skills/](./agents/skills/)                                                    | **11 个 skill**（每个含 SKILL.md + principles/ + workflows/ + contracts/）                                                                                                                                                                           |
+| [agents/skills/\_engineering-constraints/](./agents/skills/_engineering-constraints/) | **15 主题工程级约束**（coding-style / ecosystem-matrix / anti-reinvent / performance / security / concurrency / api-design / observability / ci-cd / error-handling / database / dependency-mgmt / i18n-a11y / **simplification** / **compatibility**） |
+| [agents/skills/\_traceability/](./agents/skills/_traceability/)                       | **需求追踪规范**：REQ / AC / DT / TEST / SemVer 的 ID 体系、`@trace` 注解、变更影响分析                                                                                                                                                                            |
+| [`examples/personal-blog/`](./examples/personal-blog/)                                | **从零到一真跑的 demo**：完整 8 步产物 + 可运行前后端 + 测试/审查/发布/追踪证据，入口见其 [README](./examples/personal-blog/README.md)                                                                                                                   |
+| [schemas/session.schema.json](./schemas/session.schema.json)                          | Session State schema（跨 session 持久化上下文）                                                                                                                                                                                                         |
+| [tests/contract/](./tests/contract/)                                                  | **184 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则 + 需求追踪）— CI 卡门禁                                                                                                                                                                          |
+| [scripts/check\_simplicity.py](./scripts/check_simplicity.py)                         | **代码简洁自动校验**（文件/函数/圈复杂度阈值 + dead code / 命名）                                                                                                                                                                                                    |
+| [scripts/check\_traceability.py](./scripts/check_traceability.py)                     | **需求追踪校验**：REQ→DT→TEST→版本链路缺口、`--write` 生成矩阵、`--impact` 查变更影响面                                                                                                                                                                                 |
+| [CHANGELOG.md](./CHANGELOG.md)                                                        | 变更记录                                                                                                                                                                                                                                           |
+| [STATUS.md](./STATUS.md)                                                              | 当前状态快照（30 秒上手）                                                                                                                                                                                                                                 |
+| [DECISIONS.md](./DECISIONS.md)                                                        | 关键决策 Why 归档（D-001 \~ D-009）                                                                                                                                                                                                                    |
+| [TODO.md](./TODO.md)                                                                  | P0 / P1 / P2 backlog 详情                                                                                                                                                                                                                        |
+| [.codex/](./.codex/)                                                                  | Hook 门禁 + 子 Agent + 自进化机制                                                                                                                                                                                                                      |
+| [.github/workflows/ci.yml](./.github/workflows/ci.yml)                                | GitHub Actions：契约测试 + skill 结构 + session 校验 + example 测试                                                                                                                                                                                       |
 
----
+***
 
 ## 🔬 方法论详解
 
 **SDD（Spec-Driven Development）** — 文档是开发的入口和单一真相源。代码从 Spec 生成，Spec 变则下游文档和代码同步更。
 
-**TDD（Test-Driven Development）** — 铁律：*无失败测试不写生产代码*。RED → GREEN → REFACTOR 强制循环；bug 修复前必先写失败复现测试。**172 个契约测试 + CI 卡门禁**确保框架自身遵循纪律（解决"框架说 TDD 但不测"的自相矛盾）。
+**TDD（Test-Driven Development）** — 铁律：*无失败测试不写生产代码*。RED → GREEN → REFACTOR 强制循环；bug 修复前必先写失败复现测试。**184 个契约测试 + CI 卡门禁**确保框架自身遵循纪律（解决"框架说 TDD 但不测"的自相矛盾）。
 
 **Design-Brief 与设计稿** — Spec 是文字（可能歧义），设计稿是图片（无歧义但不直接驱动代码）。Design-Brief 在中间做翻译：把 Spec 钉成可执行的视觉规范，再由 design-maker 生成精确参照图。UI 实现以设计稿为准；无稿无 Brief 时继承项目既有先例，不自由发挥。
 
 **工程级约束（Engineering Constraints）** — IdeaHammer 的核心差异化能力。15 主题 / 73 文件 / 7300+ 行具体规则，覆盖 AI 写代码的常见反模式：
 
-| 主题                    | 解决什么                                                                        | 关键文件                                             |
-| --------------------- | --------------------------------------------------------------------------- | ------------------------------------------------ |
-| **coding-style/**     | 强制引用正式规范（阿里 Java / PEP8 / Airbnb TS / Effective Go / SQL / Rust）            | `java-alibaba.md` `python-pep8.md`               |
-| **ecosystem-matrix/** | "X 场景该用哪个库"决策（Redisson / Hutool / Jackson / FastAPI）                        | `java-ecosystem.md` `redis-clients.md`           |
-| **anti-reinvent/**    | **10 条造轮子红线**：禁止自造连接池 / 日期 / 集合 / HTTP / JSON / 线程池 / 分布式锁 / ID / 缓存 / 配置中心 | `no-connection-pool.md` `no-distributed-lock.md` |
-| **performance/**      | N+1 / 慢查询 / 缓存策略 / benchmark-first                                          | `db-query.md` `caching.md`                       |
-| **security/**         | OWASP Top 10 / JWT / bcrypt / Vault / 漏洞扫描 / License 白名单                    | `owasp-top10.md` `password-hashing.md`           |
-| **concurrency/**      | 线程池命名 / 分布式锁 / 幂等 / 超时                                                      | `distributed-lock.md` `timeouts.md`              |
-| **api-design/**       | REST / 状态码 / 分页 / 错误响应 / OpenAPI 强制                                         | `rest-conventions.md` `http-status-codes.md`     |
-| **observability/**    | 结构化日志 / 指标 / OpenTelemetry / 健康检查                                           | `structured-logging.md` `metrics.md`             |
-| **ci-cd/**            | 必备检查 / migration 安全 / 回滚策略                                                  | `required-checks.md` `migration-safety.md`       |
-| **error-handling/**   | 异常规范 / stacktrace / 统一错误响应                                                  | `exception-practices.md`                         |
-| **database/**         | 索引策略 / 事务边界 / 连接池 / **版本化与不可变**                                            | `indexing.md` `versioning-and-immutability.md`  |
-| **dependency-mgmt/**  | lockfile / 漏洞扫描 / 重复依赖                                                      | `lockfile-required.md`                           |
-| **i18n-a11y/**        | 国际化 / 时区 / WCAG AA                                                          | `i18n.md` `a11y.md`                              |
+| 主题                    | 解决什么                                                                             | 关键文件                                             |
+| --------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------ |
+| **coding-style/**     | 强制引用正式规范（阿里 Java / PEP8 / Airbnb TS / Effective Go / SQL / Rust）                 | `java-alibaba.md` `python-pep8.md`               |
+| **ecosystem-matrix/** | "X 场景该用哪个库"决策（Redisson / Hutool / Jackson / FastAPI）                             | `java-ecosystem.md` `redis-clients.md`           |
+| **anti-reinvent/**    | **10 条造轮子红线**：禁止自造连接池 / 日期 / 集合 / HTTP / JSON / 线程池 / 分布式锁 / ID / 缓存 / 配置中心      | `no-connection-pool.md` `no-distributed-lock.md` |
+| **performance/**      | N+1 / 慢查询 / 缓存策略 / benchmark-first                                               | `db-query.md` `caching.md`                       |
+| **security/**         | OWASP Top 10 / JWT / bcrypt / Vault / 漏洞扫描 / License 白名单                         | `owasp-top10.md` `password-hashing.md`           |
+| **concurrency/**      | 线程池命名 / 分布式锁 / 幂等 / 超时                                                           | `distributed-lock.md` `timeouts.md`              |
+| **api-design/**       | REST / 状态码 / 分页 / 错误响应 / OpenAPI 强制                                              | `rest-conventions.md` `http-status-codes.md`     |
+| **observability/**    | 结构化日志 / 指标 / OpenTelemetry / 健康检查                                                | `structured-logging.md` `metrics.md`             |
+| **ci-cd/**            | 必备检查 / migration 安全 / 回滚策略                                                       | `required-checks.md` `migration-safety.md`       |
+| **error-handling/**   | 异常规范 / stacktrace / 统一错误响应                                                       | `exception-practices.md`                         |
+| **database/**         | 索引策略 / 事务边界 / 连接池 / **版本化与不可变**                                                  | `indexing.md` `versioning-and-immutability.md`   |
+| **dependency-mgmt/**  | lockfile / 漏洞扫描 / 重复依赖                                                           | `lockfile-required.md`                           |
+| **i18n-a11y/**        | 国际化 / 时区 / WCAG AA                                                               | `i18n.md` `a11y.md`                              |
 | **simplification/**   | 代码简洁之道 10 原则（SRP / YAGNI / 抽象时机 / 阈值 / 命名 / 注释 / 删 dead code / 依赖最小化 / 纯函数 / 幂等） | `single-responsibility.md` `pure-functions.md`   |
-| **compatibility/**    | **API 版本化 / 向后兼容 / blast radius / 数据迁移 / feature flag / 交付完整性**（防上游改动炸下游） | `api-versioning.md` `blast-radius.md`           |
+| **compatibility/**    | **API 版本化 / 向后兼容 / blast radius / 数据迁移 / feature flag / 交付完整性**（防上游改动炸下游）        | `api-versioning.md` `blast-radius.md`            |
 
 dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按语言加载对应规范 → 写代码时遵守。code-review Stage 2 必查"是否造轮子 / 是否版本化 / 是否符合 simplification 10 条"。下次再看到 `new SimpleDateFormat()` / `setnx` / `Executors.newFixedThreadPool()` / `UPDATE products SET price = ? WHERE id = ?` 这种反模式会被立刻 catch。
 
-**Session State 持久化** — `.idea-hammer/session.json` 跨 session 保留上下文：当前 Phase / Task / 关键决策摘要（D-001 ~ D-N）/ 用户偏好（语言 / 风格 / 技术栈 / commit 风格）。启动时先读精简版（~2.3KB），不重读全部域文件（~15KB），**节省 ~85% 启动 token**。
+**Session State 持久化** — `.idea-hammer/session.json` 跨 session 保留上下文：当前 Phase / Task / 关键决策摘要（D-001 \~ D-N）/ 用户偏好（语言 / 风格 / 技术栈 / commit 风格）。启动时先读精简版（\~2.3KB），不重读全部域文件（\~15KB），**节省 \~85% 启动 token**。
 
 **进化机制** — 你提的纠正被抓成信号，session 启动时主 Agent 同步消化，逐条问同意即改对应文档。框架越用越准，不是一次性写死的剧本。
 
----
+***
 
 ## 🗺 路线图
 
@@ -357,7 +362,7 @@ dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按�
   - 借鉴 gstack adversarial planning gauntlet（office-hours / plan-ceo-review）化为轻量化纪律
 - ⏳ **v1.0** — TODO-201 / TODO-202 / TODO-203 / TODO-301（英文 README + CI 补完 + Sub-Agent dag + API 稳定化）
 
----
+***
 
 ## 👤 谁会用 / 项目目的
 
@@ -367,11 +372,11 @@ dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按�
 
 - **独立开发者 / 小团队 PM**：从模糊想法到可发布产品，要少走"做完发现做错了"的弯路
 - **AI 重度用户**：用 Codex / Claude Code 写代码时，需要工程级约束防"AI 造轮子 / 写四不像 / 改坏上下游"
-- **面试官视角看开源**：本项目是简历项目（见 [STATUS.md](./STATUS.md) 末尾"联系方式"段），README 本身按"陌生面试官 30 秒扫视 + 10 分钟可深入"的目标写
+- **想评估这套方法论的人**：可直接跑 [`examples/personal-blog/`](./examples/personal-blog/)，按 8 步产物逐项对照，30 秒扫完 README、10 分钟深入源码
 
 **作者**：wuzhilong · 主仓库 [along-ai-tech/idea-hammer](https://github.com/along-ai-tech/idea-hammer) · 简历已包含本项目链接
 
----
+***
 
 ## 🤝 贡献
 
@@ -391,7 +396,7 @@ dev-builder 启动时强制读 `principles/engineering-constraints.md` → 按�
 
 **自进化机制**：你提的每条意见都会被 hook 抓成信号，下次 session 启动主 Agent 会主动问你是否同意落地——不必开 Issue，直接在对话里说就行。
 
----
+***
 
 ## 📜 许可 & 致谢
 

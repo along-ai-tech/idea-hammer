@@ -1,0 +1,20 @@
+{
+  "version": "v1.0.0",
+  "date": "2026-11-25",
+  "commit": "demo-mvp",
+  "requirements": ["REQ-001", "REQ-002", "REQ-003", "REQ-004", "REQ-005"],
+  "tests": {
+    "total": 39,
+    "passed": 39,
+    "ids": [
+      "TEST-001", "TEST-002", "TEST-003", "TEST-004", "TEST-005", "TEST-006",
+      "TEST-007", "TEST-008", "TEST-009", "TEST-010", "TEST-011", "TEST-012",
+      "TEST-013", "TEST-014", "TEST-015", "TEST-016", "TEST-017", "TEST-018",
+      "TEST-019", "TEST-020", "TEST-021", "TEST-022", "TEST-023", "TEST-024",
+      "TEST-025", "TEST-026", "TEST-027", "TEST-028", "TEST-029", "TEST-030",
+      "TEST-031", "TEST-032", "TEST-033", "TEST-034", "TEST-035", "TEST-036",
+      "TEST-037", "TEST-038"
+    ]
+  },
+  "changelog": "Product-Spec-CHANGELOG.md"
+}

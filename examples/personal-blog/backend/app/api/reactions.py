@@ -12,7 +12,7 @@
 
 IP 取自 X-Forwarded-For（dev / 反代友好），取不到则用 request.client.host。
 """
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError

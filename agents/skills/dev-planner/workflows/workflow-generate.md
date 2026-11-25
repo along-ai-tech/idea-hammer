@@ -42,9 +42,10 @@
 **目标**：每个 Phase 写清楚做什么
 **动作**：
 1. 每个 Phase 列交付清单（动词开头，描述用户可感知功能）
-2. 每个 Phase 列关键文件（具体路径）
+2. 每个 Phase 拆成 1~N 个 `DT-###`，每个 DT 写 `**关联需求**：REQ-###/AC-###-##`
+3. 每个 Phase / DT 列关键文件（具体路径）
 
-**完成**：DEV-PLAN.md 草稿
+**完成**：DEV-PLAN.md 草稿 + 每个 DT 都有 REQ/AC 映射
 
 ## 阶段 5：信息充足度检查（详见 sufficiency-check.md）
 
@@ -56,9 +57,10 @@
 **动作**：
 1. 按 templates/dev-plan-template.md 填
 2. 自检：无 TBD / Spec 功能全覆盖 / 依赖不冲突
-3. 写文件到项目根目录
+3. 自检：每个 P0 REQ 至少一个 DT，每个 DT 的关联需求在 Spec 里真实存在
+4. 写文件到项目根目录，跑 `python3 scripts/check_traceability.py --project <项目根>`
 
-**完成**：DEV-PLAN.md 落地
+**完成**：DEV-PLAN.md 落地 + 追踪校验无 P0 缺口
 
 ## 失败处理
 

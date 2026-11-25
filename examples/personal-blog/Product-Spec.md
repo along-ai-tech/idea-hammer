@@ -11,7 +11,7 @@
 |---|---|
 | 当前版本 | v1.0.0 |
 | 核心干系人 | 产品：wuzhilong，研发：AI IDE + 个人 |
-| 版本内容 | MVP 7 端点 + 评论 + 点赞点踩 + 置顶，演示 IdeaHammer 方法论的活工程 |
+| 版本内容 | MVP 9 端点 + Vue3 前端 + 评论 + 点赞点踩 + 置顶，演示 IdeaHammer 方法论的活工程 |
 | 版本日期 | 2026-09-16 |
 
 ---
@@ -40,8 +40,8 @@
 ### 1.1 产品摘要
 
 - **是什么**：演示 IdeaHammer 方法论的活工程博客（FastAPI + Vue3 全栈）
-- **为什么**：给面试官 3 分钟可验证的"AI Coding 真落地"作品集
-- **怎么做**：7 端点 REST + SQLite + 纯前端，读 commit 链可见全过程
+- **为什么**：给读者 3 分钟可验证的"AI Coding 真落地"完整案例
+- **怎么做**：9 端点 REST + SQLite + Vue3 前端，读 Spec / DEV-PLAN / 测试 / 审查 / 追踪产物可见全过程
 
 ### 1.2 用户问题
 
@@ -52,11 +52,11 @@
 | 用户类型 | 描述 | 核心需求 |
 |---|---|---|
 | 作者（wuzhilong） | 3 年后端转型 AI Native，准备面试的开发者 | 快速发布 Markdown 博客、置顶、接收反馈 |
-| 访客（面试官/读者） | 浏览博客、评论、点赞的技术读者 | 读博客 + 留评论 + 点赞反馈 |
+| 访客（读者） | 浏览博客、评论、点赞的技术读者 | 读博客 + 留评论 + 点赞反馈 |
 
 ### 1.4 核心价值
 
-把博客作为简历配套的活工程展示（不是营销页），让面试官能在 3 分钟内看到"这个人真把 AI Coding 落地了"。作品集价值 > 产品功能价值。
+把博客作为方法论演示的活工程（不是营销页），让读者能在 3 分钟内看到"这套流水线真能把 AI Coding 落地"。方法论价值 > 产品功能价值。
 
 ### 1.4.1 系统功能架构
 
@@ -80,9 +80,9 @@ graph TD
 
 | 判断标准 | 目标 / 信号 |
 |---|---|
-| 博客可即时发布并对外可访问 | 7 端点全部上线，作者能发布 → 访客能读 |
+| 博客可即时发布并对外可访问 | 9 端点全部上线，作者能发布 → 访客能读 |
 | 演示 IdeaHammer 方法论 | commit 链清晰可见每个 Phase 落地过程 |
-| 面试官 3 分钟内能跑通 | clone → install → run ≤ 5 分钟 |
+| 读者 3 分钟内能跑通 | clone → install → run ≤ 5 分钟 |
 
 ### 1.6 竞品扫描（≥ 2 直接竞品 + ≥ 2 替代方案）
 
@@ -186,7 +186,7 @@ graph TD
 
 **边界情况：**
 - nickname 为空 → 422
-- content > 5000 字 → 422（v0 暂不限，v1 加）
+- content > 5000 字 → 422
 - 评论提交后博客被删除 → 评论保留（孤儿评论，v1 异步清理）
 
 **完成状态：** 用户看到新评论出现在列表顶部，数据库 comments 表新增一条
@@ -241,6 +241,11 @@ graph TD
 
 **状态：** [待补充——纯展示类无状态切换]
 
+**验收标准：**
+- [ ] AC-001-01: Given title/content 合法, when POST /api/posts, then 201 且返回 id、slug、title、content、is_pinned。
+- [ ] AC-001-02: Given title 或 content 为空, when 创建或编辑, then 返回 422。
+- [ ] AC-001-03: Given 博客存在, when PUT 修改或 DELETE 删除, then 修改返回 200 新内容，删除返回 204 且后续 GET 返回 404。
+
 ### REQ-002: 博客列表（含置顶优先 + 分页）
 
 **优先级：** P0
@@ -261,6 +266,12 @@ graph TD
 
 **状态：** [待补充——纯展示类无状态切换]
 
+**验收标准：**
+- [ ] AC-002-01: Given 存在置顶与非置顶博客, when GET /api/posts, then 置顶排最前。
+- [ ] AC-002-02: Given 5 篇博客, when limit=2&offset=0, then 返回 2 条。
+- [ ] AC-002-03: Given 博客存在, when 按 id 或 slug 查询, then 返回完整 content；id 不存在返回 404。
+- [ ] AC-002-04: Given 博客有评论和点赞, when 查详情, then 返回 comments、up_count、down_count；无互动时 comments 为空数组、计数为 0。
+
 ### REQ-003: 评论
 
 **优先级：** P0
@@ -273,7 +284,7 @@ graph TD
 
 **规则：**
 - MUST nickname 非空且 ≤ 50 字
-- MUST content 非空且 ≤ 5000 字（v0 暂不卡上限，v1 加）
+- MUST content 非空且 ≤ 5000 字
 - MUST 评论无审核流（v1 加 spam 防护）
 
 **输入：**
@@ -289,6 +300,11 @@ graph TD
 |---|---|---|
 | 未评论 | 用户未提交评论 | — |
 | 已提交 | POST 成功 201 | 入库失败 → 422 |
+
+**验收标准：**
+- [ ] AC-003-01: Given nickname/content 合法且博客存在, when POST 评论, then 201 且返回 id、post_id、nickname、content。
+- [ ] AC-003-02: Given content 或 nickname 为空、或博客不存在, when POST 评论, then 分别返回 422 / 404。
+- [ ] AC-003-03: Given 评论存在, when DELETE 评论, then 204；评论不存在返回 404；删除博客级联删除其评论。
 
 ### REQ-004: 点赞 / 点踩（Reactions）
 
@@ -311,6 +327,11 @@ graph TD
 **派生计算（可选）：**
 - `reaction_count = up_count - down_count`（派生展示字段）
 
+**验收标准：**
+- [ ] AC-004-01: Given 博客存在, when POST react type=up/down, then 返回 200 且对应 up_count / down_count 更新。
+- [ ] AC-004-02: Given 同 IP 已点赞, when 再次点赞, then 计数不变；切换 type 时旧反应被替换。
+- [ ] AC-004-03: Given 不同 IP 或非法 type 或不存在的博客, when react, then 不同 IP 累加、非法 type 返回 422、博客不存在返回 404。
+
 ### REQ-005: 置顶
 
 **优先级：** P0
@@ -328,6 +349,9 @@ graph TD
 |---|---|---|
 | 未置顶 | 创建时默认 | — |
 | 已置顶 | PATCH /pin is_pinned=true | 同时只能 1 篇置顶（v0 不强制，v1 加唯一性约束） |
+
+**验收标准：**
+- [ ] AC-005-01: Given 博客未置顶, when PATCH /pin, then is_pinned 翻转为 true；再次 PATCH 翻回 false。
 
 ---
 
@@ -365,7 +389,7 @@ graph TD
 | DEP-002 | SQLAlchemy 2.0 | ORM | Yes | DB 访问 |
 | DEP-003 | Pydantic v2 | 数据校验 | Yes | 入参/出参 |
 | DEP-004 | SQLite | 数据库 | Yes | 单文件 DB，零运维 |
-| DEP-005 | Vue 3.5 + Element Plus 2.8 | 前端框架 + UI 库 | Yes | v0 暂不交付前端，Phase 2 演示 |
+| DEP-005 | Vue 3.5 + Element Plus 2.8 | 前端框架 + UI 库 | Yes | 已交付 `frontend/`（Vite 构建 + Vitest） |
 | DEP-006 | pytest + TestClient | 测试 | Yes | TDD |
 | DEP-007 | uv | 包管理 | Yes | Python 项目管理 |
 | DEP-008 | markdown-it + DOMPurify（v1） | Markdown 渲染 + XSS 防护 | No | v1 引入 |
@@ -382,7 +406,7 @@ graph TD
 | 安全 | 评论 nickname + content 用 Pydantic 校验防 SQL 注入 / XSS（v0 内容不渲染 HTML） | P0 |
 | 隐私 | 无用户隐私数据收集（无登录、无 Cookie） | P1 |
 | 并发与一致性 | 不要求（单机 SQLite 单进程，无联网服务） | P1 |
-| 兼容性 | 后端 Python 3.11+；前端现代浏览器（v0 不交付前端） | P1 |
+| 兼容性 | 后端 Python 3.11+；前端现代浏览器（Vue3 + Vite 构建） | P1 |
 | 可靠性 | 无备份机制（v0 简化，作者手动 cp sqlite 文件） | P1 |
 | 可访问性 | [待补充——v0 暂不要求] |
 
@@ -392,11 +416,11 @@ graph TD
 
 MVP 完成条件：
 
-- [ ] 所有 P0 requirements（REQ-001 ~ REQ-005）已实现
-- [ ] 所有 P0 acceptance criteria 已通过（TDD：9 个测试文件 9 端点全 GREEN）
-- [ ] 所有 P0 user flows（FLOW-001）可以端到端完成
-- [ ] 主要错误状态、空状态、加载状态已处理（422 / 404 / 204）
-- [ ] Product Spec 和 Design Spec 中的 P0 内容保持一致
+- [x] 所有 P0 requirements（REQ-001 ~ REQ-005）已实现
+- [x] 所有 P0 acceptance criteria 已通过（后端 29 + 前端 10，共 39 个测试 GREEN）
+- [x] 所有 P0 user flows（FLOW-001）可以端到端完成
+- [x] 主要错误状态、空状态、加载状态已处理（422 / 404 / 204）
+- [x] Product Spec 和 Design Spec 中的 P0 内容保持一致
 
 ---
 
@@ -408,14 +432,14 @@ MVP 完成条件：
 |---|---|---|---|
 | ASM-001 | 单作者自用，无登录鉴权 | wuzhilong 单人博客 | 多人用 = 互相删博客（v1 加 JWT） |
 | ASM-002 | 评论无需审核流 | v1 加 spam 防护 | spam 灌满 → 关闭评论 |
-| ASM-003 | Markdown 渲染放 v1 | v0 简化后端 | 面试官看 raw markdown → 体验差（v1 加） |
+| ASM-003 | Markdown 渲染放 v1 | v0 简化后端 | 读者看 raw markdown → 体验差（v1 加） |
 | ASM-004 | 单文件 SQLite 可用至 1GB | 100 篇博客 < 1MB | 单文件 > 1GB → 性能崩（v1 迁 PG） |
 
 ### 10.2 待确认问题
 
 | 编号 | 问题 | 是否阻塞 | 备注 |
 |---|---|:---:|---|
-| Q-001 | 是否需要 v0 即交付前端？ | No | Phase 2 演示前端，MVP 仅后端 |
+| Q-001 | 是否需要 v0 即交付前端？ | No | 已交付：`frontend/`（Vue3 + Element Plus + Vite） |
 | Q-002 | 标签/分类/搜索放 v0 还是 v1？ | No | 已明确 v1 |
 | Q-003 | 是否需要备份 cron？ | No | 作者手动 cp 即可 |
 

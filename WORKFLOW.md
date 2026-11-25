@@ -54,7 +54,9 @@
     project/
     ├── Product-Spec.md / Product-Spec-CHANGELOG.md   # 需求文档 + 变更记录
     ├── Design-Brief.md                                # 设计规范，可选
-    ├── DEV-PLAN.md                                     # 分阶段开发计划
+    ├── DEV-PLAN.md                                     # 分阶段开发计划（DT-### 关联 REQ/AC）
+    ├── RELEASE.json                                    # 发布清单（版本 / 覆盖需求 / 测试）
+    ├── TRACEABILITY.md                                 # 追踪矩阵，check_traceability.py --write 生成
     ├── <project-name>/                                 # 项目代码，以项目名命名的子文件夹
     ├── AGENTS.md                                       # 主控，本文件
     ├── .agents/

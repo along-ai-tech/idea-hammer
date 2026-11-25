@@ -1,10 +1,62 @@
 # Code Review Report — Personal Blog MVP
 
 > Reviewer: `code-reviewer` sub-agent (IdeaHammer)
-> Date: 2026-09-30 (initial) / 2026-09-30 (re-review after WI-5)
-> Scope: `backend/app/`, `backend/tests/`, `backend/pyproject.toml`
-> Phase: 4 (code + tests) — MVP backend claimed complete: 9 endpoints + 4 models + 29 tests
-> Tests run: **29/29 passed** (was 26/26 before WI-5; +3 WI-5 detail-aggregation tests)
+> Date: 2026-09-30 (initial) / 2026-09-30 (re-review after WI-5) / 2026-11-25 (frontend review)
+> Scope: `backend/app/`, `backend/tests/`, `backend/pyproject.toml`, `frontend/src/`, `frontend/tests/`
+> Phase: 4 (code + tests) — MVP complete: 9 endpoints + 3 models + 6 routes + 39 tests
+> Tests run: **39/39 passed** (backend 29 + frontend 10)
+
+---
+
+## Frontend review (WI-8 ~ WI-11) — 2026-11-25
+
+> Scope: `frontend/`（Vue 3 + Element Plus + Vite）
+> Tests: `npm test` → **10/10 passed**；`npm run build` → success
+
+### Stage 1 — 功能完整性 / UI 一致性
+
+| Design-Brief 路由 | 实现 | 状态 | 测试 |
+|---|---|---|---|
+| `/`、`/posts` 列表（置顶优先 + 分页） | `HomeView.vue` + `PostCard.vue` | ✅ | TEST-033 |
+| `/posts/:id` 详情（正文 / 评论 / 点赞点踩） | `PostDetailView.vue` + `ReactionBar.vue` | ✅ | TEST-034/035 |
+| `/admin` 管理（编辑 / 置顶 / 删除） | `AdminView.vue` | ✅ | TEST-036/037 |
+| `/admin/new` 写文章 | `PostEditorView.vue` | ✅ | TEST-038 |
+| `/admin/posts/:id/edit` 编辑文章 | `PostEditorView.vue` | ✅ | TEST-038（创建路径） |
+| 空 / 加载 / 错误状态 | `el-empty` / `el-skeleton` / `el-alert` | ✅ | 组件内断言 |
+| 表单前端校验（评论 / 文章） | `utils/validation.js` | ✅ | TEST-030/031 |
+
+**Stage 1 verdict: ✅ PASS**。路由与交互覆盖 Design-Brief §2.1；评论、点赞、置顶、分页均可端到端完成。
+
+### Stage 2 — 实现质量
+
+- **文件规模**：所有 `src/**` 文件 ≤ 300 行；视图最大 `PostDetailView.vue`（约 150 行）。
+- **纯函数隔离**：校验、反应状态机、格式化独立为 `utils/*`，组件只负责编排，单测无需 DOM。
+- **错误处理**：`api/client.js` 统一把非 2xx 转 `ApiError`，视图统一 toast；422 数组 detail 会拼接为可读文案。
+- **安全**：无 `v-html` / `innerHTML` / `eval`；正文按纯文本插值（Vue 默认转义）。
+- **工程约束**：无手写日期格式化（`toLocaleString`）；无手写 JSON 解析；依赖仅 vue / vue-router / element-plus。
+- **TDD 真实性**：10 个测试均有独立期望值；组件测试 mock API 边界，断言用户可见结果（文案、计数、行删除）。
+- **追踪**：每个测试上方有 `// @trace TEST-### REQ-###/AC-###-##`。
+
+**Stage 2 verdict: ✅ PASS**。
+
+### Findings（前端）
+
+| # | 优先级 | 类别 | 描述 | 建议 |
+|---|---|---|---|---|
+| 1 | LOW | bundle_size | 全量引入 Element Plus，生产 JS ≈ 1.07 MB（gzip 353 KB） | 演示可接受；生产可换 `unplugin-vue-components` 按需引入 |
+| 2 | LOW | security_boundary | 管理端无鉴权（与 Design-Brief v0 边界一致），页面已显式警示 | 公网部署前必须加 v1 登录 / token |
+| 3 | INFO | test_scope | 编辑路由复用创建组件的测试路径，未单独覆盖 `GET` 回填 | v1 增加编辑回填测试 |
+
+### 前端验证命令
+
+```bash
+cd examples/personal-blog/frontend
+npm test
+# Test Files  7 passed (7)
+# Tests       10 passed (10)
+npm run build
+# ✓ built
+```
 
 ---
 
@@ -160,7 +212,7 @@ Per the review instructions "If Stage 1 has any HIGH issues → stop, do not run
 - ✅ No manual JSON — Pydantic models + `from_attributes=True` for ORM→DTO.
 - ✅ No MD5/SHA1 for passwords (no auth in scope).
 - ✅ No string-concat SQL — all queries use SQLAlchemy expression API.
-- ✅ Pydantic enforces min/max length on title (200) / nickname (50) / content (2000) / type (8).
+- ✅ Pydantic enforces min/max length on title (200) / nickname (50) / content (5000) / type (8).
 - ✅ Foreign-key CASCADE wired via SQLite PRAGMA, not just ORM (`db.py:18-22`, `conftest.py:25-29`).
 - ✅ `Base.metadata.create_all` called in lifespan (`main.py:18`) with explicit model imports to guarantee registration.
 - ✅ Tests use StaticPool to defeat the in-memory cross-thread table-loss pitfall (`conftest.py:33-35`) — documented in module docstring.
@@ -207,7 +259,7 @@ Grep for `eval(`, `dangerouslySetInnerHTML`, hardcoded `API_KEY|SECRET|TOKEN`, `
 | 1 | ~~HIGH~~ → ✅ fixed | spec_drift / missing_aggregation | `examples/personal-blog/backend/app/api/posts.py` | 181-184 (was 88) | F-2.3 detail endpoint now aggregates `comments` + `up_count` + `down_count` per Spec §2.2 + DEV-PLAN WI-5. `PostDetailOut` (posts.py:71-74) + `_to_detail` (posts.py:103-131) + `selectinload(Post.comments)` to avoid N+1. 3 new tests assert all three fields. **Re-review: ✅ PASS.** |
 | 2 | LOW | scope_creep | `examples/personal-blog/backend/app/api/reactions.py` | 121 | `GET /api/posts/{post_id}/reactions` not in Spec §2.2; reasonable helper but undeclared. |
 | 3 | LOW | naming_consistency | `examples/personal-blog/backend/app/models/__init__.py` | 1 | ~~Module-init imports only Post; Comment/Reaction rely on side-effect imports in main.py / comments.py — fragile.~~ **Resolved post-WI-5**: `app/models/__init__.py` now centralises `from app.models.post/comment/reaction import ...` (8 lines). LOW finding retired. |
-| 4 | LOW | docstring_accuracy | `examples/personal-blog/backend/tests/test_comments.py` | 8 | Module docstring claims nickname is hardcoded "visitor"; actually accepts client-supplied nickname. Stale. **(unchanged; not introduced by WI-5)** |
+| 4 | LOW | docstring_accuracy | `examples/personal-blog/backend/tests/test_comments.py` | 8 | ~~Module docstring claims nickname is hardcoded "visitor"; actually accepts client-supplied nickname.~~ **Resolved 2026-11-25**: docstring now states nickname is client-provided and validated by Pydantic. |
 
 ### Counts (re-review, this round)
 
@@ -229,6 +281,7 @@ Grep for `eval(`, `dangerouslySetInnerHTML`, hardcoded `API_KEY|SECRET|TOKEN`, `
 |---|---|---|
 | Stage 1 — Functional completeness | ❌ **FAIL** (F-2.3 aggregation missing) | ✅ **PASS** (F-2.3 aggregation now complete; 9/9 Spec endpoints verified) |
 | Stage 2 — Implementation quality | ✅ **PASS** (clean, under thresholds, tests green, no security issues) | ✅ **PASS** (unchanged; not re-run per scope) |
+| Frontend Stage 1 + 2 (WI-8 ~ WI-11) | — | ✅ **PASS**（6 路由对齐 Design-Brief；10/10 测试；构建成功） |
 
 ### Recommended next action (parent agent)
 
@@ -236,7 +289,7 @@ WI-5 has shipped. Both stages now PASS. MVP backend (9 endpoints + 4 models + 29
 
 Recommended follow-ups (optional, all LOW):
 
-1. Update `DEV-PLAN.md` §6 verification checklist — `21 测试全绿` should be `29 测试全绿` and the WI-5 row should be ticked (the current plan still says `21` and the checklist is unchecked).
+1. ~~Update `DEV-PLAN.md` §6 verification checklist — the test count was stale and the WI-5 row was unticked.~~ **Resolved 2026-11-25**: checklist now reflects 39 tests (backend 29 + frontend 10) and is fully ticked.
 2. Optionally retire the LOW finding #2 (`GET /api/posts/{post_id}/reactions` is scope creep) by adding it to Spec §2.2 as a documented helper, or removing the endpoint if the frontend will use the detail-aggregation counts directly (which is now possible after WI-5).
 3. Optionally refresh the stale docstring in `tests/test_comments.py:8` ("v0 简化：单访客硬编码 nickname 为 visitor" — nickname is actually client-supplied).
 

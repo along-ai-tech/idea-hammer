@@ -17,7 +17,7 @@ class Comment(Base):
         index=True,
     )
     nickname = Column(String(50), nullable=False)
-    content = Column(String(2000), nullable=False)
+    content = Column(String(5000), nullable=False)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
 
     post = relationship("Post", back_populates="comments")

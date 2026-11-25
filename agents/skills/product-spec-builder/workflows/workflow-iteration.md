@@ -31,5 +31,6 @@ description: product-spec 迭代模式工作流。用户对已有 Product-Spec.m
 [更新]
     在现有 Spec 上直接改，保持文档结构，只改需要改的部分。
     涉及新 AI 功能 → 补全模板扩展 AI 能力表的概率性四问，质量条、触发方式、不确定行为、降级，加护栏。
-    按 templates/changelog-template.md 追加变更到 Product-Spec-CHANGELOG.md。
+    按 templates/changelog-template.md 追加变更到 Product-Spec-CHANGELOG.md，填「影响追踪」表（REQ / DT / TEST）。
+    改完跑 `python3 scripts/check_traceability.py --project <项目根> --impact REQ-xxx`，把受影响的 DT/TEST 列表给用户。
     变更涉及已有 DEV-PLAN 的核心路径、功能或结构时，提醒用户 DEV-PLAN 可能受影响，要不要 /dev-planner 同步。只提醒不自动改。

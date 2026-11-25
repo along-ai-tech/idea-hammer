@@ -6,9 +6,6 @@ from fastapi import FastAPI
 from app.db import Base, engine
 from app.api import health, posts, comments, reactions  # noqa: F401
 
-# 显式 import 所有 ORM 模型，确保 Base.metadata 在 create_all 时能见到全部表
-from app.models import post, comment, reaction  # noqa: F401
-
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
