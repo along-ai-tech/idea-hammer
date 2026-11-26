@@ -2,8 +2,13 @@
 # Stop hook: 代码文件被修改但未 review 时阻止停止
 # fail-closed：状态文件存在且内容不是 clean，一律拦截
 # 不存在 = 无待审 = 放行；clean 或空 = 放行并删除；其余 = 拦截
+#
+# Codex hook 协议（openai/codex rust-v0.171.0）：
+#   stdout = {"decision":"block","reason":"..."}；reason 为空会被判为无效输出
 
-STATE_FILE="$(git rev-parse --show-toplevel)/.codex/.needs-review"
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+[ -n "$ROOT" ] || exit 0
+STATE_FILE="$ROOT/.codex/.needs-review"
 
 if [ ! -f "$STATE_FILE" ]; then
   exit 0
@@ -17,7 +22,8 @@ case "$STATE" in
     exit 0
     ;;
   *)
-    echo '{"decision": "block", "reason": "代码已修改但未通过 code review。请派发 code-reviewer 两阶段审查，通过后写入 clean。用 /goal 自驱时，把 code-reviewer 通过写进 /goal 完成条件。"}'
+    jq -nc --arg r "代码已修改但未通过 code review。请派发 code-reviewer 两阶段审查，通过后写入 clean。用 /goal 自驱时，把 code-reviewer 通过写进 /goal 完成条件。" \
+      '{decision:"block", reason:$r}' 2>/dev/null
     exit 0
     ;;
 esac

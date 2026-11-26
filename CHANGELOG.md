@@ -3,6 +3,61 @@
 本项目的所有重要变更记录于此。格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.11.0-dev]
+
+上下文工程域 + 跨 Session 恢复。补齐 Day9「AI Coding 工程化」的知识缺口：框架此前教「先读原文、不凭记忆」，但从未定义**该读什么**。本次把上下文从隐性纪律变成可执行的工程规则。
+
+### 新增
+
+- **CONTEXT.md 域文件**：7 类上下文模型（Task / Product / Technical / Code / Engineering / Execution / Session）、Context Selection 判据、三种技术（Context Retrieval / Progressive Disclosure / Context Compression）、Memory / State / Checkpoint 三分工、上下文预算、跨 Session 恢复协议
+- **`dev-builder/principles/context-engineering.md`**：Task 启动的 6 层渐进式装配顺序、该读/不该读对照表、压缩触发条件与不可丢项、checkpoint 落盘命令
+- **`dev-builder/principles/test-pyramid.md`**：Unit / Integration / Contract / E2E / Regression 五层验证映射 + 并发不变量三件套门禁（单元测试 + 数据库唯一约束 + 并发测试）
+- **`scripts/session.py checkpoint` / `restore`**：记录任务恢复点；读取恢复点 + 待核实清单
+- **契约测试**：`test_context_engineering.py`（24 项）、`test_session_checkpoint.py`（13 项）、`test_session_schema.py`（5 项）——本批次新增 42 项
+- **D-016 决策记录**（DECISIONS.md）
+
+### 改动
+
+- `AGENTS.md`：域文件清单加 CONTEXT.md，启动顺序加 CONTEXT，SESSION-LOAD 提示 latest_checkpoint 需走恢复协议
+- `WORKFLOW.md`：[规划与执行] 加「模式分流」判据（直做 / 规划模式）与「停手问人」判据（不可逆操作 / 安全敏感 / 需求歧义 / 反复卡住 / 高价值分叉）；第五步项目开发加 checkpoint 落盘
+- `STATE-ROUTING.md`：加「先定位，再核实」段——恢复点只定位不代替核查，四项核实完再进路由表
+- `agents/skills/dev-builder/SKILL.md`：加两个必读原则引用 + CONTEXT.md 域引用
+- `agents/skills/dev-builder/workflows/workflow-task-loop.md`：阶段 1 改为 6 层上下文装配；RED 加测试分层判断；阶段 3 加 checkpoint 落盘
+- `agents/skills/dev-builder/workflows/workflow-phase-verify.md`：第二步加测试层级 / 并发不变量 / 回归三项检查；加「四步走之后：持久化开发进度」段
+- `agents/skills/code-review/principles/stage2-checklist.md`：加「测试分层与业务不变量」必查段（五层覆盖 + 并发三件套 + Invariant vs Regression）
+- `schemas/session.schema.json`：新增 `checkpoints` 字段定义（原 schema `additionalProperties: false` 且无此字段，加完 checkpoint 后真实 session.json 会校验失败——这是本次补的断链）
+
+### 顺带修复
+
+- **`schemas/session.schema.json` 首次纳入契约测试**：该 schema 此前无任何测试覆盖
+- **`.github/workflows/ci.yml`**：session 校验步骤加 `session.py restore` 冒烟
+- **`scripts/session.py`**：JSON 输出统一到 `emit()` helper（消除同一文件两种输出风格）；docstring 精简使文件从 305 行降到 289 行（过 `check_simplicity` 的 300 行门槛）
+
+### 关键取舍
+
+- **Checkpoint ≠ Git Commit**：Checkpoint 记任务恢复信息，Git Commit 管代码版本。`restore` 会输出待核实清单——恢复时不轻信历史测试结论，代码变过就重跑。
+- **上下文按任务选，不按项目大小选**：不引入向量库，代码搜索 + 符号索引已足够。
+- **不新增流水线环节**：上下文管理是横切关注点，用根域文件 + skill 细则承载，保住「8 步流水线」的清晰边界。
+- **「四步走验证」保持四步**：持久化进度是验证之后的收尾动作，不算第 5 步验证。
+
+### 验证
+
+- `python3 -m pytest tests/ -q` → 252 passed
+- `python3 scripts/check_simplicity.py scripts/` → 全部通过（session.py 289 行，≤ 300）
+- `python3 scripts/check_skill_structure.py` → 11 个 skill 全 OK
+
+### 独立审查与 fix loop
+
+本批次经 `code-reviewer` 两阶段审查（Spec Compliance ✅ / Code Quality ❌ 4 Important + 7 Minor）。Important 全部按「先补失败测试 → 再改实现 → 再跑」修复：
+
+- **I-1 checkpoint id 秒级精度会撞**（同秒两条 id 相同，而 id 是 schema required 字段）→ id 加 uuid 后缀，补 `test_checkpoint_ids_are_unique`
+- **I-2 restore 的 resume_at 丢失**（checkpoint 没带 task 时不回落到 session.current_task）→ 补回落 + `test_restore_falls_back_to_session_task`
+- **I-3 `--tests` 非法 JSON 吐裸 traceback** → 新增 `parse_json_arg()` 统一转可读错误，`write` / `append` 一并受益
+
+Minor 同步修：restore 在 session.json 缺失时改为非零退出（CI 冒烟不再假绿）、dev-builder principles 数量改 11、各处测试数字按实测校正。
+
+审查者还用变异测试验证了本批次测试"有牙齿"：回退 `session.py` 到 HEAD → 7 失败；改 checkpoint 为覆盖写 → 1 失败；清空 `verify_required` → 2 失败；反转「Checkpoint ≠ Git Commit」表述 → 1 失败。
+
 ## [0.8.0-dev]
 
 需求纪律强化版（spec 层）。让 Product Spec 一出就能被下游流水线（design-brief / dev-planner / dev-builder / code-review）一次写对，减少下游返工。本批次只做 spec 层纪律，不做 subagent 任务循环（v0.9.0）、不做运行时验证（v1.0.0）。

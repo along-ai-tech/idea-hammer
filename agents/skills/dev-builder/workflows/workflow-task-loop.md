@@ -6,7 +6,14 @@
 
 **目标**：把当前 Phase 拆成 Task
 **动作**：
-1. 读 DEV-PLAN 当前 Phase 的 DT 章节、Product-Spec 相关章节、Technical-Design.md 中本 Task 涉及的模块边界、领域不变量、数据约束与 API Contract（不凭记忆）
+1. **装配上下文**（按 principles/context-engineering.md 的 6 层渐进顺序，不铺满不跳层）
+   - 第 1 层：DEV-PLAN 当前 Phase / Task 章节
+   - 第 2 层：Product-Spec 对应 REQ/AC 原文
+   - 第 3 层：Technical-Design.md 中本 Task 涉及的模块边界、领域不变量、数据约束与 API Contract
+   - 第 4 层：相关源码、调用方、同层测试
+   - 第 5 层：命中的工程约束主题
+   - 第 6 层：必要的详细参考
+   - 全部按原文读，不凭记忆、不凭上轮摘要
 2. 写 Task 拆分：每个页面、组件、功能一个 Task，标明对应的 DT-### 与 REQ/AC
 3. 列出每个 Task 的交付清单（具体行为点）
 
@@ -18,12 +25,13 @@
 
 **目标**：写失败测试
 **动作**：
-1. 读 DEV-PLAN 交付清单、Spec 功能描述、Technical-Design 的接口与数据约束、Design-Brief 视觉方向的原文（不凭记忆）
+1. 读 DEV-PLAN 交付清单、Spec 功能描述、Technical-Design 的接口与数据约束、Design-Brief 视觉方向的原文（不凭记忆）；本 Task 无关的模块、历史会话、其他 Skill 全文一律不读
 2. 为本 Task 每个行为点写最小失败测试，测试名回答"什么 break 让它失败"
 3. 每条测试上方加追踪注解：`# @trace TEST-### REQ-###/AC-###-##`（TEST ID 全局唯一，不复用）
 4. 跑测试确认 FAIL 且失败原因是"功能缺失"非笔误或 typo
 5. AI 生成代码不豁免 RED
 6. 看不到失败不准进 GREEN
+7. 按 principles/test-pyramid.md 判断本 Task 需要哪几层测试：有"不允许重复"类规则时，单元 + 数据库约束 + 并发三件套齐全
 
 **完成**：测试 FAIL + 原因合理 + 每条测试有 TEST/AC 追踪
 
@@ -73,9 +81,10 @@
 **目标**：原子提交 + 切下一个 Task
 **动作**：
 1. commit 用 feat: / fix: / test: / refactor: 前缀（区分 TDD 步骤里的 test: 与 fix:）
-2. 切下一个 Task，回到阶段 2 单 Task 执行
+2. 记 checkpoint：`python3 scripts/session.py checkpoint --phase "<Phase>" --task "<DT-###>" --commit "$(git rev-parse --short HEAD)" --tests '{"unit_test":"passed"}' --next "<下一步>"`（恢复点 ≠ Git Commit，见 CONTEXT.md）
+3. 切下一个 Task，回到阶段 2 单 Task 执行
 
-**完成**：当前 Task commit + 下一个 Task 进入 RED
+**完成**：当前 Task commit + checkpoint 已落盘 + 下一个 Task 进入 RED
 
 ## 失败处理
 

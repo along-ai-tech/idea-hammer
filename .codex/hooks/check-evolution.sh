@@ -1,9 +1,16 @@
 #!/bin/bash
 # Hook: SessionStart
-# 提示：有待确认的进化建议，或有待消化的信号。session 启动主 Agent 扫信号、同步消化、逐条问用户
-# 只提示一行，绝不阻塞用户
+# 有待确认的进化建议，或有待消化的信号时，把提示注入 session 上下文。
+# 只提示，绝不阻塞。
+#
+# Codex hook 协议（openai/codex rust-v0.171.0）：
+#   stdin  = {"session_id":...,"cwd":...,"hook_event_name":"SessionStart","source":...}
+#   stdout = JSON；纯文本会被判为无效输出
+#   {"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"..."}}
 
-EVO="$(git rev-parse --show-toplevel)/.codex/evolution"
+ROOT="${IDEA_HAMMER_ROOT:-$(git rev-parse --show-toplevel 2>/dev/null)}"
+[ -n "$ROOT" ] || exit 0
+EVO="$ROOT/.codex/evolution"
 PROPOSALS="$EVO/proposals.md"
 SIGNALS="$EVO/signals.jsonl"
 
@@ -21,5 +28,8 @@ if [ -f "$SIGNALS" ] && [ -s "$SIGNALS" ]; then
   MSG="${MSG} 🔄 有新进化信号，session 启动我会扫一遍、消化成建议并逐条问你。"
 fi
 
-[ -n "$MSG" ] && echo "$MSG"
+[ -n "$MSG" ] || exit 0
+
+jq -nc --arg ctx "$MSG" \
+  '{hookSpecificOutput:{hookEventName:"SessionStart",additionalContext:$ctx}}' 2>/dev/null
 exit 0

@@ -35,6 +35,7 @@ jobs:
         run: |
           python3 scripts/session.py validate
           python3 scripts/session.py context > /dev/null
+          python3 scripts/session.py restore > /dev/null
   
   example-tests:
     name: Example 后端 + 前端测试

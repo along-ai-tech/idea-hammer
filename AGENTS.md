@@ -11,9 +11,10 @@
 - [SUBAGENTS.md](./SUBAGENTS.md) — 子 Agent 调度
 - [STATE-ROUTING.md](./STATE-ROUTING.md) — 项目状态检测与路由
 - [TESTING.md](./TESTING.md) — TDD 铁律 + 四步走验证
+- [CONTEXT.md](./CONTEXT.md) — 上下文工程 + 跨 Session 恢复
 - [.codex/EVOLUTION.md](./.codex/EVOLUTION.md) — 自进化机制
 
-主 Agent 启动顺序：Session State → IDENTITY → WORKFLOW → SKILLS → SUBAGENTS → STATE-ROUTING → TESTING。EVOLUTION 由 SessionStart hook 触发。
+主 Agent 启动顺序：Session State → IDENTITY → WORKFLOW → SKILLS → SUBAGENTS → STATE-ROUTING → TESTING → CONTEXT。EVOLUTION 由 SessionStart hook 触发。
 
 ---
 
@@ -32,6 +33,7 @@
     - 不存在 → 全量读域文件（按 IDENTITY → WORKFLOW → ... → TESTING 顺序）
     - session.json 包含 key_decisions 数组 → 跨 session 决策摘要保留，不用每次从头推导
     - session.json 包含 user_preferences → 用户偏好生效（语言 / 风格 / 技术栈 / commit 风格）
+    - 精简版带 latest_checkpoint → 拿到恢复位置，但恢复前必读 [CONTEXT.md](./CONTEXT.md) 的恢复协议
 
     主 Agent 在以下关键节点后更新 session.json（用 `python3 scripts/session.py update`）：
     - 关键决策后：追加到 key_decisions 数组

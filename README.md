@@ -48,14 +48,15 @@
 2. [端到端示例：personal-blog](./examples/personal-blog/) ← 完整走一遍 8 步流水线
 3. [它解决什么问题](#-它解决什么问题)
 4. [快速开始](#-快速开始)
-5. [示例对话](#-示例对话)
-6. [架构与组件关系](#-架构与组件关系)
-7. [详细文档](#-详细文档)
-8. [方法论详解](#-方法论详解)
-9. [路线图](#-路线图)
-10. [谁会用 / 项目定位](#-谁会用--项目定位)
-11. [贡献](#-贡献)
-12. [许可 & 致谢](#-许可--致谢)
+5. [全局安装（所有项目通用）](#-全局安装所有项目都用上这套方法论)
+6. [示例对话](#-示例对话)
+7. [架构与组件关系](#-架构与组件关系)
+8. [详细文档](#-详细文档)
+9. [方法论详解](#-方法论详解)
+10. [路线图](#-路线图)
+11. [谁会用 / 项目定位](#-谁会用--项目定位)
+12. [贡献](#-贡献)
+13. [许可 & 致谢](#-许可--致谢)
 
 ***
 
@@ -184,6 +185,57 @@ codex                             # 启动后输入"我想做一个 X"即可
 
 ***
 
+## 🌐 全局安装：所有项目都用上这套方法论
+
+不想每个项目都 `mv agents .agents`？装一次，**你电脑上所有 Codex 项目**自动生效。
+
+```bash
+git clone https://github.com/along-ai-tech/idea-hammer.git
+cd idea-hammer
+python3 scripts/install_global.py install
+```
+
+装完新开一个 Codex 会话即可——**在任何目录**都不用再配置。
+
+### 装了什么
+
+| 装到哪 | 内容 | 作用 |
+|---|---|---|
+| `~/.codex/idea-hammer/` | 框架副本 | 稳定路径，不受 `Downloads` 被清理影响 |
+| `~/.agents/skills/` | 13 个技能 | Codex 全局技能根目录，全项目可触发 |
+| `~/.codex/AGENTS.md` | 方法论入口 | 主控流程：8 步流水线、路由、进化机制 |
+| `~/.codex/agents/` | `code-reviewer`、`evolution-runner` | 可派发的子 Agent |
+| `~/.codex/hooks.json` | 2 条全局 hook | 进化信号捕获 + session 启动提醒 |
+| `~/.codex/config.toml` | `[hooks.state]` | **hook 信任登记**（不登记 Codex 不会执行） |
+
+### 日常维护
+
+```bash
+python3 scripts/install_global.py status      # 看安装状态
+python3 scripts/install_global.py sync         # 源码改了，同步到全局副本
+python3 scripts/install_global.py uninstall   # 卸载
+```
+
+### 门禁 hook 按项目开启
+
+全局只装"跟项目无关"的两条 hook。以下三条会改变项目行为（拦 commit、拦停止、自动 push），**只装到你指定的项目**：
+
+```bash
+python3 scripts/install_global.py project /path/to/your/project
+```
+
+### 验证是否真的生效
+
+```bash
+cd /tmp && codex exec --skip-git-repo-check "只回一行：你这次会话收到的 hook 注入上下文原文是什么？"
+```
+
+看到 `🔄 有新进化信号…` 就说明全局 hook 已经在跑了。
+
+> hook 协议细节、信任机制怎么算 hash，见 [`docs/codex-hooks.md`](docs/codex-hooks.md)。
+
+***
+
 ## 💬 示例对话
 
 ```
@@ -232,8 +284,13 @@ graph TB
 
     subgraph Main[主 Agent（AGENTS.md）]
         SessionLoad["SESSION-LOAD<br/>读精简版 session.json"]
-        Router["STATE-ROUTING<br/>检测项目进度"]
+        Router["STATE-ROUTING<br/>检测进度 + 恢复核实"]
         Orchestrator["规划 + 自驱执行"]
+    end
+
+    subgraph Domain[域文件（横切纪律）]
+        C1[CONTEXT<br/>上下文工程 + 恢复协议]
+        C2[TESTING<br/>TDD 铁律 + 四步走]
     end
 
     subgraph Skills[11 个 skill（按 description 自动触发）]
@@ -273,6 +330,9 @@ graph TB
     Orchestrator -->|按 description 触发| Skills
     Orchestrator -->|显式 spawn| SubAgents
     Orchestrator -.->|写入 / 读出| SessionState[(session.json)]
+    C1 -->|装配上下文 / 恢复核实| Orchestrator
+    C2 -->|TDD + 验证门禁| Orchestrator
+    Orchestrator -.->|写 checkpoint| SessionState
 
     H1 --> ER
     ER -->|产出 proposals| Orchestrator
@@ -288,10 +348,12 @@ graph TB
     classDef skill fill:#f3e5f5,stroke:#7b1fa2
     classDef hook fill:#fff3e0,stroke:#f57c00
     classDef ec fill:#e8f5e9,stroke:#388e3c
+    classDef domain fill:#fff9c4,stroke:#f9a825
     class SessionLoad,Router,Orchestrator main
     class S1,S2,S3,S4,S5,S6,S7,S8,M1,M2,M3 skill
     class H1,H2,H3,H4,H5 hook
     class EC1,EC2,EC3 ec
+    class C1,C2 domain
 ```
 
 ***
@@ -307,13 +369,15 @@ graph TB
 | [SUBAGENTS.md](./SUBAGENTS.md)                                                        | 子 Agent 调度规则                                                                                                                                                                                                                                   |
 | [STATE-ROUTING.md](./STATE-ROUTING.md)                                                | 项目状态检测与路由                                                                                                                                                                                                                                      |
 | [TESTING.md](./TESTING.md)                                                            | TDD 铁律 + 四步走验证                                                                                                                                                                                                                                 |
+| [CONTEXT.md](./CONTEXT.md)                                                            | 上下文工程 + 跨 Session 恢复（7 类上下文 / Memory-State-Checkpoint 分工 / 恢复协议）                                                                                                                                                                      |
 | [.codex/EVOLUTION.md](./.codex/EVOLUTION.md)                                          | 自进化机制说明                                                                                                                                                                                                                                        |
 | [agents/skills/](./agents/skills/)                                                    | **11 个 skill**（每个含 SKILL.md + principles/ + workflows/ + contracts/）                                                                                                                                                                           |
 | [agents/skills/\_engineering-constraints/](./agents/skills/_engineering-constraints/) | **15 主题工程级约束**（coding-style / ecosystem-matrix / anti-reinvent / performance / security / concurrency / api-design / observability / ci-cd / error-handling / database / dependency-mgmt / i18n-a11y / **simplification** / **compatibility**） |
 | [agents/skills/\_traceability/](./agents/skills/_traceability/)                       | **需求追踪规范**：REQ / AC / DT / TEST / SemVer 的 ID 体系、`@trace` 注解、变更影响分析                                                                                                                                                                            |
 | [`examples/personal-blog/`](./examples/personal-blog/)                                | **端到端示例**：完整 8 步产物 + 可运行前后端 + 测试/审查/发布/追踪产物，入口见其 [README](./examples/personal-blog/README.md)                                                                                                                   |
 | [schemas/session.schema.json](./schemas/session.schema.json)                          | Session State schema（跨 session 持久化上下文）                                                                                                                                                                                                         |
-| [tests/contract/](./tests/contract/)                                                  | **199 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则 + 需求追踪 + Spec 四要素标准 + 输出 schema 契约）— CI 卡门禁                                                                                                                                                                          |
+| [tests/contract/](./tests/contract/)                                                  | **252 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则 + 需求追踪 + Spec 四要素标准 + 输出 schema 契约 + 上下文工程 + checkpoint 工具 + session schema）— CI 卡门禁                                                                                                     |
+| [scripts/session.py](./scripts/session.py)                                            | Session State 工具：读写 session.json、`checkpoint` 记录恢复点、`restore` 读恢复点 + 待核实清单                                                                                                                                                              |
 | [scripts/check\_simplicity.py](./scripts/check_simplicity.py)                         | **代码简洁自动校验**（文件/函数/圈复杂度阈值 + dead code / 命名）                                                                                                                                                                                                    |
 | [scripts/check\_traceability.py](./scripts/check_traceability.py)                     | **需求追踪校验**：REQ→DT→TEST→版本链路缺口、`--write` 生成矩阵、`--impact` 查变更影响面                                                                                                                                                                                 |
 | [CHANGELOG.md](./CHANGELOG.md)                                                        | 变更记录                                                                                                                                                                                                                                           |
@@ -329,7 +393,7 @@ graph TB
 
 **SDD（Spec-Driven Development）** — 文档是开发的入口和单一真相源。代码从 Spec 生成，Spec 变则下游文档和代码同步更。
 
-**TDD（Test-Driven Development）** — 铁律：*无失败测试不写生产代码*。RED → GREEN → REFACTOR 强制循环；bug 修复前必先写失败复现测试。框架自身同样由 199 个契约测试与 CI 门禁覆盖。
+**TDD（Test-Driven Development）** — 铁律：*无失败测试不写生产代码*。RED → GREEN → REFACTOR 强制循环；bug 修复前必先写失败复现测试。框架自身同样由 252 个契约测试与 CI 门禁覆盖。
 
 **Design-Brief 与设计稿** — Spec 是文字（可能歧义），设计稿是图片（无歧义但不直接驱动代码）。Design-Brief 在中间做翻译：把 Spec 钉成可执行的视觉规范，再由 design-maker 生成精确参照图。UI 实现以设计稿为准；无稿无 Brief 时继承项目既有先例，不自由发挥。
 

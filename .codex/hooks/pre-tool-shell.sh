@@ -1,22 +1,29 @@
 #!/bin/bash
 # Hook: PreToolUse（命令工具）— 合并 Claude 版的 pre-commit-check 与 pnpm-dev 清端口
-# Codex 的 matcher 只过滤 tool name，命令内容判断在脚本里做
-# 命令字段按 .tool_input.command 与 .command 双重兼容读取，适配不同 Codex 版本的 input 格式
+# Codex 的 matcher 只过滤 tool name，命令内容判断在脚本里做。
+#
+# Codex hook 协议（openai/codex rust-v0.171.0）：
+#   stdin  = {"tool_name":"Bash","tool_input":{"command":"<命令行字符串>"},...}
+#   stdout = JSON；拦截写 {"decision":"block","reason":"..."}
+#   注意：stdout 非 JSON 会被判为无效输出，诊断信息一律写 stderr
 
 INPUT=$(cat)
-CMD=$(echo "$INPUT" | jq -r '.tool_input.command // .command // empty' 2>/dev/null)
+CMD=$(echo "$INPUT" | jq -r '.tool_input.command // .tool_input.cmd // .command // empty' 2>/dev/null)
+[ -n "$CMD" ] || exit 0
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
 
-# git commit 前：编译检查，不过则阻止（exit 2）
-if echo "$CMD" | grep -qE "git commit"; then
+block() {
+  jq -nc --arg r "$1" '{decision:"block", reason:$r}' 2>/dev/null
+  exit 0
+}
+
+# git commit 前：编译检查，不过则阻止
+if echo "$CMD" | grep -qE "git commit" && [ -n "$ROOT" ]; then
   TSCONFIG=$(find "$ROOT" -maxdepth 3 -name "tsconfig.json" -not -path "*/node_modules/*" -not -path "*/.next/*" 2>/dev/null | head -1)
   if [ -n "$TSCONFIG" ]; then
-    cd "$(dirname "$TSCONFIG")"
-    TSC_OUTPUT=$(npx tsc --noEmit 2>&1)
-    if [ $? -ne 0 ]; then
-      echo "编译检查未通过，commit 被阻止。请修复以下错误：" >&2
-      echo "$TSC_OUTPUT" >&2
-      exit 2
+    if ! TSC_OUTPUT=$(cd "$(dirname "$TSCONFIG")" && npx tsc --noEmit 2>&1); then
+      TSC_MSG=$(printf '编译检查未通过，commit 被阻止。请修复以下错误：\n%s' "$TSC_OUTPUT")
+      block "$TSC_MSG"
     fi
   fi
 fi

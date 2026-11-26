@@ -4,6 +4,61 @@
 
 ---
 
+## 2026-11-26
+
+### D-016：v0.11.0 上下文工程域 + 跨 Session 恢复（补 Day9 AI Coding 工程化缺口）
+
+**背景**：v0.10.0 打通需求追踪后，做了一次框架自检——拿 Day9「AI Coding 工程化」的七个知识域逐条比对项目现状。结果：
+
+- TDD、Anti-Reinvent、Simplification、独立 Code Review、Task Decomposition、Multi-Agent 已落地且质量高
+- **Context Engineering 整域零覆盖**：`rg -il "context engineering|渐进式加载|上下文压缩"` 全仓库 0 命中
+- Checkpoint 概念缺失：`rg -il checkpoint` 只命中无关文件
+- 恢复流程只做"产物在不在"的文件存在性检测，不核实代码与测试真实性
+- Plan / Agent Mode 无按规模与风险分流的判据；Human-in-the-loop 停手判据只散落一句
+- 测试金字塔缺 Contract / Regression 分层，无并发不变量门禁
+
+根因判断：框架一直在教「先读原文、不凭记忆」，但**从没定义该读什么**。这是长任务上下文膨胀的源头——不是纪律不够，是缺一个可操作的上下文选择规则。
+
+**候选**：
+
+- A. 只补一份 CONTEXT.md 文档，讲清概念
+- B. CONTEXT.md + 可执行门禁（checkpoint 工具 + 契约测试 + skill 接线）
+- C. 新建一个 context-engineer skill，走 8 步流水线加一环
+
+**决定**：B 方案
+
+**理由**：
+
+- A 不符合本仓库"把模糊审美判断转成可检查指标"的一贯做法（simplification、traceability 都是这么做的），纯文档写完就无人执行。
+- C 过度：上下文管理是横切关注点，不是流水线上一环。塞进流水线会破坏"8 步"的清晰结构，也会和 SKILLS.md 的职责边界打架。
+- B 保持横切关注点用**根域文件**承载（与 TESTING.md 平级），细则下沉到 dev-builder 的 principles，工具落到 scripts，纪律落到契约测试。四层各有落点，不新增流水线环节。
+
+**落地**：
+
+| 层 | 产物 | 作用 |
+|---|---|---|
+| 域 | `CONTEXT.md` | 7 类上下文 / Context Selection / 三种技术 / Memory-State-Checkpoint 分工 / 恢复协议 |
+| 原则 | `dev-builder/principles/context-engineering.md` | Task 启动的 6 层渐进式装配顺序、该读/不该读表、压缩触发与保留项 |
+| 原则 | `dev-builder/principles/test-pyramid.md` | Unit/Integration/Contract/E2E/Regression 五层映射 + 并发不变量三件套门禁 |
+| 工具 | `scripts/session.py checkpoint` / `restore` | 记录恢复点、输出待核实清单 |
+| 门禁 | `tests/contract/test_context_engineering.py` / `test_session_checkpoint.py` | 概念必现 + 工具行为可执行验证 |
+| 接线 | AGENTS.md / WORKFLOW.md / STATE-ROUTING.md / dev-builder SKILL + workflows / code-review stage2 | 域文件进启动顺序；模式分流与停手判据进 WORKFLOW；恢复核实进 STATE-ROUTING |
+
+**关键取舍**：
+
+1. **Checkpoint ≠ Git Commit**：Checkpoint 记任务恢复信息（做到哪、测试证据、下一步、关联产物），Git Commit 管代码版本。两者可关联，职责不同。恢复时用 `session.py restore` 拿到位置，但**不轻信其中的测试结论**——代码变过就重跑。
+2. **Context 是按任务选，不是按项目大小选**：不引入向量库。代码搜索 + 符号索引已足够，且引入 RAG 会让框架复杂度陡增。
+3. **压缩保留"索引"而非"细节"**：Spec / Plan / 源码永远可重读，所以压缩时保留"在哪、是什么"，细节丢了能重读。永远保留验收标准、已确认决策、验证证据。
+4. **不新增流水线环节**：横切关注点用根域文件 + skill 细则承载，保住"8 步流水线"的清晰边界。
+5. **"四步走验证"保持四步**：持久化进度是验证**之后**的收尾动作，不算第 5 步验证，避免与 TESTING.md 的铁律冲突。
+
+**影响**：
+
+- 后续 D-017+ 若涉及"AI 自主性"扩展，CONTEXT.md 的"停手问人判据"是唯一真相源。
+- `session.json` 新增 `checkpoints` 数组，为 1.0 稳定 API 预留（TODO-301 需把该字段纳入锁定范围）。
+
+---
+
 ## 2026-09-30
 
 ### D-012：v0.8.0 PRD 吸收 + spec 纪律补强

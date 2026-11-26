@@ -2,36 +2,35 @@
 """
 session.py — IdeaHammer Session State 工具
 
-读取和写入 .idea-hammer/session.json，跨 session 持久化上下文。
+读写 .idea-hammer/session.json，跨 session 持久化上下文。
 
 用法：
-  # 读 session（精简版，启动用）
-  python3 scripts/session.py read [--path PATH] [--minimal]
+  read [--path P] | write --key K --value V | update --key K --value V
+  validate [--path P] | append <key> <value> | context [--path P]
+  checkpoint --phase P --task T [--commit SHA] [--tests JSON] [--next TEXT] [--artifacts A,B]
+  restore [--path P]
 
-  # 写 session
-  python3 scripts/session.py write --key KEY --value VALUE [--path PATH]
-
-  # 更新某个字段
-  python3 scripts/session.py update --key KEY --value VALUE [--path PATH]
-
-  # 验证
-  python3 scripts/session.py validate [--path PATH]
-
-  # 往数组 key 追加一条（key 不存在则建空数组）
-  python3 scripts/session.py append <key> <value> [--path PATH]
-
-  # 显示精简版（启动时只读这个，省 token）
-  python3 scripts/session.py context [--path PATH]
+  context = 精简版（启动时只读这个，省 token）；checkpoint = 记录恢复点（≠ Git Commit）
+  restore = 读最近恢复点 + 需要重新核实的清单
 """
 
 import argparse
 import json
 import sys
+import uuid
 from datetime import datetime
 from pathlib import Path
 
 
 SCHEMA_VERSION = "1.0"
+
+# 恢复时必须重新核实的事：State 只定位恢复位置，不代替对真实代码与执行结果的核查。
+VERIFY_STEPS = [
+    "git 工作区是否与 checkpoint 记录的 commit 一致（不一致说明中途有改动）",
+    "checkpoint 记录的测试结果是否仍成立（代码变了必须重跑，不能沿用旧结论）",
+    "checkpoint 之后的未提交改动属于哪个 Task，是否保留或回滚",
+    "checkpoint 引用的产物（Spec / Plan / Design）是否还在原位且未被改动",
+]
 
 
 def find_session_path(explicit=None):
@@ -57,6 +56,20 @@ def read_session(path=None):
         return json.load(f)
 
 
+def emit(payload, indent=None):
+    """统一 JSON 输出。"""
+    print(json.dumps(payload, ensure_ascii=False, indent=indent))
+
+
+def parse_json_arg(raw, label):
+    """解析 JSON 参数；非法时给可读提示，不吐裸 traceback。"""
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        emit({"error": f"--{label} 必须是合法 JSON"})
+        sys.exit(1)
+
+
 def write_session(session, path=None):
     path = find_session_path(path) or Path(".idea-hammer/session.json")
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -69,11 +82,13 @@ def minimal_view(session):
     """精简版（启动用，只保留当前任务 + 用户偏好 + 最近 3 个决策）。"""
     if not session:
         return {}
+    checkpoints = session.get("checkpoints") or []
     return {
         "schema_version": session.get("schema_version"),
         "current_project": session.get("current_project"),
         "current_phase": session.get("current_phase"),
         "current_task": session.get("current_task"),
+        "latest_checkpoint": checkpoints[-1] if checkpoints else None,
         "recent_decisions": session.get("key_decisions", [])[-3:],
         "user_preferences": session.get("user_preferences", {}),
         "open_questions": session.get("open_questions", []),
@@ -124,18 +139,18 @@ def validate(session):
 def cmd_read(args):
     session = read_session(args.path)
     if session is None:
-        print(json.dumps({"error": "session.json 不存在"}, ensure_ascii=False))
+        emit({"error": "session.json 不存在"})
         sys.exit(1)
-    print(json.dumps(session, indent=2, ensure_ascii=False))
+    emit(session, indent=2)
 
 
 def cmd_write(args):
     session = read_session(args.path)
     if session is None:
         session = {"schema_version": SCHEMA_VERSION}
-    update_field(session, args.key, json.loads(args.value))
+    update_field(session, args.key, parse_json_arg(args.value, "value"))
     write_session(session, args.path)
-    print(json.dumps({"updated": args.key, "path": str(find_session_path(args.path))}, ensure_ascii=False))
+    emit({"updated": args.key, "path": str(find_session_path(args.path))})
 
 
 def cmd_update(args):
@@ -146,9 +161,9 @@ def cmd_append(args):
     session = read_session(args.path)
     if session is None:
         session = {"schema_version": SCHEMA_VERSION}
-    append_to_array(session, args.key, json.loads(args.value))
+    append_to_array(session, args.key, parse_json_arg(args.value, "value"))
     write_session(session, args.path)
-    print(json.dumps({"appended": args.key, "path": str(find_session_path(args.path))}, ensure_ascii=False))
+    emit({"appended": args.key, "path": str(find_session_path(args.path))})
 
 
 def cmd_validate(args):
@@ -167,9 +182,64 @@ def cmd_context(args):
     """输出启动用的精简版。"""
     session = read_session(args.path)
     if session is None:
-        print(json.dumps({"empty": True, "msg": "无 session.json，全量读域文件"}, ensure_ascii=False))
+        emit({"empty": True, "msg": "无 session.json，全量读域文件"})
         sys.exit(1)
-    print(json.dumps(minimal_view(session), indent=2, ensure_ascii=False))
+    emit(minimal_view(session), indent=2)
+
+
+def build_checkpoint(args):
+    """从命令行参数构造一条 checkpoint 记录。"""
+    now = datetime.now().astimezone()
+    artifacts = [a.strip() for a in args.artifacts.split(",") if a.strip()] if args.artifacts else []
+    return {
+        "id": f"cp-{now.strftime('%Y%m%d-%H%M%S')}-{uuid.uuid4().hex[:6]}",
+        "phase": args.phase,
+        "task": args.task,
+        "git_commit": args.commit,
+        "tests": parse_json_arg(args.tests, "tests") if args.tests else {},
+        "next_action": args.next_action,
+        "artifacts": artifacts,
+        "created_at": now.isoformat(),
+    }
+
+
+def cmd_checkpoint(args):
+    """记录一个任务恢复点（追加，不覆盖历史）。"""
+    session = read_session(args.path) or {"schema_version": SCHEMA_VERSION}
+    cp = build_checkpoint(args)
+    append_to_array(session, "checkpoints", cp)
+    write_session(session, args.path)
+    emit(
+        {
+            "checkpointed": cp["id"],
+            "task": cp["task"],
+            "path": str(find_session_path(args.path)),
+        }
+    )
+
+
+def cmd_restore(args):
+    """输出最近 checkpoint + 恢复位置 + 必须重新核实的清单。"""
+    session = read_session(args.path)
+    if not session:
+        emit(
+            {
+                "checkpoint": None,
+                "resume_at": None,
+                "verify_required": VERIFY_STEPS,
+                "msg": "无 session.json，按 STATE-ROUTING 全量检测项目状态",
+            }
+        )
+        sys.exit(1)
+    checkpoints = session.get("checkpoints") or []
+    cp = checkpoints[-1] if checkpoints else None
+    emit(
+        {
+            "checkpoint": cp,
+            "resume_at": (cp.get("task") if cp else None) or session.get("current_task"),
+            "verify_required": VERIFY_STEPS,
+        }
+    )
 
 
 def main():
@@ -205,6 +275,20 @@ def main():
     p_ctx = sub.add_parser("context", help="读精简版（启动用）")
     p_ctx.add_argument("--path")
     p_ctx.set_defaults(func=cmd_context)
+
+    p_cp = sub.add_parser("checkpoint", help="记录任务恢复点（Checkpoint）")
+    p_cp.add_argument("--phase", help="当前 Phase")
+    p_cp.add_argument("--task", help="当前 Task 标识")
+    p_cp.add_argument("--commit", help="对应 git commit（可选）")
+    p_cp.add_argument("--tests", help='测试证据 JSON，如 {"unit_test":"passed"}')
+    p_cp.add_argument("--next", dest="next_action", help="下一步动作")
+    p_cp.add_argument("--artifacts", help="关联产物路径，逗号分隔")
+    p_cp.add_argument("--path")
+    p_cp.set_defaults(func=cmd_checkpoint)
+
+    p_res = sub.add_parser("restore", help="读最近 checkpoint + 需核实清单")
+    p_res.add_argument("--path")
+    p_res.set_defaults(func=cmd_restore)
 
     args = parser.parse_args()
     args.func(args)

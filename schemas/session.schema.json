@@ -39,6 +39,69 @@
       ],
       "description": "当前 Task 标识"
     },
+    "checkpoints": {
+      "type": "array",
+      "description": "任务恢复点数组。记的是任务恢复信息（做到哪 / 测试证据 / 下一步 / 关联产物），≠ Git Commit 的代码版本快照。追加不覆盖。",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "created_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "恢复点 ID（cp-YYYYMMDD-HHMMSS）"
+          },
+          "phase": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "记录时的 Phase"
+          },
+          "task": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "记录时的 Task 标识"
+          },
+          "git_commit": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "关联的 git commit（可选，代码版本快照归 Git 管）"
+          },
+          "tests": {
+            "type": "object",
+            "description": "当时的测试证据快照。恢复时要重新核实，不轻信旧结论",
+            "additionalProperties": true
+          },
+          "next_action": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "下一步动作"
+          },
+          "artifacts": {
+            "type": "array",
+            "description": "关联产物路径（Spec / Plan / Design 等）",
+            "items": {
+              "type": "string"
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "记录时间"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "key_decisions": {
       "type": "array",
       "description": "关键决策摘要（跨 session 保留）",

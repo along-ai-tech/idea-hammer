@@ -26,6 +26,9 @@
 8. mutation check 过：脑里改一处生产代码，至少一个测试要失败
 9. 工具链自动生成的中间代码豁免 TDD；AI 生成代码不豁免
 10. 跑 `python3 scripts/check_traceability.py --project <项目根>`，确认本 Phase 的 REQ/AC 无未覆盖项
+11. 测试层级齐（对照 principles/test-pyramid.md）：本 Phase 该有的 Unit / Integration / Contract / E2E 层都有，缺的写明理由
+12. 并发不变量门禁：业务规则里有"不允许重复 / 不允许超量"时，单元测试 + 数据库唯一约束 + 并发测试三件套齐全
+13. 回归：本 Phase 改动后跑全套测试，不只跑新增的那几条
 
 **完成**：TDD 合规 + 追踪校验通过
 
@@ -50,9 +53,21 @@
 
 **完成**：dev server 起得来 + 新功能 + 现有功能 + e2e/curl 通过
 
+## 四步走之后：持久化开发进度
+
+**目标**：让下一个 Session 能接着干，而不是重新分析整个项目
+**动作**：
+1. 更新 session.json 的 current_phase / current_task
+2. 记 checkpoint，带上本 Phase 的测试证据与下一步：
+   `python3 scripts/session.py checkpoint --phase "<Phase>" --task "<最后完成的 DT>" --commit "$(git rev-parse --short HEAD)" --tests '{"unit_test":"passed","integration_test":"passed"}' --next "<下一步>" --artifacts "Technical-Design.md,DEV-PLAN.md"`
+3. 关键决策追加到 session.json 的 key_decisions，并落到 DECISIONS.md 或 Spec 原文
+
+**完成**：session.json 有新 checkpoint + 下一步写得出来
+
 ## 每步附证据
 
 - 每步必须当场跑命令，把输出贴在汇报里
 - 中间有任何改动，四步重新来
 - 通过后向用户汇报附证据，用户确认后 Phase 完成
 - 修验证中发现的问题用 fix: 提交
+- checkpoint 里的测试结论是"当时的快照"，恢复时要重新核实（代码变过就重跑），见 CONTEXT.md

@@ -1,7 +1,6 @@
 {
-  "$version": "2.0",
-  "$comment": "Hook 协议 v2 — advisory/transform/retry 三模式。详细见 schemas/hook-protocol.schema.json",
-  "events": {
+  "description": "IdeaHammer 项目级 hook — Codex v1 hook schema（openai/codex rust-v0.171.0）",
+  "hooks": {
     "UserPromptSubmit": [
       {
         "hooks": [
@@ -9,7 +8,7 @@
             "type": "command",
             "command": "\"$(git rev-parse --show-toplevel)/.codex/hooks/detect-feedback-signal.sh\"",
             "timeout": 5,
-            "mode": "advisory"
+            "statusMessage": "IdeaHammer 进化信号扫描"
           }
         ]
       }
@@ -21,44 +20,41 @@
             "type": "command",
             "command": "\"$(git rev-parse --show-toplevel)/.codex/hooks/check-evolution.sh\"",
             "timeout": 10,
-            "mode": "advisory"
+            "statusMessage": "IdeaHammer 进化检查"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "shell|local_shell|exec",
+        "matcher": "Bash|exec_command",
         "hooks": [
           {
             "type": "command",
             "command": "\"$(git rev-parse --show-toplevel)/.codex/hooks/pre-tool-shell.sh\"",
-            "timeout": 30,
-            "mode": "advisory"
+            "timeout": 30
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "shell|local_shell|exec",
+        "matcher": "Bash|exec_command",
         "hooks": [
           {
             "type": "command",
             "command": "\"$(git rev-parse --show-toplevel)/.codex/hooks/auto-push.sh\"",
-            "timeout": 15,
-            "mode": "advisory"
+            "timeout": 15
           }
         ]
       },
       {
-        "matcher": "apply_patch|edit|write",
+        "matcher": "apply_patch|Write|Edit",
         "hooks": [
           {
             "type": "command",
             "command": "\"$(git rev-parse --show-toplevel)/.codex/hooks/mark-review-needed.sh\"",
-            "timeout": 3,
-            "mode": "advisory"
+            "timeout": 3
           }
         ]
       }
@@ -69,8 +65,7 @@
           {
             "type": "command",
             "command": "\"$(git rev-parse --show-toplevel)/.codex/hooks/stop-gate.sh\"",
-            "timeout": 5,
-            "mode": "advisory"
+            "timeout": 5
           }
         ]
       }

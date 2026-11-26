@@ -1,55 +1,73 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "HookProtocol",
-  "description": "IdeaHammer Hook 协议 v2 — 支持 advisory / transform / retry 三模式",
+  "title": "CodexHooksFile",
+  "description": "Codex hooks.json 配置（openai/codex rust-v0.171.0 HooksFile）— 顶层只允许 description / hooks；本 schema 只覆盖 type=command 的 handler",
   "type": "object",
-  "required": [
-    "$version"
-  ],
   "properties": {
-    "$version": {
+    "description": {
       "type": "string",
-      "pattern": "^\\d+\\.\\d+$",
-      "description": "协议版本号（v1 = advisory-only / v2 = 3 模式）"
+      "description": "可选说明文字，Codex 只解析不消费"
     },
-    "$comment": {
-      "type": "string",
-      "description": "注释（运行时忽略）"
-    },
-    "events": {
+    "hooks": {
       "type": "object",
-      "description": "事件 → hook 列表映射",
+      "description": "事件名 → MatcherGroup 数组。Codex 只识别下列 14 个事件名，其余键会被静默忽略；本 schema 直接判错，便于发现拼写错误",
       "properties": {
-        "UserPromptSubmit": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/event"
-          }
+        "PreModelRequest": {
+          "$ref": "#/definitions/matcherGroups"
         },
-        "SessionStart": {
-          "$ref": "#/definitions/eventArray"
+        "PostModelRequest": {
+          "$ref": "#/definitions/matcherGroups"
         },
         "PreToolUse": {
-          "$ref": "#/definitions/eventArray"
+          "$ref": "#/definitions/matcherGroups"
+        },
+        "PermissionRequest": {
+          "$ref": "#/definitions/matcherGroups"
         },
         "PostToolUse": {
-          "$ref": "#/definitions/eventArray"
+          "$ref": "#/definitions/matcherGroups"
+        },
+        "PreCompact": {
+          "$ref": "#/definitions/matcherGroups"
+        },
+        "PostCompact": {
+          "$ref": "#/definitions/matcherGroups"
+        },
+        "SessionStart": {
+          "$ref": "#/definitions/matcherGroups"
+        },
+        "SessionEnd": {
+          "$ref": "#/definitions/matcherGroups"
+        },
+        "UserPromptSubmit": {
+          "$ref": "#/definitions/matcherGroups"
+        },
+        "SubagentStart": {
+          "$ref": "#/definitions/matcherGroups"
+        },
+        "SubagentStop": {
+          "$ref": "#/definitions/matcherGroups"
         },
         "Stop": {
-          "$ref": "#/definitions/eventArray"
+          "$ref": "#/definitions/matcherGroups"
+        },
+        "Interrupt": {
+          "$ref": "#/definitions/matcherGroups"
         }
       },
       "additionalProperties": false
     }
   },
+  "additionalProperties": false,
   "definitions": {
-    "eventArray": {
+    "matcherGroups": {
       "type": "array",
+      "description": "同一事件下的 matcher 分组，按数组顺序执行",
       "items": {
-        "$ref": "#/definitions/event"
+        "$ref": "#/definitions/matcherGroup"
       }
     },
-    "event": {
+    "matcherGroup": {
       "type": "object",
       "required": [
         "hooks"
@@ -57,17 +75,19 @@
       "properties": {
         "matcher": {
           "type": "string",
-          "description": "regex 匹配（PreToolUse / PostToolUse 用 tool name）"
+          "description": "匹配 tool_name 的表达式：空串或 \"*\" 匹配全部；只含字母数字/下划线/竖线时按精确工具名匹配（竖线是「或」）；含正则字符时按正则匹配。仅 PreToolUse / PermissionRequest / PostToolUse / SessionStart / SessionEnd / SubagentStart / SubagentStop / PreCompact / PostCompact 生效，其余事件忽略此字段"
         },
         "hooks": {
           "type": "array",
+          "description": "本分组下的 handler",
           "items": {
-            "$ref": "#/definitions/hook"
+            "$ref": "#/definitions/hookHandler"
           }
         }
-      }
+      },
+      "additionalProperties": false
     },
-    "hook": {
+    "hookHandler": {
       "type": "object",
       "required": [
         "type",
@@ -78,34 +98,39 @@
           "type": "string",
           "enum": [
             "command"
-          ]
+          ],
+          "description": "handler 类型。Codex 还定义了 mcp_tool / prompt / agent，但本版本运行时全部跳过，本框架只用 command"
         },
         "command": {
           "type": "string",
-          "description": "shell 命令（经 /bin/sh -lc 调）"
+          "description": "交给 shell 执行的命令，Codex 用 $SHELL -lc \"<command>\" 启动"
         },
-        "mode": {
+        "commandWindows": {
           "type": "string",
-          "enum": [
-            "advisory",
-            "transform",
-            "retry"
-          ],
-          "default": "advisory",
-          "description": "hook 模式"
+          "description": "Windows 专用命令；不填则 command 在所有平台生效"
         },
         "timeout": {
           "type": "integer",
           "minimum": 1,
-          "default": 10,
-          "description": "超时（秒）"
+          "description": "超时秒数。默认 600；SessionEnd / Interrupt 默认 1 且上限 3"
         },
-        "max_retries": {
+        "async": {
+          "type": "boolean",
+          "default": false,
+          "description": "true = 异步执行。异步 hook 没有控制效果：不能拦截、不能改写输入、不能终止本轮，但仍可注入 additionalContext"
+        },
+        "statusMessage": {
+          "type": "string",
+          "description": "运行期间展示的状态提示"
+        },
+        "additionalContextLimit": {
           "type": "integer",
-          "default": 3,
-          "description": "retry 模式最大重试次数"
+          "minimum": 0,
+          "default": 2500,
+          "description": "该 hook 注入上下文溢写到磁盘的近似 token 阈值；0 表示关闭溢写"
         }
-      }
+      },
+      "additionalProperties": false
     }
   }
 }
