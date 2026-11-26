@@ -25,7 +25,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#-贡献)
 
-[English](./README_EN.md) · 镜像仓库：[Gitee](https://gitee.com/zhilong811/idea-hammer) · [CHANGELOG](./CHANGELOG.md) · [STATUS](./STATUS.md) · [DECISIONS](./DECISIONS.md) · [TODO](./TODO.md)
+镜像仓库：[Gitee](https://gitee.com/zhilong811/idea-hammer) · [CHANGELOG](./CHANGELOG.md) · [STATUS](./STATUS.md) · [DECISIONS](./DECISIONS.md) · [TODO](./TODO.md)
 
 ***
 
