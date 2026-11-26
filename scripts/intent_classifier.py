@@ -16,7 +16,15 @@ import re
 from pathlib import Path
 
 
-SKILLS_ROOT = Path("agents/skills")
+def _default_skills_root():
+    """Codex 从 .agents/skills 读技能；仓库未改名时用 agents/skills。"""
+    for candidate in (Path("agents/skills"), Path(".agents/skills")):
+        if candidate.is_dir():
+            return candidate
+    return Path("agents/skills")
+
+
+SKILLS_ROOT = _default_skills_root()
 
 
 def load_skills():

@@ -162,17 +162,25 @@ dev-builder 启动必读，code-review Stage 2 必查。借鉴 gstack `office-ho
 
 ## 🚀 快速开始
 
+**前置**：Node.js 18+、Python 3.10+；Codex CLI 首次使用需要登录。跑框架自检额外需要 [uv](https://docs.astral.sh/uv/)。
+
 ```bash
+# 1. 安装并登录 Codex CLI（首次使用）
+npm install -g @openai/codex
+codex login                       # 浏览器完成授权；也可用 API key：printenv OPENAI_API_KEY | codex login --with-api-key
+
+# 2. 取框架并启动
 git clone https://github.com/along-ai-tech/idea-hammer.git
 cd idea-hammer
-mv agents .agents && mv codex .codex   # 装为隐藏目录
-codex
+mv agents .agents                 # Codex 从 .agents/skills 读取技能
+codex                             # 启动后输入"我想做一个 X"即可
 ```
 
 主 Agent 自动应用本框架。输入一句"我想做一个 X"启动 product-spec-builder，8 步流水线自动推进。
 
-> 镜像仓库：<https://gitee.com/zhilong811/idea-hammer>\
-> 前置：Codex CLI、Python 3.10+（hook 脚本依赖）
+> 仓库自带 `.codex/`（Hook、子 Agent、自进化机制），无需改名或复制。\
+> `mv` 之后 `tests/contract/` 会因路径仍按 `agents/` 查找而失败：需要跑框架自检时，请在 `mv` 之前执行 `uv run pytest tests/contract/ -q`，或把 `.agents` 改回 `agents`；`scripts/check_skill_structure.py`、`scripts/intent_classifier.py` 两种目录都识别。\
+> 镜像仓库：<https://gitee.com/zhilong811/idea-hammer>
 
 ***
 

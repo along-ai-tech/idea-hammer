@@ -9,7 +9,7 @@ check_skill_structure.py — 校验 IdeaHammer skill 结构
   --strict    三层目录（principles/ workflows/ contracts/）必须都存在
   --help      显示本帮助
 
-不传参数默认校验 agents/skills/ 下所有 skill（排除 _template/）。
+不传参数默认校验 agents/skills/；按 README 改名后（.agents/skills/）自动识别。
 默认模式只校验必备项；--strict 才要求三层完整。
 
 必备校验：
@@ -28,7 +28,15 @@ import json
 import re
 from pathlib import Path
 
-SKILL_ROOT = "agents/skills"
+def _default_skill_root():
+    """Codex 从 .agents/skills 读技能；仓库未改名时用 agents/skills。"""
+    for candidate in ("agents/skills", ".agents/skills"):
+        if Path(candidate).is_dir():
+            return candidate
+    return "agents/skills"
+
+
+SKILL_ROOT = _default_skill_root()
 STRICT = False
 
 
