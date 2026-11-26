@@ -42,7 +42,7 @@
 
 ### 验证
 
-- `python3 -m pytest tests/ -q` → 252 passed
+- `python3 -m pytest tests/ -q` → 244 passed
 - `python3 scripts/check_simplicity.py scripts/` → 全部通过（session.py 289 行，≤ 300）
 - `python3 scripts/check_skill_structure.py` → 11 个 skill 全 OK
 

@@ -376,7 +376,7 @@ graph TB
 | [agents/skills/\_traceability/](./agents/skills/_traceability/)                       | **需求追踪规范**：REQ / AC / DT / TEST / SemVer 的 ID 体系、`@trace` 注解、变更影响分析                                                                                                                                                                            |
 | [`examples/personal-blog/`](./examples/personal-blog/)                                | **端到端示例**：完整 8 步产物 + 可运行前后端 + 测试/审查/发布/追踪产物，入口见其 [README](./examples/personal-blog/README.md)                                                                                                                   |
 | [schemas/session.schema.json](./schemas/session.schema.json)                          | Session State schema（跨 session 持久化上下文）                                                                                                                                                                                                         |
-| [tests/contract/](./tests/contract/)                                                  | **252 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则 + 需求追踪 + Spec 四要素标准 + 输出 schema 契约 + 上下文工程 + checkpoint 工具 + session schema）— CI 卡门禁                                                                                                     |
+| [tests/contract/](./tests/contract/)                                                  | **244 个契约测试**（skill 结构 + 意图分类 + simplification 10 条原则 + 需求追踪 + Spec 四要素标准 + 输出 schema 契约 + 上下文工程 + checkpoint 工具 + session schema）— CI 卡门禁                                                                                                     |
 | [scripts/session.py](./scripts/session.py)                                            | Session State 工具：读写 session.json、`checkpoint` 记录恢复点、`restore` 读恢复点 + 待核实清单                                                                                                                                                              |
 | [scripts/check\_simplicity.py](./scripts/check_simplicity.py)                         | **代码简洁自动校验**（文件/函数/圈复杂度阈值 + dead code / 命名）                                                                                                                                                                                                    |
 | [scripts/check\_traceability.py](./scripts/check_traceability.py)                     | **需求追踪校验**：REQ→DT→TEST→版本链路缺口、`--write` 生成矩阵、`--impact` 查变更影响面                                                                                                                                                                                 |
@@ -393,7 +393,7 @@ graph TB
 
 **SDD（Spec-Driven Development）** — 文档是开发的入口和单一真相源。代码从 Spec 生成，Spec 变则下游文档和代码同步更。
 
-**TDD（Test-Driven Development）** — 铁律：*无失败测试不写生产代码*。RED → GREEN → REFACTOR 强制循环；bug 修复前必先写失败复现测试。框架自身同样由 252 个契约测试与 CI 门禁覆盖。
+**TDD（Test-Driven Development）** — 铁律：*无失败测试不写生产代码*。RED → GREEN → REFACTOR 强制循环；bug 修复前必先写失败复现测试。框架自身同样由 244 个契约测试与 CI 门禁覆盖。
 
 **Design-Brief 与设计稿** — Spec 是文字（可能歧义），设计稿是图片（无歧义但不直接驱动代码）。Design-Brief 在中间做翻译：把 Spec 钉成可执行的视觉规范，再由 design-maker 生成精确参照图。UI 实现以设计稿为准；无稿无 Brief 时继承项目既有先例，不自由发挥。
 

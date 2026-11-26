@@ -23,4 +23,4 @@
 
 ## 校验
 
-本目录不参与 `check_skill_structure.sh` 校验。
+本目录不参与 `check_skill_structure.py` 校验。

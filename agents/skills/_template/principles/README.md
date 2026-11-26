@@ -38,5 +38,5 @@
 
 ## 校验
 
-`check_skill_structure.sh` 默认不强制本目录存在；
+`check_skill_structure.py` 默认不强制本目录存在；
 `--strict` 模式要求存在且有内容。

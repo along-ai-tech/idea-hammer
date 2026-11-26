@@ -38,7 +38,7 @@
 
 - Skill 执行时读对应 schema
 - 生成产出物后用 `jq` 或 `jsonschema` 工具校验
-- 校验脚本：`bash scripts/check_skill_structure.sh` 会校验本目录所有 `*.json` 合法性
+- 校验脚本：`python3 scripts/check_skill_structure.py` 会校验本目录所有 `*.json` 合法性
 
 ## 工具依赖
 

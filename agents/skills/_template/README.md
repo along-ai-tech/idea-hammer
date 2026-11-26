@@ -36,7 +36,7 @@ skill-name/
 1. 复制本目录为 `agents/skills/<new-skill>/`
 2. 改 SKILL.md 的 `name` 和 `description`
 3. 按需填 principles/ workflows/ contracts/ assets/
-4. 跑 `bash scripts/check_skill_structure.sh` 验证
+4. 跑 `python3 scripts/check_skill_structure.py` 验证
 5. 在 AGENTS.md 的 Skill 列表里加上
 
 ## 重构现有 skill
@@ -46,4 +46,4 @@ skill-name/
 3. 章节若是"步骤怎么走" → workflows/
 4. 章节若是"输入输出约定" → contracts/
 5. SKILL.md 只留 frontmatter + 引用列表
-6. 跑 check_skill_structure.sh 验证 ≤ 50 行
+6. 跑 check_skill_structure.py 验证 ≤ 50 行

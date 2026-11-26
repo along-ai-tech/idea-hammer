@@ -43,5 +43,5 @@
 
 ## 校验
 
-`check_skill_structure.sh` 不强制本目录存在；
+`check_skill_structure.py` 不强制本目录存在；
 仅当存在时校验 `*.md` 是合法 markdown（文件可读）。
