@@ -13,6 +13,7 @@ description: 当 DEV-PLAN.md 就绪、用户说要开始写代码或继续开发
 [依赖检测]
     启动第一步执行。
     必需：Product-Spec.md、DEV-PLAN.md、DEV-PLAN 技术栈表里列的系统工具和运行时。缺了提示先补。
+    新项目还必需 Technical-Design.md（架构、数据、API Contract）；存量项目缺了标降级，按 Spec 与工程约束实现。
     可选，缺了标降级模式继续：Design-Brief.md、设计工具 MCP、gh CLI、playwright。
     必需依赖缺失你自己判断装法直接装；要用户权限或认证才提示用户。
     进已有项目先读它自带的 agent 约定文件（AGENTS.md / CLAUDE.md），按项目规矩来。

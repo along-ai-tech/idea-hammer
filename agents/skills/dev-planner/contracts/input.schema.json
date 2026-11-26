@@ -4,8 +4,12 @@
   "type": "object",
   "required": ["mode", "product_spec_path"],
   "properties": {
-    "mode": {"type": "string", "enum": ["generate", "iterate"]},
+    "mode": {"type": "string", "enum": ["technical_design", "generate", "iterate"]},
     "product_spec_path": {"type": "string"},
+    "technical_design_path": {
+      "type": "string",
+      "description": "Technical-Design.md 路径；generate 模式新项目必填，存量迭代可缺（标降级）"
+    },
     "design_brief_path": {"type": "string"},
     "dev_plan_path": {"type": "string"},
     "tech_stack": {"type": "object"}

@@ -1,7 +1,7 @@
 # Personal Blog — IdeaHammer 从 0 到 1 完整案例
 
 > 按 IdeaHammer 8 步流水线真跑出来的一条完整链路：
-> **需求 → Product-Spec → Design-Brief → DEV-PLAN → TDD 代码 → 两阶段审查 → 发布清单 → 需求追踪矩阵**。
+> **需求 → Product-Spec → Design-Brief → Technical-Design → DEV-PLAN → TDD 代码 → 两阶段审查 → 发布清单 → 需求追踪矩阵**。
 > 前后端都可运行，测试可复跑，每个功能都能回溯到 REQ / AC / DT / TEST / 版本。
 
 ---
@@ -14,7 +14,7 @@
 | ② 产品规范 | product-spec-builder | [Product-Spec.md](./Product-Spec.md) | 单一真相源：范围 / 用户任务 / 流程 / 数据模型 |
 | ③ 设计简报 | design-brief-builder | [Design-Brief.md](./Design-Brief.md) | 路由、线框、状态机、反 UI 假设、错误码 |
 | ④ 设计稿 | design-maker | 复用 Element Plus（见 Design-Brief §6） | 无设计稿场景下如何约束 UI 一致性 |
-| ⑤ 开发计划 | dev-planner | [DEV-PLAN.md](./DEV-PLAN.md) | WI/DT 拆分、每 WI 验收标准、TDD 纪律 |
+| ⑤ 技术设计与开发计划 | dev-planner | [Technical-Design.md](./Technical-Design.md) + [DEV-PLAN.md](./DEV-PLAN.md) | 架构选型与 ADR、领域不变量、数据约束、API Contract、WI/DT 拆分与 TDD 纪律 |
 | ⑥ TDD 开发 | dev-builder | [backend/](./backend/) + [frontend/](./frontend/) | RED → GREEN → REFACTOR，39 个测试 |
 | ⑦ 两阶段审查 | code-reviewer | [Code-Review-Report.md](./Code-Review-Report.md) | Stage 1 完整性 + Stage 2 工程质量，含返工记录 |
 | ⑧ 构建发布 | release-builder | [RELEASE.json](./RELEASE.json) | 版本、需求清单、测试全绿、变更记录 |
@@ -108,6 +108,7 @@ python3 scripts/check_traceability.py --project examples/personal-blog --write e
 examples/personal-blog/
 ├── Product-Spec.md              # ② 需求单一真相源
 ├── Design-Brief.md              # ③ 设计与状态机
+├── Technical-Design.md          # ⑤ 架构 / 领域 / 数据 / API Contract / ADR
 ├── DEV-PLAN.md                  # ⑤ WI/DT 计划 + 验收门
 ├── Code-Review-Report.md/.json  # ⑦ 两阶段审查
 ├── RELEASE.json                 # ⑧ 发布清单
@@ -138,7 +139,7 @@ examples/personal-blog/
 ## 想复用到自己的项目
 
 1. 复制 8 步产物结构，先写 `Product-Spec.md`（需求 + AC）。
-2. 用 `dev-planner` 拆 `DEV-PLAN.md`，每个 DT 标注 `关联需求: REQ-xxx / AC-xxx-xx`。
+2. 用 `dev-planner` 先写 `Technical-Design.md`（架构、领域、数据、API Contract、ADR），再拆 `DEV-PLAN.md`，每个 DT 标注 `关联需求: REQ-xxx / AC-xxx-xx`。
 3. 写测试时加 `@trace TEST-### REQ-###/AC-###-##`。
 4. 发布前生成 `RELEASE.json` 并跑 `check_traceability.py`。
 5. 把 `TRACEABILITY.md` 作为 PR 的"需求覆盖证据"。

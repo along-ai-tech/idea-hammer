@@ -33,8 +33,8 @@
     第三步 · 设计图
         拿着 Product-Spec 和 Design-Brief，用 design-maker 通过设计工具生成整套设计稿，可选；出图后进开发计划。
 
-    第四步 · 开发计划
-        基于 Product-Spec，有 Design-Brief 或设计稿就一起带上，用 dev-planner 拆出分阶段的 DEV-PLAN，然后进项目开发。
+    第四步 · 技术设计与开发计划
+        基于 Product-Spec，有 Design-Brief 或设计稿就一起带上，用 dev-planner 先收敛架构、领域模型、数据设计、API Contract 与 ADR，输出 Technical-Design.md，再拆出分阶段的 DEV-PLAN，然后进项目开发。
 
     第五步 · 项目开发
         照着 Product-Spec 和 DEV-PLAN，有 Design-Brief 或设计稿就一并参照、UI 以设计稿为准，用 dev-builder 按 Phase 逐步写出项目代码，然后进审查或发布。
@@ -54,6 +54,7 @@
     project/
     ├── Product-Spec.md / Product-Spec-CHANGELOG.md   # 需求文档 + 变更记录
     ├── Design-Brief.md                                # 设计规范，可选
+    ├── Technical-Design.md                            # 架构 / 领域 / 数据 / API Contract / ADR
     ├── DEV-PLAN.md                                     # 分阶段开发计划（DT-### 关联 REQ/AC）
     ├── RELEASE.json                                    # 发布清单（版本 / 覆盖需求 / 测试）
     ├── TRACEABILITY.md                                 # 追踪矩阵，check_traceability.py --write 生成

@@ -8,7 +8,7 @@
 
 ## 📊 项目构成
 
-**流水线**：11 个 skill 覆盖 8 步——一句话入口 → Discovery → 引导补齐 → Product-Spec → Design-Brief → 设计稿 → DEV-PLAN → TDD 开发 → 两阶段审查 → 构建发布；bug-fixer 作为审查失败时的回派回路，goal-creator / evolution-engine / skill-builder 是三个元 skill。
+**流水线**：11 个 skill 覆盖 8 步——一句话入口 → Discovery → 引导补齐 → Product-Spec → Design-Brief → 设计稿 → 技术设计与开发计划（Technical-Design + DEV-PLAN）→ TDD 开发 → 两阶段审查 → 构建发布；bug-fixer 作为审查失败时的回派回路，goal-creator / evolution-engine / skill-builder 是三个元 skill。
 
 **约束与纪律**：15 个主题、73 个文件的工程级约束（编码规范、库选型、性能、安全、并发、数据库、简化、兼容性等），以及 5 个主题、6 个文件的业务纪律（产品定义、行业标杆参考、多视角自检、pre-mortem、版本化与不可变）。dev-builder 启动时必读，code-review 第二阶段必查。
 
@@ -36,7 +36,7 @@
 
 ```
 ① 一句话入口 → Discovery → 引导补齐 → ② Product-Spec.md → ③ Design-Brief.md → ④ 设计稿（可选）
-            → ⑤ DEV-PLAN.md → ⑥ 按 Phase 开发（RED → GREEN → REFACTOR）
+            → ⑤ Technical-Design.md → DEV-PLAN.md → ⑥ 按 Phase 开发（RED → GREEN → REFACTOR）
             → ⑦ 两阶段审查 → ⑧ 构建发布
 ```
 
@@ -70,7 +70,7 @@
             ↓
 ④ 设计稿（design-maker）
             ↓
-⑤ DEV-PLAN.md（dev-planner）
+⑤ Technical-Design.md → DEV-PLAN.md（dev-planner）
             ↓
 ⑥ 按 Phase 开发（dev-builder）── RED → GREEN → REFACTOR
             ↓
@@ -209,7 +209,8 @@ codex                             # 启动后输入"我想做一个 X"即可
    （ceo-lens / eng-lens / qa-lens）→ Spec 定稿。
 
    → design-brief-builder / design-maker 跳过（用户不做 UI）
-   → dev-planner：基于 Spec 拆 DEV-PLAN.md（Phase 1 骨架 / Phase 2 学习模式 / ...）
+   → dev-planner：基于 Spec 先写 Technical-Design.md（架构 / 数据 / API / ADR），
+      再拆 DEV-PLAN.md（Phase 1 骨架 / Phase 2 学习模式 / ...）
    → dev-builder：按 Phase 1 骨架开跑，RED → GREEN → REFACTOR
         后端 FastAPI + SQLAlchemy + SQLite
         前端 Vue3 + Element Plus + Vite

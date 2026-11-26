@@ -25,6 +25,11 @@
       "description": "DEV-PLAN.md 路径（必填，相对项目根目录）",
       "pattern": "^[\\w\\-./]+\\.md$"
     },
+    "technical_design_path": {
+      "type": "string",
+      "description": "Technical-Design.md 路径（新项目必填；存量项目缺了标降级）",
+      "pattern": "^[\\w\\-./]+\\.md$"
+    },
     "design_brief_path": {
       "type": "string",
       "description": "Design-Brief.md 路径（可选，缺了标降级模式）"

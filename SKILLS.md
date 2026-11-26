@@ -8,7 +8,7 @@
     1. 需求收集 → product-spec-builder → Product-Spec.md
     2. 设计规范 → design-brief-builder → Design-Brief.md，可选
     3. 设计图制作 → design-maker → 设计稿，可选
-    4. 开发计划 → dev-planner → DEV-PLAN.md
+    4. 技术设计与开发计划 → dev-planner → Technical-Design.md + DEV-PLAN.md
     5. 项目开发 → dev-builder → 项目代码
     6. Bug 修复 → bug-fixer，按需
     7. 代码审查 → code-review，按需
@@ -38,9 +38,9 @@
     [design-maker]
         前置：Product-Spec.md + Design-Brief.md
     [dev-planner]
-        前置：Product-Spec.md
+        前置：Product-Spec.md。新项目先输出 Technical-Design.md，再输出 DEV-PLAN.md
     [dev-builder]
-        前置：Product-Spec.md + DEV-PLAN.md
+        前置：Product-Spec.md + DEV-PLAN.md（新项目还需 Technical-Design.md）
     [bug-fixer]
         自动：用户报 bug、报错、功能异常，或 code-review 发现问题后自动修。前置：项目代码
     [code-review]
