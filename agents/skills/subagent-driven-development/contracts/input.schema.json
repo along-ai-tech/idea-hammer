@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SDDInput",
+  "description": "subagent-driven-development 启动参数",
+  "type": "object",
+  "required": [
+    "plan_file",
+    "product_spec_path"
+  ],
+  "properties": {
+    "plan_file": {
+      "type": "string",
+      "description": "DEV-PLAN.md 路径（必填，相对项目根目录）"
+    },
+    "product_spec_path": {
+      "type": "string",
+      "description": "Product-Spec.md 路径（必填，相对项目根目录）"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "sdd",
+        "dev-builder"
+      ],
+      "description": "执行模式：sdd（切任务循环）/ dev-builder（任务少或强耦合，不切）"
+    },
+    "task_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "计划切出的任务数。≥5 走 sdd，<5 走 dev-builder"
+    },
+    "workspace_dir": {
+      "type": "string",
+      "description": "ledger 工作目录（默认 .idea-hammer/sdd/<plan-id>/）"
+    },
+    "resume": {
+      "type": "boolean",
+      "default": false,
+      "description": "从已有 ledger 续跑（检测到旧 progress.md 时为 true）"
+    }
+  },
+  "additionalProperties": false
+}

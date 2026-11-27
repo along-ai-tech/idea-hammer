@@ -8,18 +8,18 @@
 
 ## 📊 项目构成
 
-**流水线**：11 个 skill 覆盖 8 步——一句话入口 → Discovery → 引导补齐 → Product-Spec → Design-Brief → 设计稿 → 技术设计与开发计划（Technical-Design + DEV-PLAN）→ TDD 开发 → 两阶段审查 → 构建发布；bug-fixer 作为审查失败时的回派回路，goal-creator / evolution-engine / skill-builder 是三个元 skill。
+**流水线**：12 个 skill 覆盖 8 步——一句话入口 → Discovery → 引导补齐 → Product-Spec → Design-Brief → 设计稿 → 技术设计与开发计划（Technical-Design + DEV-PLAN）→ TDD 开发 → 两阶段审查 → 构建发布；bug-fixer 作为审查失败时的回派回路，goal-creator / evolution-engine / skill-builder 是三个元 skill，subagent-driven-development 承接 ≥5 个独立 Phase 的任务级循环。
 
-**约束与纪律**：15 个主题、73 个文件的工程级约束（编码规范、库选型、性能、安全、并发、数据库、简化、兼容性等），以及 5 个主题、6 个文件的业务纪律（产品定义、行业标杆参考、多视角自检、pre-mortem、版本化与不可变）。dev-builder 启动时必读，code-review 第二阶段必查。
+**约束与纪律**：15 个主题、88 个文件的工程级约束（编码规范、库选型、性能、安全、并发、数据库、简化、兼容性等），以及 5 个主题、7 个文件的业务纪律（产品定义、行业标杆参考、多视角自检、pre-mortem、版本化与不可变）。dev-builder 启动时必读，code-review 第二阶段必查。
 
 **示例工程**：[`examples/personal-blog/`](./examples/personal-blog/) 按流水线从零跑通，FastAPI + Vue3 全栈博客，Spec、开发计划、代码、测试、审查报告、发布清单与需求追踪矩阵齐全。
 
-**可验证的结果**：仓库自带 199 个框架契约测试（`pytest tests/contract/`）与 39 个示例测试（后端 29 + 前端 10），均可在本地跑通；`check_traceability.py` 校验需求→任务→测试→版本链路，`check_spec_standard.py` 校验 PRD / FRD / User Story / AC 四要素是否补齐。
+**可验证的结果**：仓库自带 292 个框架契约测试（`pytest tests/contract/`）与 39 个示例测试（后端 29 + 前端 10），均可在本地跑通；`check_traceability.py` 校验需求→任务→测试→版本链路，`check_spec_standard.py` 校验 PRD / FRD / User Story / AC 四要素是否补齐。
 
 **许可**：MIT，可商用、可修改、可二次发布。
 
 [![CI](https://img.shields.io/github/actions/workflow/status/along-ai-tech/idea-hammer/ci.yml?label=CI\&logo=github)](.github/workflows/ci.yml)
-[![Version](https://img.shields.io/badge/version-0.7.0--dev-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.12.0--dev-blue.svg)](CHANGELOG.md)
 [![Main Repo](https://img.shields.io/badge/GitHub-along--ai--tech-181717?logo=github)](https://github.com/along-ai-tech/idea-hammer)
 [![Gitee Mirror](https://img.shields.io/badge/Gitee-mirror-C71D23?logo=gitee)](https://gitee.com/zhilong811/idea-hammer)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -85,7 +85,7 @@
 贯穿全程：REQ → DT → TEST → 版本，由 check_traceability.py 校验
 ```
 
-8 步对应 8 个流水线 skill，加上 `goal-creator` / `evolution-engine` / `skill-builder` 3 个元 skill，共 **11 个 skill**。bug-fixer 由审查失败触发，作为 ⑦ 的回路。每步有独立产出物，下一步按它启动。**dev-builder / code-review 启动时强制读工程级约束**（见下）。
+8 步对应 8 个流水线 skill，加上 `goal-creator` / `evolution-engine` / `skill-builder` 3 个元 skill 与 `subagent-driven-development` 1 个任务循环 skill，共 **12 个 skill**。bug-fixer 由审查失败触发，作为 ⑦ 的回路。每步有独立产出物，下一步按它启动。**dev-builder / code-review 启动时强制读工程级约束**（见下）。
 
 ***
 
@@ -93,7 +93,7 @@
 
 | 项目                  | 端到端    | Spec 驱动 | TDD 强制 | 审查闭环  | **工程级约束**           | **业务纪律**          | 进化机制 |
 | ------------------- | ------ | ------- | ------ | ----- | ------------------- | ----------------- | ---- |
-| **IdeaHammer**      | ✅ 8 步  | ✅       | ✅ 内置   | ✅ 两阶段 | ✅ **15 主题 / 73 文件** | ✅ **5 主题 / 6 文件** | ✅    |
+| **IdeaHammer**      | ✅ 8 步  | ✅       | ✅ 内置   | ✅ 两阶段 | ✅ **15 主题 / 88 文件** | ✅ **5 主题 / 7 文件** | ✅    |
 | GitHub Spec Kit     | ⚠️ 3 段 | ✅       | ❌      | ❌     | ❌                   | ❌                 | ❌    |
 | 裸 Codex/Claude Code | ❌      | ❌       | ❌      | ❌     | ❌                   | ❌                 | ❌    |
 | 纯 vibe coding       | ❌      | ❌       | ❌      | ❌     | ❌                   | ❌                 | ❌    |
@@ -123,7 +123,7 @@ IdeaHammer 的组成是 Spec 驱动 + 工程级约束 + 业务纪律：前者定
 - 上下文污染 → 不分层（pure 函数、副作用隔离、幂等性）
 - 增量退化 → dead code / 无意义命名 / 装饰器套娃 / TODO 残留
 
-**工程级约束**：15 主题 / 73 文件 / 7300+ 行具体规则，逐条对应 AI 写代码的常见反模式。dev-builder 启动必读，code-review Stage 2 必查：
+**工程级约束**：15 主题 / 88 文件 / 7700+ 行具体规则，逐条对应 AI 写代码的常见反模式。dev-builder 启动必读，code-review Stage 2 必查：
 
 - 13 个**原始主题**（编码规范 / 库选型 / 造轮子红线 / 性能 / 安全 / 并发 / API / 可观测 / CI·CD / 异常 / 数据库 / 依赖 / 国际化）+ **`simplification`（代码简洁之道 10 条）** + **`compatibility`（API 版本化 / 向后兼容 / blast radius / 数据迁移 / feature flag / 交付完整性）**
 
@@ -197,12 +197,23 @@ python3 scripts/install_global.py install
 
 装完新开一个 Codex 会话即可——**在任何目录**都不用再配置。
 
+安装路径按 Codex 自己的规则走：配置装在 `~/.codex`（或 `$CODEX_HOME`），
+技能装在 `$HOME/.agents/skills`——**Codex 只读后者**，所以改 `CODEX_HOME` 不会影响技能。
+
+想完全隔离地装一遍（不碰真实 `~/.codex`），把 `HOME` 指到临时目录即可，
+CI 的隔离安装冒烟就是这么跑的：
+
+```bash
+TMP=$(mktemp -d)
+HOME="$TMP/home" python3 scripts/install_global.py install
+```
+
 ### 装了什么
 
 | 装到哪 | 内容 | 作用 |
 |---|---|---|
 | `~/.codex/idea-hammer/` | 框架副本 | 稳定路径，不受 `Downloads` 被清理影响 |
-| `~/.agents/skills/` | 13 个技能 | Codex 全局技能根目录，全项目可触发 |
+| `~/.agents/skills/` | 12 个技能 + 2 个共享资料目录 | Codex 全局技能根目录，全项目可触发 |
 | `~/.codex/AGENTS.md` | 方法论入口 | 主控流程：8 步流水线、路由、进化机制 |
 | `~/.codex/agents/` | `code-reviewer`、`evolution-runner` | 可派发的子 Agent |
 | `~/.codex/hooks.json` | 2 条全局 hook | 进化信号捕获 + session 启动提醒 |
@@ -293,7 +304,7 @@ graph TB
         C2[TESTING<br/>TDD 铁律 + 四步走]
     end
 
-    subgraph Skills[11 个 skill（按 description 自动触发）]
+    subgraph Skills[12 个 skill（按 description 自动触发）]
         S1[product-spec-builder]
         S2[design-brief-builder]
         S3[design-maker]
@@ -321,7 +332,7 @@ graph TB
     end
 
     subgraph EC[工程级约束（跨 skill 共享）]
-        EC1[15 主题 / 73 文件<br/>编码规范 + 库选型 + 反模式]
+        EC1[15 主题 / 88 文件<br/>编码规范 + 库选型 + 反模式]
         EC2[simplification<br/>10 条原则]
         EC3[compatibility<br/>API 版本化]
     end
@@ -371,7 +382,7 @@ graph TB
 | [TESTING.md](./TESTING.md)                                                            | TDD 铁律 + 四步走验证                                                                                                                                                                                                                                 |
 | [CONTEXT.md](./CONTEXT.md)                                                            | 上下文工程 + 跨 Session 恢复（7 类上下文 / Memory-State-Checkpoint 分工 / 恢复协议）                                                                                                                                                                      |
 | [.codex/EVOLUTION.md](./.codex/EVOLUTION.md)                                          | 自进化机制说明                                                                                                                                                                                                                                        |
-| [agents/skills/](./agents/skills/)                                                    | **11 个 skill**（每个含 SKILL.md + principles/ + workflows/ + contracts/）                                                                                                                                                                           |
+| [agents/skills/](./agents/skills/)                                                    | **12 个 skill**（每个含 SKILL.md + principles/ + workflows/ + contracts/）                                                                                                                                                                           |
 | [agents/skills/\_engineering-constraints/](./agents/skills/_engineering-constraints/) | **15 主题工程级约束**（coding-style / ecosystem-matrix / anti-reinvent / performance / security / concurrency / api-design / observability / ci-cd / error-handling / database / dependency-mgmt / i18n-a11y / **simplification** / **compatibility**） |
 | [agents/skills/\_traceability/](./agents/skills/_traceability/)                       | **需求追踪规范**：REQ / AC / DT / TEST / SemVer 的 ID 体系、`@trace` 注解、变更影响分析                                                                                                                                                                            |
 | [`examples/personal-blog/`](./examples/personal-blog/)                                | **端到端示例**：完整 8 步产物 + 可运行前后端 + 测试/审查/发布/追踪产物，入口见其 [README](./examples/personal-blog/README.md)                                                                                                                   |
@@ -397,7 +408,7 @@ graph TB
 
 **Design-Brief 与设计稿** — Spec 是文字（可能歧义），设计稿是图片（无歧义但不直接驱动代码）。Design-Brief 在中间做翻译：把 Spec 钉成可执行的视觉规范，再由 design-maker 生成精确参照图。UI 实现以设计稿为准；无稿无 Brief 时继承项目既有先例，不自由发挥。
 
-**工程级约束（Engineering Constraints）** — 框架的主要组成部分之一：15 主题 / 73 文件 / 7300+ 行具体规则，覆盖 AI 写代码的常见反模式：
+**工程级约束（Engineering Constraints）** — 框架的主要组成部分之一：15 主题 / 88 文件 / 7700+ 行具体规则，覆盖 AI 写代码的常见反模式：
 
 | 主题                    | 解决什么                                                                             | 关键文件                                             |
 | --------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------ |

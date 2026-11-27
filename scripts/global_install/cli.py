@@ -27,11 +27,11 @@ def build_parser():
         choices=["install", "sync", "status", "uninstall", "project"],
         help="要执行的操作（默认 install）",
     )
-    parser.add_argument("--framework-home", default=str(DEFAULT_FRAMEWORK_HOME),
-                        help=f"框架副本位置（默认 {DEFAULT_FRAMEWORK_HOME}）")
-    parser.add_argument("--skills-dir", default=str(DEFAULT_SKILLS_DIR),
-                        help=f"全局技能目录（默认 {DEFAULT_SKILLS_DIR}）")
-    parser.add_argument("--codex-home", default=str(DEFAULT_CODEX_HOME),
+    parser.add_argument("--framework-home", default=None,
+                        help=f"框架副本位置（默认 <codex-home>/idea-hammer，即 {DEFAULT_FRAMEWORK_HOME}）")
+    parser.add_argument("--skills-dir", default=None,
+                        help=f"全局技能目录（Codex 只认 $HOME/.agents/skills，即 {DEFAULT_SKILLS_DIR}）")
+    parser.add_argument("--codex-home", default=None,
                         help=f"Codex 配置目录（默认 {DEFAULT_CODEX_HOME}）")
     parser.add_argument("--source", default=None,
                         help="框架源码目录（默认用本脚本所在的仓库）")

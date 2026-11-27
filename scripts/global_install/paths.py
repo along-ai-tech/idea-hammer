@@ -1,11 +1,25 @@
 """全局安装器的常量与路径模型。"""
 
+import os
 from pathlib import Path
 from typing import NamedTuple
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
-DEFAULT_CODEX_HOME = Path.home() / ".codex"
+
+def _default_codex_home():
+    """Codex 自己怎么找配置目录，这里就怎么找——不然 hook 信任 key 对不上。
+
+    Codex：设了 CODEX_HOME 就用它（会 resolve 软链）；否则用 $HOME/.codex
+    （不 resolve）。两边不一致的代价是信任 hash 算出来对不上，hook 静默不执行。
+    """
+    env = os.environ.get("CODEX_HOME")
+    if env:
+        return Path(env).expanduser().resolve()
+    return Path.home() / ".codex"
+
+
+DEFAULT_CODEX_HOME = _default_codex_home()
 DEFAULT_FRAMEWORK_HOME = DEFAULT_CODEX_HOME / "idea-hammer"
 DEFAULT_SKILLS_DIR = Path.home() / ".agents" / "skills"
 
@@ -102,11 +116,34 @@ class InstallPaths(NamedTuple):
 
 
 def paths_from_args(args):
-    """从命令行参数解析出路径集合（source 默认取本仓库）。"""
+    """从命令行参数解析出路径集合（source 默认取本仓库）。
+
+    三条路径各按 Codex 自己的规则走，不能互相推导：
+      - codex_home   → Codex 配置目录（hooks.json / AGENTS.md / agents / config.toml）
+      - skills_dir   → $HOME/.agents/skills，Codex 只认这里（与 CODEX_HOME 无关）
+      - framework_home → 框架副本，放在 codex_home 旁边
+
+    要完全隔离的安装，把 HOME 指到临时目录即可，三条路径会一起跟着走。
+    """
     source = Path(args.source).expanduser().resolve() if args.source else REPO_ROOT
+    codex_home = (
+        Path(args.codex_home).expanduser().resolve()
+        if args.codex_home
+        else _default_codex_home()
+    )
+    framework_home = (
+        Path(args.framework_home).expanduser().resolve()
+        if args.framework_home
+        else codex_home / "idea-hammer"
+    )
+    skills_dir = (
+        Path(args.skills_dir).expanduser()
+        if args.skills_dir
+        else Path.home() / ".agents" / "skills"
+    )
     return InstallPaths(
-        Path(args.framework_home).expanduser().resolve(),
-        Path(args.skills_dir).expanduser(),
-        Path(args.codex_home).expanduser().resolve(),
+        framework_home,
+        skills_dir,
+        codex_home,
         source,
     )

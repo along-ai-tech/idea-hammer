@@ -25,6 +25,9 @@ jobs:
       - name: 校验 skill 结构
         run: python3 scripts/check_skill_structure.py --strict
       
+      - name: 校验框架代码简洁度
+        run: python3 scripts/check_simplicity.py scripts/
+
       - name: 校验示例需求追踪链路
         run: python3 scripts/check_traceability.py --project examples/personal-blog
 
@@ -36,6 +39,19 @@ jobs:
           python3 scripts/session.py validate
           python3 scripts/session.py context > /dev/null
           python3 scripts/session.py restore > /dev/null
+
+      - name: 全局安装冒烟（装到临时目录，不碰真实 ~/.codex）
+        run: |
+          TMP=$(mktemp -d)
+          export HOME="$TMP/home"
+          mkdir -p "$HOME"
+          python3 scripts/install_global.py install --source "$PWD" --codex-home "$TMP/codex"
+          test -f "$TMP/codex/idea-hammer/AGENTS.md"
+          test -f "$TMP/codex/AGENTS.md"
+          test -f "$TMP/codex/hooks.json"
+          test -f "$TMP/codex/config.toml"
+          test -d "$HOME/.agents/skills/dev-builder"
+          grep -q "hooks.state" "$TMP/codex/config.toml"
   
   example-tests:
     name: Example 后端 + 前端测试

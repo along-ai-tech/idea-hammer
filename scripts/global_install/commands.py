@@ -5,11 +5,11 @@ import shutil
 from pathlib import Path
 
 from .agents import install_global_agents, install_project_hooks, remove_global_agents
-from .agents import write_global_agents
+from .agents import remove_global_agents_md, write_global_agents
 from .console import die, log, ok, warn
 from .framework import install_skills, read_manifest, sync_framework, write_manifest
 from .hooks import remove_global_hooks, write_global_hooks
-from .paths import BLOCK_START, GLOBAL_AGENT_FILES, REPO_ROOT, paths_from_args
+from .paths import BLOCK_START, GLOBAL_AGENT_FILES, MANIFEST_NAME, paths_from_args
 from .trust import remove_hook_trust, trust_hooks_file
 
 
@@ -39,9 +39,9 @@ def _step_install_agents(codex_home, framework_home, force):
     ok(f"{len(agents)} 个：{', '.join(agents)}")
 
 
-def _register_repo_hooks(hooks_target, codex_home):
-    # 框架仓库自身的项目级 hook 也要登记，否则在仓库里开发时不会被执行
-    repo_hooks = REPO_ROOT / ".codex" / "hooks.json"
+def _register_repo_hooks(hooks_target, codex_home, source):
+    # 源码树自身的项目级 hook 也要登记，否则在仓库里开发时不会被执行
+    repo_hooks = source / ".codex" / "hooks.json"
     if not repo_hooks.is_file() or repo_hooks.resolve() == hooks_target.resolve():
         return
     repo_trusted = trust_hooks_file(repo_hooks, codex_home)
@@ -49,7 +49,7 @@ def _register_repo_hooks(hooks_target, codex_home):
         ok(f"已登记仓库项目级 hook 信任：{repo_trusted} 条")
 
 
-def _step_write_hooks(codex_home, framework_home, no_hooks):
+def _step_write_hooks(codex_home, framework_home, source, no_hooks):
     log("\n[5/5] 写全局 hooks.json")
     if no_hooks:
         warn("已跳过（--no-hooks）")
@@ -58,7 +58,7 @@ def _step_write_hooks(codex_home, framework_home, no_hooks):
     ok(f"{hooks_act}：{hooks_target}")
     trusted = trust_hooks_file(hooks_target, codex_home)
     ok(f"已登记 hook 信任：{trusted} 条（Codex 才会执行未审 hook）")
-    _register_repo_hooks(hooks_target, codex_home)
+    _register_repo_hooks(hooks_target, codex_home, source)
 
 
 def _print_finish():
@@ -82,7 +82,7 @@ def do_install(args):
     installed = _step_install_skills(paths.framework_home, paths.skills_dir)
     _step_write_agents_md(template, paths.codex_home, paths.framework_home)
     _step_install_agents(paths.codex_home, paths.framework_home, args.force)
-    _step_write_hooks(paths.codex_home, paths.framework_home, args.no_hooks)
+    _step_write_hooks(paths.codex_home, paths.framework_home, paths.source, args.no_hooks)
 
     write_manifest(paths.framework_home, paths.skills_dir, paths.codex_home, installed)
     _print_finish()
@@ -106,11 +106,12 @@ def _hook_state(hooks):
 def do_status(args):
     paths = paths_from_args(args)
     manifest = read_manifest(paths.framework_home) or {}
+    skills_dir = Path(manifest.get("skills_dir") or paths.skills_dir)
 
     log("\nIdeaHammer 全局安装状态\n" + "-" * 46)
     log(f"框架副本    {paths.framework_home}  [{'在' if paths.framework_home.is_dir() else '缺失'}]")
 
-    skills = [n for n in manifest.get("skills", []) if (paths.skills_dir / n).is_dir()]
+    skills = [n for n in manifest.get("skills", []) if (skills_dir / n).is_dir()]
     log(f"技能        {len(skills)} 个：{', '.join(skills) if skills else '无'}")
 
     agents_md = paths.codex_home / "AGENTS.md"
@@ -141,21 +142,27 @@ def _remove_skills(skills_dir, manifest):
 def do_uninstall(args):
     paths = paths_from_args(args)
     manifest = read_manifest(paths.framework_home) or {}
+    if not manifest:
+        warn(f"找不到安装清单（{paths.framework_home / MANIFEST_NAME}）：可能没装过，或路径不对。")
+        return
+    # 卸载要用安装时记下的路径，不是现在推导出来的——否则传错 --codex-home
+    # 会静默什么都没删，还报"已卸载"。
+    skills_dir = Path(manifest.get("skills_dir") or paths.skills_dir)
+    codex_home = Path(manifest.get("codex_home") or paths.codex_home)
 
     log("\n卸载全局安装：")
 
-    removed_agents = remove_global_agents(paths.codex_home)
+    removed_agents = remove_global_agents(codex_home)
     ok(f"移除全局子 Agent：{', '.join(removed_agents) if removed_agents else '无'}")
 
-    ok("移除全局 hook" if remove_global_hooks(paths.codex_home) else "全局 hook：无需移除")
-    untrusted = remove_hook_trust(paths.codex_home / "config.toml", str(paths.codex_home / "hooks.json"))
+    ok("移除全局 hook" if remove_global_hooks(codex_home) else "全局 hook：无需移除")
+    untrusted = remove_hook_trust(codex_home / "config.toml", str(codex_home / "hooks.json"))
     if untrusted:
         ok(f"移除 hook 信任登记：{untrusted} 条")
 
-    ok(f"移除技能目录：{_remove_skills(paths.skills_dir, manifest)} 个")
-    # 历史实现里 AGENTS.md 区块移除函数被子 Agent 移除函数同名覆盖，
-    # 实际从未移除过区块；保持同样行为，不动用户自己的 AGENTS.md。
-    ok("全局 AGENTS.md：无需移除")
+    ok(f"移除技能目录：{_remove_skills(skills_dir, manifest)} 个")
+    ok("移除全局 AGENTS.md 区块" if remove_global_agents_md(codex_home)
+       else "全局 AGENTS.md：无需移除")
 
     if paths.framework_home.is_dir():
         shutil.rmtree(paths.framework_home)

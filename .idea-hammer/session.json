@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0",
-  "last_updated": "2026-09-30T18:30:00+08:00",
+  "last_updated": "2026-11-27T09:39:27.239647+08:00",
   "current_project": "idea-hammer",
-  "current_phase": "v0.8.0-dev · PRD 吸收 + spec纪律补强 (D-012)",
-  "current_task": "worker 已完成 v0.8.0 改动，待用户验收",
+  "current_phase": "v0.12.0-dev · 全局安装固化（D-017）",
+  "current_task": "D-017",
   "key_decisions": [
     {
       "id": "D-001",
@@ -76,6 +76,36 @@
       "summary": "v0.8.0 PRD 吸收 + spec 纪律补强（文档元信息表/三问/架构图/流程图/状态流转/并发路由/3 个原则文件）",
       "date": "2026-09-30",
       "tag": "framework"
+    },
+    {
+      "id": "D-013",
+      "summary": "v0.9.0 subagent 任务循环 (SDD) + 代码纪律补强（1 个新 SKILL + 3 shell 脚本 + 5 个纪律补强文件 + 4 个待决项最终处理）",
+      "date": "2026-10-02",
+      "tag": "framework"
+    },
+    {
+      "id": "D-014",
+      "summary": "v0.10.0 需求追踪体系：REQ/AC/DT/TEST/SemVer 稳定 ID + @trace 注解 + check_traceability.py（缺口校验/矩阵/影响分析），personal-blog 链路打通并接入 CI",
+      "date": "2026-11-25",
+      "tag": "framework"
+    },
+    {
+      "id": "D-015",
+      "summary": "examples/personal-blog 补齐 Vue3 + Element Plus 前端与 10 个 Vitest 测试（TEST-029~038），新增示例 README/PR 描述，README 改为通用读者入口；追踪 strict 0 警告",
+      "date": "2026-11-25",
+      "tag": "example"
+    },
+    {
+      "id": "D-016",
+      "summary": "v0.11.0 上下文工程域 + 跨 Session 恢复：CONTEXT.md 域文件（7 类上下文 / Memory-State-Checkpoint 分工 / 恢复协议）+ dev-builder context-engineering 与 test-pyramid 原则 + session.py checkpoint/restore 工具 + SDD 三层补齐 + 60 项新增契约测试（269 passed）",
+      "date": "2026-11-26",
+      "tag": "framework"
+    },
+    {
+      "id": "D-017",
+      "summary": "v0.12.0 全局安装：Codex 真实 hook 协议 + 信任登记 + --codex-home 路径锚点 + 15 项契约测试 + CI 隔离安装冒烟",
+      "date": "2026-11-27",
+      "tag": "framework"
     }
   ],
   "open_questions": [],
@@ -88,9 +118,9 @@
   "recent_projects": [
     {
       "name": "idea-hammer",
-      "last_touched": "2026-09-30",
-      "current_phase": "v0.8.0-dev · PRD 吸收 + spec纪律补强 (D-012)",
-      "last_decision_id": "D-012"
+      "last_touched": "2026-11-26",
+      "current_phase": "v0.11.0-dev · 上下文工程域 + 跨 Session 恢复（D-016）",
+      "last_decision_id": "D-016"
     },
     {
       "name": "flashcards",
@@ -103,5 +133,58 @@
     "signals_drained_total": 0,
     "last_evolution_run": "2026-09-16T17:00:00+08:00",
     "proposals_pending": 0
-  }
+  },
+  "checkpoints": [
+    {
+      "id": "cp-20261126-154640",
+      "phase": "phase_0",
+      "task": "D-016",
+      "git_commit": "472a946",
+      "tests": {
+        "unit_test": "passed"
+      },
+      "next_action": "落地 CONTEXT 域",
+      "artifacts": [],
+      "created_at": "2026-11-26T15:46:40.844788+08:00"
+    },
+    {
+      "id": "cp-20261126-154812",
+      "phase": "v0.11.0-dev",
+      "task": "D-016",
+      "git_commit": "472a946",
+      "tests": {
+        "contract_test": "240 passed, 3 skipped",
+        "simplicity": "pass",
+        "skill_structure": "pass"
+      },
+      "next_action": "补 v0.10.0 / v0.11.0 的 CHANGELOG 与 DECISIONS 归档，然后 commit",
+      "artifacts": [
+        "CONTEXT.md",
+        "DECISIONS.md",
+        "CHANGELOG.md",
+        "STATUS.md"
+      ],
+      "created_at": "2026-11-26T15:48:12.435360+08:00"
+    },
+    {
+      "id": "cp-20261126-160716-9e8c00",
+      "phase": "v0.11.0-dev",
+      "task": "D-016",
+      "git_commit": "472a946",
+      "tests": {
+        "contract_test": "269 passed, 1 failed (install_global.py 简化门禁，属其他批次)",
+        "simplicity": "pass (scripts/session.py 289 行)",
+        "skill_structure": "pass"
+      },
+      "next_action": "拆分 scripts/install_global.py（705 行 / 8 项简化违规）恢复 CI 全绿，然后 commit",
+      "artifacts": [
+        "CONTEXT.md",
+        "DECISIONS.md",
+        "CHANGELOG.md",
+        "STATUS.md",
+        "TODO.md"
+      ],
+      "created_at": "2026-11-26T16:07:16.823445+08:00"
+    }
+  ]
 }

@@ -66,6 +66,25 @@ def remove_global_agents(codex_home):
     return removed
 
 
+def remove_global_agents_md(codex_home):
+    """从全局 AGENTS.md 里摘掉 IdeaHammer 区块，保留用户自己写的内容。
+
+    卸载后框架副本已经没了，区块里的 IDEA_HAMMER_HOME 会指向不存在的路径，
+    留着就是让每个新会话去读一个空指针。所以卸载必须连区块一起摘。
+    """
+    target = codex_home / "AGENTS.md"
+    if not target.is_file():
+        return False
+    text = target.read_text(encoding="utf-8")
+    if BLOCK_START not in text or BLOCK_END not in text:
+        return False
+    head = text.split(BLOCK_START)[0]
+    tail = text.split(BLOCK_END, 1)[1]
+    rest = (head + tail).strip("\n")
+    target.write_text(rest + "\n" if rest else "", encoding="utf-8")
+    return True
+
+
 def _copy_project_scripts(framework_home, hooks_dst, force):
     if hooks_dst.exists() and force:
         shutil.rmtree(hooks_dst)

@@ -30,3 +30,29 @@
 - 每个 ✅ 附代码位置和验证方式
 - 每个 ❌ 附 Spec 原文和实际差异
 - 安全问题单独高亮
+
+## 两段输出契约（v0.9.0 起）
+
+每次审查必须输出两段 verdict，不接受单一"通过/不通过"：
+
+### 段 1:Spec Compliance(规格符合度)
+- ✅:所有 Spec 条目都有对应实现并经证据验证
+- ❌:有 Spec 条目缺失/不符/偏离(列出条目编号 + 现状)
+
+判定规则:Spec 写一条查一条。❌ 即整段 ❌。
+
+### 段 2:Code Quality(代码质量)
+- ✅:Critical 0 / Important 0 / Minor ≤ N(项目自定阈值)
+- ❌:有 Critical 或 Important finding
+
+Finding 分级:
+- **Critical**:必修,不修无法 merge(数据丢失/安全漏洞/核心契约破坏)
+- **Important**:必修,不修阻塞下一阶段(性能 N+1/异常吞噬/状态机漏态)
+- **Minor**:建议修,不阻塞(命名/格式/注释)
+
+每条 finding 附:文件路径 + 行号 + 现象 + 影响 + 建议改法。
+
+⚠️ Cannot verify 项(浏览器渲染/外部服务)主 Agent 自己在循环间判定,
+  reviewer 只标"Cannot verify — needs 主 Agent check"。
+
+两段都 ✅ 才算 review clean。任何一段 ❌ → 进 fix loop。

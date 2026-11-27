@@ -3,6 +3,41 @@
 本项目的所有重要变更记录于此。格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.12.0-dev]
+
+全局安装：从"每个项目手动配置"到"装一次，所有项目生效"。本版把 v0.11.0 里
+已经能用的安装器补上协议正确性、可测试性与 CI 门禁。
+
+### 新增
+
+- **`scripts/global_install/`**：全局安装器（`install` / `sync` / `status` / `uninstall` / `project` 五个子命令）
+  - 框架副本 → `~/.codex/idea-hammer/`（稳定路径，不受源码目录移动影响）
+  - 技能 → `~/.agents/skills/`（12 个技能 + 2 个共享资料目录）
+  - 方法论入口 → `~/.codex/AGENTS.md`（带 start/end 标记块，幂等合并，不动用户原有内容）
+  - 子 Agent → `~/.codex/agents/`（`code-reviewer` / `evolution-runner`）
+  - 全局 hook → `~/.codex/hooks.json`（只装安全的进化信号捕获，不装会误伤所有仓库的门禁）
+- **`--codex-home` 路径锚点**：框架副本与技能目录都从它推导，传一个临时目录即得到完全隔离的安装，不碰真实 `~/.codex`。CI 的隔离冒烟与本地自检都靠它。
+- **`schemas/hook-protocol.schema.json`**：Codex 真实 hook 协议 schema（draft-07）。比 Codex 本身严——未知事件名、未知字段一律判错，而不是静默忽略。
+- **`docs/codex-hooks.md`**：hook 协议 8 章文档，含信任机制与常见错误。
+- **契约测试 22 项**（`test_global_install.py` / `test_global_install_paths.py` / `test_global_install_repo.py`）：锁住"装齐 / 不越界 / 可重复 / 可卸载"四条。
+
+### 改动
+
+- **hook 协议整体重写**：此前框架自造的 `$version` / `events` / `mode`（advisory / transform / retry 三模式）Codex 从来没加载过——解析遇到未知字段会丢弃整个文件，所有 hook 静默失效。已全部改成 `openai/codex` `rust-v0.171.0` 真实格式，TODO-103 的三模式语义作废。
+- **hook 信任登记**：Codex 对用户级 hook 默认判 Untrusted，不在 `config.toml` 写 `trusted_hash` 就静默不执行。安装器负责登记（全局 2 条 + 仓库 6 条）。
+- **`install_global.py` 拆分**：原 705 行单文件拆成 25 行入口 + `global_install/` 包（paths / framework / hooks / trust / agents / commands / cli），恢复简化门禁。
+- **CI**：新增隔离安装冒烟（装到临时目录 + 断言五类产物 + 信任条目）与 `check_simplicity` 门禁；此前 CI 从未装过全局安装器。
+- **README / STATUS 数字校正**：292 契约测试 / 12 skill / 15 主题 88 文件工程约束；全局安装表改为"12 个技能 + 2 个共享资料目录"。
+
+### 验证
+
+- `python3 -m pytest tests/contract/ -q` → 292 passed
+- `python3 scripts/check_simplicity.py scripts/` → 全部通过
+- `python3 scripts/check_skill_structure.py` → 12 skill 全 OK
+- 干净克隆 + 隔离安装 → 五类产物齐全、8 条信任条目、hooks.json 过协议 schema
+
+---
+
 ## [0.11.0-dev]
 
 上下文工程域 + 跨 Session 恢复。补齐 Day9「AI Coding 工程化」的知识缺口：框架此前教「先读原文、不凭记忆」，但从未定义**该读什么**。本次把上下文从隐性纪律变成可执行的工程规则。
@@ -13,13 +48,13 @@
 - **`dev-builder/principles/context-engineering.md`**：Task 启动的 6 层渐进式装配顺序、该读/不该读对照表、压缩触发条件与不可丢项、checkpoint 落盘命令
 - **`dev-builder/principles/test-pyramid.md`**：Unit / Integration / Contract / E2E / Regression 五层验证映射 + 并发不变量三件套门禁（单元测试 + 数据库唯一约束 + 并发测试）
 - **`scripts/session.py checkpoint` / `restore`**：记录任务恢复点；读取恢复点 + 待核实清单
-- **契约测试**：`test_context_engineering.py`（24 项）、`test_session_checkpoint.py`（13 项）、`test_session_schema.py`（5 项）——本批次新增 42 项
+- **契约测试**：`test_context_engineering.py`（24 项）、`test_session_checkpoint.py`（13 项）、`test_session_schema.py`（5 项）、`test_subagent_driven_development.py`（18 项）——本批次新增 60 项
 - **D-016 决策记录**（DECISIONS.md）
 
 ### 改动
 
 - `AGENTS.md`：域文件清单加 CONTEXT.md，启动顺序加 CONTEXT，SESSION-LOAD 提示 latest_checkpoint 需走恢复协议
-- `WORKFLOW.md`：[规划与执行] 加「模式分流」判据（直做 / 规划模式）与「停手问人」判据（不可逆操作 / 安全敏感 / 需求歧义 / 反复卡住 / 高价值分叉）；第五步项目开发加 checkpoint 落盘
+- `WORKFLOW.md`：[规划与执行] 加「模式分流」判据（直做 / 规划模式 / 任务循环）与「停手问人」判据（不可逆操作 / 安全敏感 / 需求歧义 / 反复卡住 / 高价值分叉）；第五步项目开发加 checkpoint 落盘
 - `STATE-ROUTING.md`：加「先定位，再核实」段——恢复点只定位不代替核查，四项核实完再进路由表
 - `agents/skills/dev-builder/SKILL.md`：加两个必读原则引用 + CONTEXT.md 域引用
 - `agents/skills/dev-builder/workflows/workflow-task-loop.md`：阶段 1 改为 6 层上下文装配；RED 加测试分层判断；阶段 3 加 checkpoint 落盘
@@ -29,6 +64,7 @@
 
 ### 顺带修复
 
+- **`subagent-driven-development` 补齐三层**：此前缺 `principles/` 与 `contracts/`，CI 跑 `check_skill_structure.py --strict` 是红的。新增 `principles/task-loop-discipline.md` + `contracts/input.schema.json` + `contracts/output.schema.json`，SKILL.md 同步引用（49 行，仍 ≤50）
 - **`schemas/session.schema.json` 首次纳入契约测试**：该 schema 此前无任何测试覆盖
 - **`.github/workflows/ci.yml`**：session 校验步骤加 `session.py restore` 冒烟
 - **`scripts/session.py`**：JSON 输出统一到 `emit()` helper（消除同一文件两种输出风格）；docstring 精简使文件从 305 行降到 289 行（过 `check_simplicity` 的 300 行门槛）
@@ -42,9 +78,9 @@
 
 ### 验证
 
-- `python3 -m pytest tests/ -q` → 244 passed
+- `python3 -m pytest tests/ -q` → 269 passed（唯一失败项是 `scripts/install_global.py` 触发简化门禁，该文件属其他批次且正在被编辑，本批次不碰）
 - `python3 scripts/check_simplicity.py scripts/` → 全部通过（session.py 289 行，≤ 300）
-- `python3 scripts/check_skill_structure.py` → 11 个 skill 全 OK
+- `python3 scripts/check_skill_structure.py` → 12 skill 全 OK
 
 ### 独立审查与 fix loop
 
@@ -53,10 +89,52 @@
 - **I-1 checkpoint id 秒级精度会撞**（同秒两条 id 相同，而 id 是 schema required 字段）→ id 加 uuid 后缀，补 `test_checkpoint_ids_are_unique`
 - **I-2 restore 的 resume_at 丢失**（checkpoint 没带 task 时不回落到 session.current_task）→ 补回落 + `test_restore_falls_back_to_session_task`
 - **I-3 `--tests` 非法 JSON 吐裸 traceback** → 新增 `parse_json_arg()` 统一转可读错误，`write` / `append` 一并受益
+- **I-4 SDD input schema 的 required 与 description 自相矛盾**（description 写"必填"但 required 只有 plan_file，与 SKILL.md 依赖检测冲突）→ required 补 `product_spec_path`
 
-Minor 同步修：restore 在 session.json 缺失时改为非零退出（CI 冒烟不再假绿）、dev-builder principles 数量改 11、各处测试数字按实测校正。
+Minor 同步修：restore 在 session.json 缺失时改为非零退出（CI 冒烟不再假绿）、dev-builder principles 数量改 11、SDD SKILL.md 行数上限改 50、SDD output schema 拆出 `fix_round` 整数轮次、各处测试数字按实测校正。
 
-审查者还用变异测试验证了本批次测试"有牙齿"：回退 `session.py` 到 HEAD → 7 失败；改 checkpoint 为覆盖写 → 1 失败；清空 `verify_required` → 2 失败；反转「Checkpoint ≠ Git Commit」表述 → 1 失败。
+审查者还用变异测试验证了本批次测试"有牙齿"：回退 `session.py` 到 HEAD → 7 失败；改 checkpoint 为覆盖写 → 1 失败；清空 `verify_required` → 2 失败；反转「Checkpoint ≠ Git Commit」表述 → 1 失败；清空 SDD schema required → 18 失败。
+
+## [0.9.0-dev]
+
+subagent 任务循环（SDD）+ 代码纪律补强。让大 DEV-PLAN（≥5 独立 Phase 任务）走任务级 fresh subagent + 两段 review + judgment ledger，避免 implementer 跑歪返工。同时把分散在 4 个 SKILL 的代码纪律显式化。本批次只做"执行侧纪律"，不做运行时验证（v1.0.0）。
+
+### 新增
+
+- **subagent-driven-development SKILL**（v0.9.0）：1 个 SKILL（45 行）+ 1 个 workflow（87 行）+ 3 个 shell 脚本
+  - `agents/skills/subagent-driven-development/SKILL.md` — 依赖检测 + 触发条件 + 文件结构
+  - `agents/skills/subagent-driven-development/workflows/execute.md` — Phase 0/1/2/3 + fix loop + breaker + judgment ledger
+  - `agents/skills/subagent-driven-development/scripts/sdd-workspace.sh` — 建 workspace（`.idea-hammer/sdd/<plan-id>/`）+ gitignore 自动写入
+  - `agents/skills/subagent-driven-development/scripts/task-brief.sh` — awk 抽 task brief 到 `task-N-brief.md` + 建 report 占位
+  - `agents/skills/subagent-driven-development/scripts/review-package.sh` — 抽 `base..head` diff 到 `task-N-review-pkg.txt`
+- **D-013 决策记录**（DECISIONS.md）
+
+### 改动
+
+- `agents/skills/bug-fixer/workflows/debug.md`（65→81 行）：4 阶段显式化（卡门段 + 三级标题 + 退出条件 + 阶段间回退）
+- `agents/skills/code-review/principles/review-discipline.md`（33→59 行）：加两段输出契约（Spec Compliance 二元 + Code Quality 二元 + Finding 三级分级 + Cannot verify 标注规则）
+- `agents/skills/dev-builder/principles/engineering-constraints.md`（89→101 行）：加"任务级 fix loop 与 SDD 路由"段
+- `agents/skills/dev-planner/SKILL.md`（40→52 行）：加"路由:subagent 模式选择"段（≥5 走 SDD / <5 走 dev-builder / 强耦合不切）
+- `SUBAGENTS.md`（17→35 行）：结构化为"固定 Sub-Agent / 调度纪律 / v0.9.0 起 SDD 模式"三段
+- `.gitignore`：加 `.idea-hammer/sdd/`（SDD 协调态不入 git）
+
+### 4 个待决项的最终处理
+
+1. **task 标题格式**：硬匹配 `### Task N:`（task-brief.sh 用 awk 实现）
+2. **base/head 来源**：主 Agent dispatch 前 `git rev-parse HEAD` 记录，传给 review-package.sh
+3. **breaker 归属**：reviewer subagent 报出"breaker tripped"，主 Agent 在循环间统一仲裁
+4. **workspace 清理**：合账前 `cp progress.md` 到 `.idea-hammer/sdd-archive/<plan-id>-progress.md`（永久留底不入 gitignore），然后 `rm -rf` workspace
+
+### 借鉴但不照搬 superpowers:subagent-driven-development
+
+- 借鉴：fresh subagent 隔离 / 两段 review / 5 轮 fix loop / judgment ledger / breaker 机制
+- 不照搬：spec-test-mvp 三件套（用现有 Product-Spec 已含 TDD 纪律）/ 分支策略（沿用仓库 direct-commit-on-master）/ 多 fixed subagent 类型（只复用 code-reviewer）
+
+### 不进 v0.9.0
+
+- 运行时验证（端到端集成测试 / 部署 smoke / 监控接入）— 进 v1.0.0
+- 自进化机制完善（更多 signal 类型 / proposal 状态机）— 进 v1.0.0
+- code-reviewer.toml 改造（两段 verdict 契约已落到 SKILL 层，TOML 不强制同步）
 
 ## [0.8.0-dev]
 

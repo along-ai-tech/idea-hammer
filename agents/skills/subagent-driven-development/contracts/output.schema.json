@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SDDOutput",
+  "description": "subagent-driven-development 执行结果报告",
+  "type": "object",
+  "required": [
+    "plan_id",
+    "tasks",
+    "verification"
+  ],
+  "properties": {
+    "plan_id": {
+      "type": "string",
+      "description": "计划标识（对应 .idea-hammer/sdd/<plan-id>/）"
+    },
+    "tasks": {
+      "type": "array",
+      "description": "每个任务的执行结果",
+      "items": {
+        "type": "object",
+        "required": [
+          "task_id",
+          "status"
+        ],
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "description": "任务标识（与 DEV-PLAN 的 DT 编号对应）"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "in_fix",
+              "breaker",
+              "skipped"
+            ],
+            "description": "任务状态：complete（两段 review 都清）/ in_fix（正在 fix loop）/ breaker（5 轮未清已上报）/ skipped"
+          },
+          "fix_round": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5,
+            "description": "已进行的 fix 轮次（0 = 未进 fix loop，上限 5，超出触发 breaker）"
+          },
+          "commits": {
+            "type": "string",
+            "description": "该任务产生的 commit 范围（base..head）"
+          },
+          "review_clean": {
+            "type": "boolean",
+            "description": "两段 verdict 是否都清"
+          },
+          "findings_addressed": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "已修复的 Critical + Important finding 数"
+          },
+          "findings_open": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "仍未清的 finding 数"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rulings": {
+      "type": "array",
+      "description": "主 Agent 的仲裁记录（park / rule / stop）",
+      "items": {
+        "type": "string"
+      }
+    },
+    "breakers": {
+      "type": "array",
+      "description": "breaker 触发记录：finding 列表 + 仲裁结论",
+      "items": {
+        "type": "object",
+        "required": [
+          "task_id",
+          "findings"
+        ],
+        "properties": {
+          "task_id": {
+            "type": "string"
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "resolution": {
+            "type": "string",
+            "enum": [
+              "park",
+              "rule",
+              "stop"
+            ],
+            "description": "仲裁结论：park（挂起）/ rule（最小改动并记规则）/ stop（停下问用户）"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "verification": {
+      "type": "object",
+      "description": "验证证据",
+      "required": [
+        "compile_pass",
+        "tests_pass"
+      ],
+      "properties": {
+        "compile_pass": {
+          "type": "boolean"
+        },
+        "tests_pass": {
+          "type": "boolean"
+        },
+        "final_review_clean": {
+          "type": "boolean",
+          "description": "整分支终审两段是否都清"
+        },
+        "evidence": {
+          "type": "array",
+          "description": "当场验证命令与原始输出",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "ledger_path": {
+      "type": "string",
+      "description": "ledger 归档路径（.idea-hammer/sdd-archive/<plan-id>-progress.md）"
+    },
+    "commit_message": {
+      "type": "string",
+      "description": "建议的 commit message（由主 Agent 执行，不自动提交）"
+    }
+  },
+  "additionalProperties": false
+}

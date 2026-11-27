@@ -52,3 +52,6 @@ flashcards.db
 
 # IdeaHammer session state（反向排除）
 !.idea-hammer/
+
+# SDD 工作目录（协调态，不入 git）
+.idea-hammer/sdd/

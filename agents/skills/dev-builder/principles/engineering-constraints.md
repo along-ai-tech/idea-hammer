@@ -86,3 +86,15 @@ dev-builder 每个 Task 启动：
 ## Spec 字段映射（v0.8.0 起）
 
 读 spec 时按 v0.8.0 模板字段提取约束：展示字段→UI；输入字段→API；状态流转→状态机实现；派生计算→公式/聚合逻辑。
+
+## 任务级 fix loop 与 SDD 路由（v0.9.0 起）
+
+dev-builder 默认走"一口气干完 + code-reviewer 终审"。但当 DEV-PLAN 含 ≥5 个相互独立的 Phase 任务时,dev-planner 在切 phase 时路由到 SDD（subagent-driven-development）：
+
+- Phase 任务数 ≥5 → 默认走 SDD（任务级 fresh subagent + 两段 review + judgment ledger）
+- Phase 任务 <5 → 用 dev-builder + code-reviewer 终审
+- 跨 phase 强耦合 → 用 dev-builder 不切任务
+
+dev-builder 任务循环本身也吸收 SDD 的 fix loop 精神:Critical/Important finding 必清,最多 5 轮 fix,Round 4-5 用更 capable model。但**不强制**拆 fresh subagent(单 phase 任务少时开销大于收益)。
+
+路由判断由 dev-planner 在 workflow-generate/iterate 输出时写明,不延迟到执行期再决定。

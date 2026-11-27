@@ -14,6 +14,10 @@ description: 当 Product-Spec.md 已完成、需要先定技术方案再拆开�
     必需：Product-Spec.md。新项目还必须有 Technical-Design.md，缺了先走 workflow-technical-design.md。
     可选（缺了标降级）：Design-Brief.md、设计工具 MCP、已有项目代码。存量迭代缺 Technical Design 时补最小版（架构 / 数据 / API 三节）。
 
+[路由:subagent 模式]
+    ≥5 个相互独立 Phase 任务 → 标 [mode: sdd]，切 subagent-driven-development 粒度；否则 dev-builder。
+    跨 phase 强耦合（共享接口/文件）→ dev-builder 不切。每个 Phase 头部写 [mode: dev-builder | sdd]。
+
 [使用方式]
     启动 → 需要技术设计时先读 workflows/workflow-technical-design.md，用 templates/technical-design-template.md 输出 Technical-Design.md；再读 workflows/workflow-generate.md 或 workflow-iterate.md，用 templates/dev-plan-template.md 输出 DEV-PLAN.md。
 

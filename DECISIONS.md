@@ -4,6 +4,85 @@
 
 ---
 
+## 2026-11-27
+
+### D-017：v0.12.0 全局安装——Codex 真实 hook 协议 + 信任登记 + 路径锚点
+
+**背景**：v0.11.0 之后，用户的目标从"框架能用"变成"**所有 Codex 项目都能用**"。
+要做到这点，安装器必须一次装齐五类产物，并且装出来的 hook 真的会被 Codex 执行——
+而不是"文件在那儿，看着挺像"。
+
+自检时挖出三个真问题：
+
+1. **hook 协议是框架自造的，Codex 从来没加载过。** 仓库里的 `hooks.json` 用了
+   `$version` / `events` / `mode`（advisory / transform / retry 三模式），
+   Codex 解析时遇到未知字段直接丢弃整个文件——所有 hook 静默失效，不报任何错。
+   按 `openai/codex` `rust-v0.171.0` 源码核对后，真实格式是
+   `{description, hooks: {事件名: [MatcherGroup]}}`，顶层 `deny_unknown_fields`。
+2. **hook 信任机制此前完全没被处理。** Codex 对用户级 hook 默认判 Untrusted，
+   不在 `config.toml` 写 `[hooks.state."<key>"] trusted_hash` 就静默不执行。
+   信任 key 的哈希算法（规范化 handler → 递归排序键的紧凑 JSON → sha256）
+   是从 Codex 源码复刻的。
+3. **安装器的路径模型有耦合缺陷。** `--codex-home` 不会带动 `--framework-home`，
+   想自检就得先动真实的 `~/.codex/idea-hammer`；而且 `_register_repo_hooks`
+   硬编码 `REPO_ROOT`，`--source` 形同虚设。
+4. **Codex 的三条路径各走各的，不能互相推导。** 探针实验（同名探针技能分别放两处）
+   证明：技能根**只认 `$HOME/.agents/skills`**，不认 `$CODEX_HOME/../.agents/skills`；
+   `CODEX_HOME` 只决定配置目录。把技能目录跟着 `--codex-home` 走，
+   会让自定义 `CODEX_HOME` 的用户整套技能静默失效。
+
+**候选**：
+
+- A. 保留自造协议，加一个"协议转换器"把框架格式转成 Codex 格式
+- B. 直接对齐 Codex 真实协议，框架侧只保留一份 schema
+- C. 放弃 hook，只靠全局 AGENTS.md + 技能目录生效
+
+**决定**：B 方案
+
+**理由**：
+
+- A 等于长期维护两套协议 + 一层翻译器，而错误的信号是"静默失效"——
+  最难发现的一种失败。既然真实协议可查可抄，就没有理由再造。
+- C 砍掉的正是进化机制（signals 捕获与 session 启动提醒），
+  而自进化是框架的差异化能力之一，不该为了省事丢掉。
+- B 让"装了就真的在跑"成为可验证的事实：装完能立刻用
+  `codex debug prompt-input "hi"` 看到全局 AGENTS.md 与 12 个技能命中。
+
+**落地**：
+
+| 层 | 产物 | 作用 |
+|---|---|---|
+| 协议 | `.codex/hooks.json` | 全部改成 Codex 真实格式；`mode` / `$version` / `events` 作废 |
+| schema | `schemas/hook-protocol.schema.json` | draft-07，比 Codex 更严（未知字段即报错） |
+| 文档 | `docs/codex-hooks.md` | 8 章，含信任机制、stdout 语义、常见错误 |
+| 工具 | `scripts/global_install/` | 装齐五类产物 + 登记 hook 信任 |
+| 路径 | 三条路径各按 Codex 规则 | 配置 → `~/.codex`（或 `$CODEX_HOME`）；技能 → `$HOME/.agents/skills`；框架副本 → 配置目录旁 |
+| 门禁 | 3 个安装器契约测试文件 + CI 冒烟 | 22 项契约 + 每次 CI 装一遍到临时目录 |
+
+**关键取舍**：
+
+1. **全局只装 2 条安全 hook**（进化信号捕获 + session 启动提醒）。
+   `stop-gate`（拦截未审代码）、`auto-push`（自动推送）、`auto-lint`（改用户文件）
+   会改变所有仓库的行为，默认不装，需要时用 `project <dir>` 单独开启。
+2. **技能用复制而不是符号链接**：技能之间有跨目录相对引用
+   （`code-review/principles/../../dev-builder/...`），链接安装后这些路径在推理层会解析到别处。
+3. **信任登记归安装器管**：用户不该需要手算 sha256。安装器算好写进 `config.toml`。
+4. **schema 比 Codex 严**：Codex 静默忽略未知字段，本 schema 直接判错——
+   拼错要当场发现，而不是装出一份死配置。
+5. **路径不互相推导**：三条路径各自遵守 Codex 的规则。技能的落点由 `$HOME` 决定，
+   配置落点由 `CODEX_HOME` / `--codex-home` 决定，框架副本跟着配置走。
+   要完全隔离的安装，把 `HOME` 指到临时目录——三条路径会一起跟着走。
+
+**影响**：
+
+- TODO-103 的"三模式协议"正式作废，`TODO.md` 已加更正说明。
+- `docs/codex-hooks.md` 与 `schemas/hook-protocol.schema.json` 成为 hook 的唯一真相源；
+  Codex 升级若改协议，先跑 `tests/contract/test_global_install.py`。
+- v1.0 的 API 稳定化（TODO-301）应把 `hooks.state` 信任 key 的格式也纳入承诺范围——
+  改了 key 格式，老用户的 hook 会静默不执行。
+
+---
+
 ## 2026-11-26
 
 ### D-016：v0.11.0 上下文工程域 + 跨 Session 恢复（补 Day9 AI Coding 工程化缺口）
@@ -56,6 +135,62 @@
 
 - 后续 D-017+ 若涉及"AI 自主性"扩展，CONTEXT.md 的"停手问人判据"是唯一真相源。
 - `session.json` 新增 `checkpoints` 数组，为 1.0 稳定 API 预留（TODO-301 需把该字段纳入锁定范围）。
+
+---
+
+## 2026-10-02
+
+### D-013：v0.9.0 subagent 任务循环（SDD）+ 代码纪律补强
+
+**背景**：v0.8.0 解决了"spec 出得更可执行"（D-012）。剩两个悬而未决：
+
+1. 大 DEV-PLAN（≥5 独立 Phase 任务）一次性干完风险高：implementer 跑歪、中途换上下文、review 只在终审看，返工面巨大。
+2. 代码层纪律分散：bug-fixer 流程不显式、code-review 输出没两段契约、dev-builder 任务循环无 fix-loop 上限、dev-planner 不做 subagent 模式路由。
+
+参考 superpowers:subagent-driven-development 的核心机制（任务级 fresh subagent + 两段 review + judgment ledger），结合本仓库约束（不破坏现有 dev-builder / code-review 闭环），落到 v0.9.0。
+
+**候选**：
+
+- A. 全盘照搬 superpowers:subagent-driven-development 模板（spec-test-mvp / process-tasks / process-review 等 13 份模板 + 4 个 subagent 类型）
+- B. 只借鉴核心机制，自建轻量 SKILL + 5 文件代码纪律补强
+- C. 只做纪律补强，不做 SDD
+
+**决定**：B 方案
+
+**理由**：
+
+- A 模板 13 份过长（合计数千行），且与本仓库阶段式执行风格不匹配；强塞会破坏 dev-builder 主导路径。
+- C 只补纪律不够：大 DEV-PLAN 风险不解决。
+- B 是最小可工作集：1 个 SKILL（45 行）+ 1 个 workflow（87 行）+ 3 个 shell 脚本 + 5 个纪律补强文件，闭环建立且不膨胀。
+
+**4 个待决项的最终处理**：
+
+| # | 待决 | 决定 |
+|---|---|---|
+| 1 | task 标题格式 | 接受硬匹配 `### Task N:`。task-brief.sh 用 awk 匹配，Plan 模板自身规范 |
+| 2 | base/head 来源 | 主 Agent 在 1.2 dispatch 前 `git rev-parse HEAD` 记录，作为参数传入 review-package.sh |
+| 3 | breaker 谁执行 | reviewer subagent 报出"breaker tripped"，主 Agent 在循环间统一收集并仲裁（park / rule / stop） |
+| 4 | workspace 清理 | 合账前 `cp progress.md` 到 `.idea-hammer/sdd-archive/<plan-id>-progress.md`（不入 gitignore 永久留底），然后 `rm -rf` workspace |
+
+**借鉴但不照搬**：
+
+- 借鉴：fresh subagent 隔离 / 两段 review / 5 轮 fix loop / judgment ledger / breaker 机制
+- 不照搬：spec-test-mvp 三件套（用现有 Product-Spec 已含 TDD 纪律）/ 分支策略（沿用仓库 direct-commit-on-master）/ 多个固定 subagent 类型（只复用 code-reviewer）
+
+**代码纪律补强 5 文件**：
+
+1. `agents/skills/bug-fixer/workflows/debug.md`：4 阶段升级三级标题 + 卡门段 + 退出条件 + 阶段间回退
+2. `agents/skills/code-review/principles/review-discipline.md`：加两段输出契约（Spec Compliance 二元 + Code Quality 二元 + Finding 分级）
+3. `agents/skills/dev-builder/principles/engineering-constraints.md`：加"任务级 fix loop 与 SDD 路由"段
+4. `agents/skills/dev-planner/SKILL.md`：加"路由:subagent 模式选择"段（≥5 走 SDD / <5 走 dev-builder / 强耦合不切）
+5. `SUBAGENTS.md`：结构化为"固定 Sub-Agent / 调度纪律 / v0.9.0 起 SDD 模式"三段
+
+**影响**：
+
+- v0.9.0 起：大 DEV-PLAN（≥5 独立 Phase 任务）自动走 SDD，其他照旧走 dev-builder。
+- code-review 输出契约升级：两段 verdict 成为强约束，主 Agent 不接受单一"通过/不通过"。
+- 5 轮 fix loop 上限进入 dev-builder 任务循环（不强制 fresh subagent）。
+- D-014 留位：v1.0.0 运行时验证 / 自进化机制完善。
 
 ---
 

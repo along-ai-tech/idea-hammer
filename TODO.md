@@ -137,6 +137,11 @@ skill-name/
 
 **详见**：改进 #5 Hook 协议升级。
 
+> **2026-11-26 更正**：advisory / transform / retry 三种模式是框架自造的，Codex 从来没加载过——
+> 它解析 `hooks.json` 时遇到 `$version` / `events` / `mode` 这些字段会直接报
+> `unknown field`，然后丢弃整个文件，所有 hook 静默失效。现已全部改成 Codex 真实 hook 协议，
+> 详见 [`docs/codex-hooks.md`](docs/codex-hooks.md)；三模式语义不存在，勿再参考。
+
 ---
 
 ### ✅ TODO-104（commit `e2ab23f`）：Evolution 三层捕获
@@ -207,6 +212,11 @@ skill-name/
 
 **工时**：1 周
 
+**进展（2026-11-27）**：PR 检查部分已覆盖——契约测试、skill 结构 strict 校验、
+`check_simplicity` 门禁、需求追踪链路、Spec 四要素、session 校验，
+另加一条隔离安装冒烟（装到临时目录 + 断言五类产物 + hook 信任条目）。
+**剩余**：自动 release workflow（打 tag → 建 release → 发 changelog）。
+
 ---
 
 ### TODO-203：Sub-Agent dag 编排
@@ -227,12 +237,98 @@ skill-name/
 
 **工时**：4 周
 
+**v0.11.0 起追加锁定项**：`schemas/session.schema.json` 的 `checkpoints` 数组字段一并纳入 v1.0 稳定 API 范围（checkpoint 结构一旦被下游依赖就不能随意改；新增字段只追加不重命名）。
+
+---
+
+## ✅ v0.11.0 已完成（2026-11-26）
+
+### TODO-110：Day9「AI Coding 工程化」缺口补齐（D-016）
+
+**目标**：拿 Day9 第四模块的七个知识域逐条比对框架现状，把"教纪律但没给规则"的部分补成可执行工程约束。
+
+**诊断结论**：
+
+| 知识域 | 现状 |
+|---|---|
+| TDD / Anti-Reinvent / Simplification / 独立 Code Review / Task Decomposition / Multi-Agent | ✅ 已落地，质量高 |
+| **Context Engineering** | ❌ 整域零覆盖（`rg` 全仓库 0 命中） |
+| Checkpoint | ❌ 概念缺失（Checkpoint ≠ Git Commit 未被区分） |
+| 跨 Session 恢复 | ⚠️ 只做产物存在性检测，不核实代码与测试真实性 |
+| Plan / Agent Mode | ⚠️ 无按规模与风险分流的判据 |
+| Agentic Coding 闭环 | ⚠️ 无 Human-in-the-loop 停手判据 |
+| Testing Pyramid | ⚠️ 缺 Contract / Regression 分层，无并发不变量门禁 |
+
+**详细任务**：
+
+1. ✅ **CONTEXT.md 域文件**：7 类上下文 + Context Selection 判据 + 三种技术（Retrieval / Progressive Disclosure / Compression）+ Memory/State/Checkpoint 三分工 + 上下文预算 + 恢复协议
+2. ✅ **`dev-builder/principles/context-engineering.md`**：6 层渐进式装配顺序、该读/不该读对照表、压缩触发与不可丢项、checkpoint 落盘命令
+3. ✅ **`dev-builder/principles/test-pyramid.md`**：五层验证映射 + 并发不变量三件套门禁 + Invariant vs Regression
+4. ✅ **`scripts/session.py checkpoint` / `restore`**：记录恢复点、输出待核实清单
+5. ✅ **接线**：AGENTS.md 启动顺序 / WORKFLOW.md 模式分流 + 停手判据 / STATE-ROUTING.md 恢复核实 / dev-builder SKILL + workflows / code-review stage2
+6. ✅ **契约测试**：test_context_engineering.py（19 项）+ test_session_checkpoint.py（9 项）
+
+**验收标准**：
+
+- [x] Context Engineering 整域落地，不再是隐性纪律
+- [x] Checkpoint 与 Git Commit 职责分离，恢复时强制核实
+- [x] Plan/Agent 模式分流与停手判据写入 WORKFLOW
+- [x] 测试金字塔五层映射 + 并发不变量门禁写入 stage2
+- [x] `python3 -m pytest tests/ -q` → 269 passed（本批次新增 60 项契约测试）
+- [x] `python3 scripts/check_simplicity.py scripts/` → 全部通过
+- [x] `python3 scripts/check_skill_structure.py` → 12 skill 全 OK
+- [x] 独立 code-reviewer 两阶段审查 → Spec Compliance ✅ / Code Quality 的 4 个 Important 全部修完
+
+**依赖**：无（横切关注点，不新增流水线环节）
+
+**详见**：D-016 决策记录
+
+---
+
+## ✅ v0.12.0 已完成（2026-11-27）
+
+### TODO-111：全局安装——所有 Codex 项目都用上这套方法论（D-017）
+
+**目标**：装一次，**用户电脑上所有 Codex 项目**自动生效，不用每个项目手动配置。
+
+**诊断结论**：
+
+| 问题 | 现状（修复前） |
+|---|---|
+| hook 协议 | 框架自造的 `$version` / `events` / `mode` —— Codex 从来没加载过，解析失败后丢弃整个文件，**所有 hook 静默失效** |
+| hook 信任 | Codex 对用户级 hook 默认判 Untrusted，不登记 `trusted_hash` 就不执行 |
+| 路径模型 | `--codex-home` 不带动 `--framework-home`，自检必须先动真实 `~/.codex` |
+| 自动化 | CI 从未装过全局安装器，安装器零测试覆盖 |
+
+**详细任务**：
+
+1. ✅ **安装器**：`scripts/global_install/`（paths / framework / hooks / trust / agents / commands / cli），五个子命令 install / sync / status / uninstall / project
+2. ✅ **协议对齐**：`.codex/hooks.json` 全部改成 `openai/codex` `rust-v0.171.0` 真实格式；`schemas/hook-protocol.schema.json`（draft-07，比 Codex 严）；`docs/codex-hooks.md`（8 章）
+3. ✅ **信任登记**：安装器算好 `trusted_hash` 写进 `config.toml`（全局 2 条 + 仓库 6 条）
+4. ✅ **路径锚点**：`--codex-home` 带动框架副本与技能目录；`_register_repo_hooks` 改用 `paths.source`
+5. ✅ **契约测试**（22 项，拆三个文件）——装齐 / 不越界 / 可重复 / 可卸载
+6. ✅ **CI**：隔离安装冒烟 + `check_simplicity` 门禁
+
+**验收标准**：
+
+- [x] 干净克隆 → 一条命令 → 五类产物齐全、8 条信任条目、hooks.json 过协议 schema
+- [x] 隔离安装不碰真实 `~/.codex`（`--codex-home` 传临时目录）
+- [x] 重复安装不产生重复内容（全局 AGENTS.md 区块幂等）
+- [x] `python3 -m pytest tests/contract/ -q` → 292 passed
+- [x] `python3 scripts/check_simplicity.py scripts/` → 全部通过
+
+**依赖**：无（横切关注点，让既有 8 步流水线在任意项目里可用）
+
+**详见**：D-017 决策记录
+
 ---
 
 ## 状态统计
 
 - **P0 完成**：3 项（TODO-003 / 004 / 005）全部 ✅
 - **P1 完成**：5 项（TODO-101/102/103/104/105）全部 ✅
+- **v0.11.0 完成**：1 项（TODO-110 上下文工程域）✅
+- **v0.12.0 完成**：1 项（TODO-111 全局安装）✅
 - **P2 待办**：3 项，总工时 5-6 周
 - **已完成 P0**：2 项（TODO-001 拆 AGENTS.md ✅ / TODO-002 README 30 秒扫视 ✅）
 - **已完成 P1 业务纪律**：TODO-105 ✅（2026-09-24）
