@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "last_updated": "2026-11-27T09:39:27.239647+08:00",
+  "last_updated": "2026-11-27T09:55:30.290382+08:00",
   "current_project": "idea-hammer",
   "current_phase": "v0.12.0-dev · 全局安装固化（D-017）",
   "current_task": "D-017",
@@ -185,6 +185,32 @@
         "TODO.md"
       ],
       "created_at": "2026-11-26T16:07:16.823445+08:00"
+    },
+    {
+      "id": "cp-20261127-095530-017e2b",
+      "phase": "v0.12.0-dev",
+      "task": "D-017",
+      "git_commit": "c2619a8",
+      "tests": {
+        "contract_test": "292 passed",
+        "simplicity": "pass",
+        "skill_structure": "12 skill OK",
+        "traceability": "0 warnings",
+        "global_install": "22 contract tests + CI smoke green"
+      },
+      "next_action": "提交已推双 remote；下一步：v1.0 规划（TODO-301 API 稳定化 + TODO-201 英文 README），或先给 v0.12.0 打 tag",
+      "artifacts": [
+        "README.md",
+        "STATUS.md",
+        "CHANGELOG.md",
+        "DECISIONS.md",
+        "TODO.md",
+        "scripts/global_install/",
+        "tests/contract/test_global_install.py",
+        "tests/contract/test_global_install_paths.py",
+        "tests/contract/test_global_install_repo.py"
+      ],
+      "created_at": "2026-11-27T09:55:30.290275+08:00"
     }
   ]
 }
